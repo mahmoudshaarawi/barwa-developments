@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowDownLeft, ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, Menu, MoveUpRight, X } from 'lucide-react'
 
 const logoUrl = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/STAR%20AL%20LOGO%404x-n6B6WW06lI6ClkRRuWqxuIjRmK0pn3.png'
@@ -42,7 +42,7 @@ export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
-  const project = projects[active]
+  const dragStartX = useRef<number | null>(null)
 
   useEffect(() => {
     const onScroll = () => {
@@ -66,6 +66,25 @@ export default function Page() {
   }, [])
 
   const move = (direction: number) => setActive((active + direction + projects.length) % projects.length)
+  const handleCarouselKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      move(-1)
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      move(1)
+    }
+  }
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 0 || (event.target instanceof Element && event.target.closest('a, button'))) return
+    dragStartX.current = event.clientX
+  }
+  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStartX.current === null) return
+    const distance = event.clientX - dragStartX.current
+    dragStartX.current = null
+    if (Math.abs(distance) > 48) move(distance < 0 ? 1 : -1)
+  }
 
   return (
     <main dir="rtl" className="site-shell" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
@@ -122,15 +141,47 @@ export default function Page() {
       <section id="projects" className="projects section-pad reveal">
         <div className="section-kicker"><span>03</span><i /><span>مشاريعنا</span></div>
         <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
-        <div className="carousel-wrap">
+        <div
+          className="carousel-wrap"
+          role="group"
+          aria-label="مشاريع بروة"
+          tabIndex={0}
+          onKeyDown={handleCarouselKeyDown}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={() => { dragStartX.current = null }}
+          onPointerLeave={() => { dragStartX.current = null }}
+        >
+          <div className="carousel-star" aria-hidden="true"><img src={logoUrl} alt="" /></div>
           <button className="carousel-arrow prev" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
-          <div className="side-project side-right" style={{ backgroundImage: `url(${projects[(active + 1) % projects.length].image})` }}><span>{projects[(active + 1) % projects.length].name}</span></div>
-          <article className="project-card" key={project.name} style={{ backgroundImage: `linear-gradient(0deg, rgba(0,0,0,.84), transparent 60%), url(${project.image})` }}>
-            <div className="project-card-top"><span>{project.number} / 0{projects.length}</span><span>BARWA DEVELOPMENTS</span></div>
-            <div className="project-card-info"><span className="eyebrow light">{project.location}</span><h3>{project.arabic}<small>{project.name}</small></h3><p>{project.type}</p><div className="project-card-bottom"><span>{project.description}</span><a href="#contact" aria-label="تفاصيل المشروع"><ArrowUpLeft /></a></div></div>
-          </article>
-          <div className="side-project side-left" style={{ backgroundImage: `url(${projects[(active + 2) % projects.length].image})` }}><span>{projects[(active + 2) % projects.length].name}</span></div>
-          <button className="carousel-arrow next" onClick={() => move(1)} aria-label="المش��وع التالي"><ChevronLeft /></button>
+          {projects.map((item, index) => {
+            const position = index === active ? 'active' : index === (active + projects.length - 1) % projects.length ? 'previous' : 'next'
+            return (
+              <article
+                key={item.name}
+                className={`project-card project-card-${position}`}
+                style={{ backgroundImage: `linear-gradient(0deg, rgba(0,0,0,.88), rgba(0,0,0,.08) 70%), url(${item.image})` }}
+                aria-current={position === 'active' ? 'true' : undefined}
+              >
+                {position !== 'active' && <button className="project-card-select" onClick={() => setActive(index)} aria-label={`استكشف ${item.arabic}`} />}
+                <div className="project-card-top"><span>{item.number} / 0{projects.length}</span><span>BARWA DEVELOPMENTS</span></div>
+                <div className="project-card-info">
+                  <span className="eyebrow light">{item.location}</span>
+                  <h3>{item.arabic}<small>{item.name}</small></h3>
+                  <p>{item.type}</p>
+                  <div className="project-card-bottom">
+                    <span>{item.description}</span>
+                    <a href="#contact" aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
+                      <span className="project-cta-en">View Project</span>
+                      <span className="project-cta-ar">استكشف المشروع</span>
+                      <ArrowUpLeft />
+                    </a>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
+          <button className="carousel-arrow next" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
         </div>
         <div className="carousel-footer"><span>اسحب للتنقل بين المشاريع</span><div className="pagination">{projects.map((item, index) => <button key={item.name} className={active === index ? 'active' : ''} onClick={() => setActive(index)} aria-label={`مشروع ${index + 1}`}><span>0{index + 1}</span></button>)}</div></div>
       </section>
