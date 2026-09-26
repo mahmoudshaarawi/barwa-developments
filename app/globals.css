@@ -294,28 +294,37 @@
 }
 
 .brand-lockup {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
+  width: clamp(124px, 11vw, 164px);
+  aspect-ratio: 1955.8 / 841.89;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   text-decoration: none;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--c-black);
-  
-  .brand-mark {
-    font-size: 1.5rem;
-    color: var(--c-magenta);
-    line-height: 1;
+  line-height: 0;
+
+  .brand-logo {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity .25s ease;
   }
-  
-  span {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.2;
-    
-    strong { display: block; font-size: 0.875rem; }
-    small { display: block; font-size: 0.625rem; letter-spacing: 0.05em; opacity: 0.7; }
-  }
+
+  .brand-logo-colored { opacity: 0; }
+}
+
+.site-header.is-scrolled .brand-logo-white { opacity: 0; }
+.site-header.is-scrolled .brand-logo-colored { opacity: 1; }
+
+.footer-brand .brand-logo-white {
+  opacity: 1;
 }
 
 .desktop-nav {
@@ -495,9 +504,9 @@
   top: 15%;
   right: 10%;
   width: 200px;
-  height: 200px;
+  height: 110px;
   z-index: 2;
-  opacity: 0.15;
+  opacity: 0.12;
   animation: float 6s ease-in-out infinite, slow-rotate 18s linear infinite;
   
   img { width: 100%; height: 100%; object-fit: contain; }
@@ -847,8 +856,8 @@
   left: 50%;
   z-index: 0;
   width: min(31vw, 380px);
-  aspect-ratio: 1;
-  opacity: .055;
+  aspect-ratio: 160 / 74;
+  opacity: .12;
   transform: translate(-50%, -58%);
   pointer-events: none;
 
@@ -1165,9 +1174,9 @@
     top: -50px;
     left: 50%;
     transform: translateX(-50%);
-    width: 100px;
-    height: 100px;
-    opacity: 0.08;
+    width: 120px;
+    height: 56px;
+    opacity: 0.12;
     
     img { width: 100%; height: 100%; }
   }
@@ -1243,10 +1252,12 @@ footer {
 }
 
 .footer-brand {
-  width: fit-content;
+  width: clamp(124px, 11vw, 164px);
+  height: auto;
+  padding: 0;
   
   @media (max-width: 767px) {
-    width: 100%;
+    width: clamp(124px, 11vw, 164px);
   }
 }
 

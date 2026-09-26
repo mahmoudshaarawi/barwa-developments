@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowDownLeft, ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, Menu, MoveUpRight, X } from 'lucide-react'
 
-const logoUrl = 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/STAR%20AL%20LOGO%404x-n6B6WW06lI6ClkRRuWqxuIjRmK0pn3.png'
+const whiteLogoUrl = '/brand/barwa logo w-01.svg'
+const coloredLogoUrl = '/brand/barwa logo-01.svg'
+const brandStarUrl = '/brand/barwa-star.svg'
 
 const projects = [
   {
@@ -91,8 +93,8 @@ export default function Page() {
       <div className="scroll-progress" aria-hidden="true" />
       <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
         <a href="#top" className="brand-lockup" aria-label="Barwa Developments">
-          <span className="brand-mark">✦</span>
-          <span><strong>BARWA</strong><small>DEVELOPMENTS</small></span>
+          <img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt="" aria-hidden="true" />
+          <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt="" aria-hidden="true" />
         </a>
         <nav className="desktop-nav" aria-label="التنقل الرئيسي">
           {navItems.map((item, index) => <a key={item} href={index === 0 ? '#top' : index === 2 ? '#projects' : '#contact'}>{item}</a>)}
@@ -113,7 +115,7 @@ export default function Page() {
       <section id="top" className="hero">
         <div className="hero-image" />
         <div className="hero-grid" />
-        <div className="hero-star" aria-hidden="true"><img src={logoUrl} alt="" /></div>
+        <div className="hero-star" aria-hidden="true"><img src={brandStarUrl} alt="" /></div>
         <div className="hero-copy">
           <span className="eyebrow light">تطوير عقاري · القاهرة ٢٠٢٦</span>
           <h1>نبني التميز<br /><em>نصنع القيمة</em></h1>
@@ -152,7 +154,7 @@ export default function Page() {
           onPointerCancel={() => { dragStartX.current = null }}
           onPointerLeave={() => { dragStartX.current = null }}
         >
-          <div className="carousel-star" aria-hidden="true"><img src={logoUrl} alt="" /></div>
+          <div className="carousel-star" aria-hidden="true"><img src={brandStarUrl} alt="" /></div>
           <button className="carousel-arrow prev" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
           {projects.map((item, index) => {
             const position = index === active ? 'active' : index === (active + projects.length - 1) % projects.length ? 'previous' : 'next'
@@ -191,9 +193,9 @@ export default function Page() {
         <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
       </section>
 
-      <section id="contact" className="contact section-pad"><div className="contact-star"><img src={logoUrl} alt="" /></div><span className="eyebrow">LET&apos;S BUILD VALUE</span><h2>اكتشف فرصتك القادمة<br /><em>مع بروة</em></h2><p>استثمارات مدروسة، لمستقبل أكثر قيمة</p><a className="button-link" href="mailto:info@barwa-eg.com">تواصل معنا الآن <ArrowUpLeft /></a></section>
+      <section id="contact" className="contact section-pad"><div className="contact-star"><img src={brandStarUrl} alt="" /></div><span className="eyebrow">LET&apos;S BUILD VALUE</span><h2>اكتشف فرصتك القادمة<br /><em>مع بروة</em></h2><p>استثمارات مدروسة، لمستقبل أكثر قيمة</p><a className="button-link" href="mailto:info@barwa-eg.com">تواصل معنا الآن <ArrowUpLeft /></a></section>
 
-      <footer><div className="footer-top"><a href="#top" className="brand-lockup footer-brand"><span className="brand-mark">✦</span><span><strong>BARWA</strong><small>DEVELOPMENTS</small></span></a><p>نبني التميز<br />نصنع القيمة</p><div className="footer-contact"><span>١٢ شارع المشير أحمد إسماعيل، شيراتون، القاهرة</span><a href="tel:+201270000101">+20 127 0000 101</a></div></div><div className="footer-bottom"><span>© 2026 BARWA DEVELOPMENTS</span><span>BarwaDevelopments.com</span><span>AR <b>·</b> EN</span></div></footer>
+      <footer><div className="footer-top"><a href="#top" className="brand-lockup footer-brand" aria-label="Barwa Developments"><img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt="" aria-hidden="true" /></a><p>نبني التميز<br />نصنع القيمة</p><div className="footer-contact"><span>١٢ شارع المشير أحمد إسماعيل، شيراتون، القاهرة</span><a href="tel:+201270000101">+20 127 0000 101</a></div></div><div className="footer-bottom"><span>© 2026 BARWA DEVELOPMENTS</span><span>BarwaDevelopments.com</span><span>AR <b>·</b> EN</span></div></footer>
     </main>
   )
 }
