@@ -1,50 +1,70 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { ArrowDownLeft, ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, Menu, MoveUpRight, X } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, MoveUpRight } from 'lucide-react'
+import { SiteFooter } from '@/components/site-footer'
+import { SiteHeader } from '@/components/site-header'
+import { projects } from '@/lib/projects'
 
-const whiteLogoUrl = '/brand/barwa logo w-01.svg'
-const coloredLogoUrl = '/brand/barwa logo-01.svg'
 const brandStarUrl = '/brand/barwa-star.svg'
 
-const projects = [
+const heroSlides = [
   {
-    name: 'HUB 5',
-    arabic: 'هاب ٥',
-    location: 'مدينة الشروق',
-    type: 'تجاري · إداري · طبي',
-    description: 'حيث تلتقي مسارات الحياة في مركز متعدد الاستخدامات صُمم ليصنع فرصاً استثنائية.',
-    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1800&q=85',
-    number: '01',
+    image: '/banners/offer.jpg',
+    eyebrow: 'تطوير عقاري · بروة',
+    title: 'نبني التميز',
+    emphasis: 'نصنع القيمة',
+    englishName: 'BARWA DEVELOPMENTS',
+    description: 'وجهات استثنائية تصنع قيمة حقيقية لأجيال اليوم والغد.',
+    imagePosition: 'center 50%',
+    mobileImagePosition: 'center 47%',
   },
   {
-    name: 'CENTRAL MALL',
-    arabic: 'سنترال مول',
-    location: 'المنطقة المركزية الثانية · مدينة الشروق',
-    type: 'تجاري · إداري · طبي',
-    description: 'تنبض التجارة بالحياة في قلب المنطقة المركزية الثانية، حيث يلتقي التصميم العصري بالحضور اليومي.',
-    image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1800&q=85',
-    number: '02',
+    image: '/banners/barwa-mall.jpg',
+    eyebrow: projects[2].type,
+    title: projects[2].arabic,
+    emphasis: '',
+    englishName: projects[2].name,
+    description: projects[2].description,
+    imagePosition: 'center 50%',
+    mobileImagePosition: 'center 53%',
   },
   {
-    name: 'BARWA MALL',
-    arabic: 'بروة مول',
-    location: 'مصر',
-    type: 'وجهة تجارية',
-    description: 'مساحات مدروسة تمنح الأعمال عنواناً يواكب تطلعات المستقبل.',
-    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1800&q=85',
-    number: '03',
+    image: '/banners/central-mall.jpg',
+    eyebrow: projects[1].type,
+    title: projects[1].arabic,
+    emphasis: '',
+    englishName: projects[1].name,
+    description: projects[1].description,
+    imagePosition: 'center 50%',
+    mobileImagePosition: 'center 54%',
+  },
+  {
+    image: '/banners/hub5-mall.jpg',
+    eyebrow: projects[0].type,
+    title: projects[0].arabic,
+    emphasis: '',
+    englishName: 'HUB 5 MALL',
+    description: projects[0].description,
+    imagePosition: 'center 50%',
+    mobileImagePosition: 'center 54%',
   },
 ]
 
-const navItems = ['الرئيسية', 'من نحن', 'مشاريعنا', 'سابقة أعمالنا', 'الأخبار', 'تواصل معنا']
-
 export default function Page() {
   const [active, setActive] = useState(0)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [heroActive, setHeroActive] = useState(0)
+  const [heroHovered, setHeroHovered] = useState(false)
+  const [heroFocused, setHeroFocused] = useState(false)
+  const [heroInteractionPaused, setHeroInteractionPaused] = useState(false)
+  const [pageVisible, setPageVisible] = useState(true)
+  const [reducedMotion, setReducedMotion] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const dragStartX = useRef<number | null>(null)
+  const heroDragStartX = useRef<number | null>(null)
+  const heroPauseTimeout = useRef<number | null>(null)
 
   useEffect(() => {
     const onScroll = () => {
@@ -67,7 +87,67 @@ export default function Page() {
     }
   }, [])
 
+  useEffect(() => {
+    const onVisibilityChange = () => setPageVisible(!document.hidden)
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const onMotionPreferenceChange = () => setReducedMotion(motionPreference.matches)
+    onVisibilityChange()
+    onMotionPreferenceChange()
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    motionPreference.addEventListener('change', onMotionPreferenceChange)
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      motionPreference.removeEventListener('change', onMotionPreferenceChange)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (reducedMotion || !pageVisible || heroHovered || heroFocused || heroInteractionPaused) return
+    const autoplay = window.setInterval(() => {
+      setHeroActive((current) => (current + 1) % heroSlides.length)
+    }, 6000)
+
+    return () => window.clearInterval(autoplay)
+  }, [heroFocused, heroHovered, heroInteractionPaused, pageVisible, reducedMotion])
+
+  useEffect(() => () => {
+    if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
+  }, [])
+
   const move = (direction: number) => setActive((active + direction + projects.length) % projects.length)
+  const pauseHeroAfterInteraction = () => {
+    setHeroInteractionPaused(true)
+    if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
+    heroPauseTimeout.current = window.setTimeout(() => {
+      setHeroInteractionPaused(false)
+      heroPauseTimeout.current = null
+    }, 6000)
+  }
+  const moveHero = (direction: number) => {
+    setHeroActive((current) => (current + direction + heroSlides.length) % heroSlides.length)
+    pauseHeroAfterInteraction()
+  }
+  const handleHeroKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      moveHero(1)
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      moveHero(-1)
+    }
+  }
+  const handleHeroPointerDown = (event: React.PointerEvent<HTMLElement>) => {
+    if (event.button !== 0 || (event.target instanceof Element && event.target.closest('a, button'))) return
+    heroDragStartX.current = event.clientX
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+  const handleHeroPointerUp = (event: React.PointerEvent<HTMLElement>) => {
+    if (heroDragStartX.current === null) return
+    const distance = event.clientX - heroDragStartX.current
+    heroDragStartX.current = null
+    if (Math.abs(distance) > 48) moveHero(distance < 0 ? 1 : -1)
+  }
   const handleCarouselKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'ArrowLeft') {
       event.preventDefault()
@@ -91,39 +171,77 @@ export default function Page() {
   return (
     <main dir="rtl" className="site-shell" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
       <div className="scroll-progress" aria-hidden="true" />
-      <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
-        <a href="#top" className="brand-lockup" aria-label="Barwa Developments">
-          <img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt="" aria-hidden="true" />
-          <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt="" aria-hidden="true" />
-        </a>
-        <nav className="desktop-nav" aria-label="التنقل الرئيسي">
-          {navItems.map((item, index) => <a key={item} href={index === 0 ? '#top' : index === 2 ? '#projects' : '#contact'}>{item}</a>)}
-        </nav>
-        <div className="header-actions">
-          <button className="language" aria-label="Switch to English">EN</button>
-          <button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="فتح القائمة"><Menu /></button>
+      <SiteHeader scrolled={scrolled} />
+
+      <section
+        id="top"
+        className="hero"
+        aria-label="مشاريع بروة"
+        aria-roledescription="carousel"
+        tabIndex={0}
+        onKeyDown={handleHeroKeyDown}
+        onPointerDown={handleHeroPointerDown}
+        onPointerUp={handleHeroPointerUp}
+        onPointerCancel={() => { heroDragStartX.current = null }}
+        onPointerLeave={() => { heroDragStartX.current = null }}
+        onMouseEnter={() => setHeroHovered(true)}
+        onMouseLeave={() => setHeroHovered(false)}
+        onFocus={() => setHeroFocused(true)}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setHeroFocused(false)
+        }}
+      >
+        <div className="hero-image" aria-hidden="true">
+          {heroSlides.map((slide, index) => (
+            <img
+              key={slide.image}
+              className={`hero-slide-image ${index === heroActive ? 'is-active' : ''}`}
+              src={slide.image}
+              alt=""
+              aria-hidden="true"
+              style={{
+                '--image-position': slide.imagePosition,
+                '--mobile-image-position': slide.mobileImagePosition,
+              } as React.CSSProperties}
+              fetchPriority={index === 0 ? 'high' : 'auto'}
+            />
+          ))}
         </div>
-      </header>
-
-      {menuOpen && <div className="mobile-menu">
-        <button className="close-menu" onClick={() => setMenuOpen(false)} aria-label="إغلاق القائمة"><X /></button>
-        <span className="eyebrow">BARWA / NAVIGATION</span>
-        <nav>{navItems.map((item, index) => <a key={item} href={index === 2 ? '#projects' : '#contact'} onClick={() => setMenuOpen(false)}><span>0{index + 1}</span>{item}</a>)}</nav>
-        <div className="mobile-menu-footer">AR <span>·</span> EN</div>
-      </div>}
-
-      <section id="top" className="hero">
-        <div className="hero-image" />
         <div className="hero-grid" />
         <div className="hero-star" aria-hidden="true"><img src={brandStarUrl} alt="" /></div>
-        <div className="hero-copy">
-          <span className="eyebrow light">تطوير عقاري · القاهرة ٢٠٢٦</span>
-          <h1>نبني التميز<br /><em>نصنع القيمة</em></h1>
-          <p>وجهات استثنائية تصنع قيمة حقيقية<br />لأجيال اليوم والغد</p>
-          <a className="text-link light-link" href="#projects">اكتشف مشاريعنا <MoveUpRight /></a>
+        <div className={`hero-copy ${heroActive > 0 ? 'hero-copy-project-artwork' : ''}`} key={heroActive} aria-live="polite">
+          <span className="eyebrow light">{heroSlides[heroActive].eyebrow}</span>
+          <h1>
+            {heroSlides[heroActive].title}
+            {heroSlides[heroActive].emphasis && <em>{heroSlides[heroActive].emphasis}</em>}
+            <small lang="en" dir="ltr">{heroSlides[heroActive].englishName}</small>
+          </h1>
+          <p>{heroSlides[heroActive].description}</p>
+          <a className="text-link light-link" href="/projects">اكتشف المشروع <MoveUpRight /></a>
         </div>
-        <div className="hero-meta"><span>01</span><i /><span>03</span><small>اسحب للأسفل</small></div>
-        <div className="hero-rail" aria-hidden="true"><span>01</span><i /><span>03</span></div>
+        <div className="hero-meta">
+          <button type="button" className="hero-arrow" onClick={() => moveHero(-1)} aria-label="الشريحة السابقة"><ChevronRight /></button>
+          <span>{String(heroActive + 1).padStart(2, '0')}</span><i /><span>04</span>
+          <button type="button" className="hero-arrow" onClick={() => moveHero(1)} aria-label="الشريحة التالية"><ChevronLeft /></button>
+          <small>اسحب للأسفل</small>
+        </div>
+        <nav className="hero-rail" aria-label="شرائح المشاريع">
+          {heroSlides.map((slide, index) => (
+            <button
+              type="button"
+              key={slide.image}
+              className={heroActive === index ? 'is-active' : ''}
+              onClick={() => {
+                setHeroActive(index)
+                pauseHeroAfterInteraction()
+              }}
+              aria-label={`الشريحة ${String(index + 1).padStart(2, '0')}`}
+              aria-current={heroActive === index ? 'true' : undefined}
+            >
+              {String(index + 1).padStart(2, '0')}
+            </button>
+          ))}
+        </nav>
       </section>
 
       <section className="intro section-pad reveal">
@@ -173,7 +291,7 @@ export default function Page() {
                   <p>{item.type}</p>
                   <div className="project-card-bottom">
                     <span>{item.description}</span>
-                    <a href="#contact" aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
+                    <a href="/projects" aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
                       <span className="project-cta-en">View Project</span>
                       <span className="project-cta-ar">استكشف المشروع</span>
                       <ArrowUpLeft />
@@ -193,9 +311,9 @@ export default function Page() {
         <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
       </section>
 
-      <section id="contact" className="contact section-pad"><div className="contact-star"><img src={brandStarUrl} alt="" /></div><span className="eyebrow">LET&apos;S BUILD VALUE</span><h2>اكتشف فرصتك القادمة<br /><em>مع بروة</em></h2><p>استثمارات مدروسة، لمستقبل أكثر قيمة</p><a className="button-link" href="mailto:info@barwa-eg.com">تواصل معنا الآن <ArrowUpLeft /></a></section>
+      <section id="contact" className="contact section-pad"><div className="contact-star"><img src={brandStarUrl} alt="" /></div><span className="eyebrow">LET&apos;S BUILD VALUE</span><h2>اكتشف فرصتك القادمة<br /><em>مع بروة</em></h2><p>استثمارات مدروسة، لمستقبل أكثر قيمة</p><Link className="button-link" href="/contact-us">تواصل معنا الآن <ArrowUpLeft /></Link></section>
 
-      <footer><div className="footer-top"><a href="#top" className="brand-lockup footer-brand" aria-label="Barwa Developments"><img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt="" aria-hidden="true" /></a><p>نبني التميز<br />نصنع القيمة</p><div className="footer-contact"><span>١٢ شارع المشير أحمد إسماعيل، شيراتون، القاهرة</span><a href="tel:+201270000101">+20 127 0000 101</a></div></div><div className="footer-bottom"><span>© 2026 BARWA DEVELOPMENTS</span><span>BarwaDevelopments.com</span><span>AR <b>·</b> EN</span></div></footer>
+      <SiteFooter />
     </main>
   )
 }
