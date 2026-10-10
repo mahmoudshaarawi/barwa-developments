@@ -11,44 +11,44 @@ const brandStarUrl = '/brand/barwa-star.svg'
 
 const heroSlides = [
   {
-    image: '/banners/offer.jpg',
+    image: '/projects/barwa-mall/hero.jpg',
     eyebrow: 'تطوير عقاري · بروة',
-    title: 'نبني التميز',
-    emphasis: 'نصنع القيمة',
-    englishName: 'BARWA DEVELOPMENTS',
-    description: 'وجهات استثنائية تصنع قيمة حقيقية لأجيال اليوم والغد.',
-    imagePosition: 'center 50%',
-    mobileImagePosition: 'center 47%',
-  },
-  {
-    image: '/banners/barwa-mall.jpg',
-    eyebrow: projects[2].type,
     title: projects[2].arabic,
     emphasis: '',
     englishName: projects[2].name,
     description: projects[2].description,
     imagePosition: 'center 50%',
-    mobileImagePosition: 'center 53%',
+    mobileImagePosition: '35% 53%',
   },
   {
-    image: '/banners/central-mall.jpg',
+    image: '/projects/central-mall/hero.jpg',
     eyebrow: projects[1].type,
     title: projects[1].arabic,
     emphasis: '',
     englishName: projects[1].name,
     description: projects[1].description,
     imagePosition: 'center 50%',
-    mobileImagePosition: 'center 54%',
+    mobileImagePosition: 'center 50%',
   },
   {
-    image: '/banners/hub5-mall.jpg',
+    image: '/projects/hub5-mall/hero.jpg',
     eyebrow: projects[0].type,
     title: projects[0].arabic,
     emphasis: '',
-    englishName: 'HUB 5 MALL',
+    englishName: projects[0].name,
     description: projects[0].description,
     imagePosition: 'center 50%',
-    mobileImagePosition: 'center 54%',
+    mobileImagePosition: 'center 50%',
+  },
+  {
+    image: '/banners/offer.jpg',
+    eyebrow: 'تطوير عقاري · بروة',
+    title: 'نبني التميز',
+    emphasis: 'نصنع القيمة',
+    englishName: 'HUB 5 MALL',
+    description: 'وجهات استثنائية تصنع قيمة حقيقية لأجيال اليوم والغد.',
+    imagePosition: 'center 50%',
+    mobileImagePosition: 'center 47%',
   },
 ]
 
@@ -207,17 +207,13 @@ export default function Page() {
             />
           ))}
         </div>
-        <div className="hero-grid" />
-        <div className="hero-star" aria-hidden="true"><img src={brandStarUrl} alt="" /></div>
-        <div className={`hero-copy ${heroActive > 0 ? 'hero-copy-project-artwork' : ''}`} key={heroActive} aria-live="polite">
-          <span className="eyebrow light">{heroSlides[heroActive].eyebrow}</span>
-          <h1>
+        <div className="hero-copy" key={heroActive} aria-live="polite">
+          <h1 className="sr-only">
             {heroSlides[heroActive].title}
             {heroSlides[heroActive].emphasis && <em>{heroSlides[heroActive].emphasis}</em>}
             <small lang="en" dir="ltr">{heroSlides[heroActive].englishName}</small>
           </h1>
-          <p>{heroSlides[heroActive].description}</p>
-          <a className="text-link light-link" href="/projects">اكتشف المشروع <MoveUpRight /></a>
+          <a className="hero-project-link" href="/projects">استكشف المشروع <MoveUpRight /></a>
         </div>
         <div className="hero-meta">
           <button type="button" className="hero-arrow" onClick={() => moveHero(-1)} aria-label="الشريحة السابقة"><ChevronRight /></button>
