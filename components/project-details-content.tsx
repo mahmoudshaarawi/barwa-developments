@@ -29,6 +29,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
+import { UsePills } from './use-pills'
 import { useLanguage } from './language-provider'
 import { CONTACT } from '@/lib/contact'
 import {
@@ -127,7 +128,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           </Link>
           <span className="project-detail-location"><MapPin aria-hidden="true" />{isArabic ? project.location : project.englishLocation}</span>
           <h1 dir="auto">{projectName}</h1>
-          <span className="project-detail-type">{isArabic ? project.type : project.englishType}</span>
+          <UsePills arabic={project.type} english={project.englishType} isArabic={isArabic} />
           <h2>{isArabic ? project.tagline : project.englishTagline}</h2>
           <p>{isArabic ? project.description : project.englishDescription}</p>
           <Link href={`/contact-us?project=${project.slug}`} className="button-link">
@@ -158,9 +159,17 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
             {project.projectComposition && (
               <p>{isArabic ? project.projectComposition : project.englishProjectComposition}</p>
             )}
-            <span className="project-overview-type">
-              {isArabic ? project.type : project.englishType}
-            </span>
+            <UsePills arabic={project.type} english={project.englishType} isArabic={isArabic} />
+            {project.highlights && project.highlights.length > 0 && (
+              <ol className="brochure-points">
+                {project.highlights.map((point, index) => (
+                  <li key={point.english}>
+                    <span dir="ltr">{String(index + 1).padStart(2, '0')}</span>
+                    <p>{isArabic ? point.arabic : point.english}</p>
+                  </li>
+                ))}
+              </ol>
+            )}
           </div>
           <button
             className="project-overview-image"
@@ -274,6 +283,9 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
             >
               <img src={asset(floorPlanFile(floor.key))} alt={`${projectName} — ${isArabic ? floor.arabic : floor.english}`} loading="lazy" />
             </button>
+            {(isArabic ? floor.activityAr : floor.activityEn) && (
+              <p className="project-floor-activity">{isArabic ? floor.activityAr : floor.activityEn}</p>
+            )}
             <button
               type="button"
               className="project-plan-enlarge"
@@ -486,10 +498,16 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
         )}
       </section>
 
-      <section className="project-contact section-pad">
-        <span className="eyebrow light">BARWA DEVELOPMENTS</span>
+      <section className="project-contact brochure-close-band section-pad">
+        <span className="eyebrow light">{isArabic ? 'HOTLINE · الخط الساخن' : 'HOTLINE'}</span>
+        <a className="brochure-hotline" href={CONTACT.phoneHref} dir="ltr">{CONTACT.hotline}</a>
         <h2>{isArabic ? 'مهتم بالمشروع؟' : 'Interested in this project?'}</h2>
         <p>{isArabic ? 'تواصل معنا لمعرفة المزيد' : 'Contact us to learn more.'}</p>
+        <div className="brochure-close-links">
+          <a href={CONTACT.emailHref}>{CONTACT.email}</a>
+          <a href={CONTACT.websiteHref}>{CONTACT.websiteLabel}</a>
+          <span>{isArabic ? CONTACT.officeAddress.arabic : CONTACT.officeAddress.english}</span>
+        </div>
         <div className="project-contact-actions">
           <Link href={`/contact-us?project=${project.slug}`} className="button-link">
             <Mail aria-hidden="true" />

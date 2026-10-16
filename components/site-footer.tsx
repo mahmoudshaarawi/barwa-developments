@@ -5,7 +5,7 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'rea
 import { useLanguage } from './language-provider'
 import { CONTACT } from '@/lib/contact'
 
-const whiteLogoUrl = '/brand/barwa logo w-01.svg'
+const coloredLogoUrl = '/brand/barwa logo-01.svg'
 const socialLinks = [
   { label: 'TikTok', href: 'https://www.tiktok.com/@barwadevelopments', Icon: FaTiktok },
   { label: 'Facebook', href: 'https://www.facebook.com/BarwaDevelopments/', Icon: FaFacebookF },
@@ -22,12 +22,14 @@ export function SiteFooter() {
     <footer dir={isArabic ? 'rtl' : 'ltr'}>
       <div className="footer-top">
         <Link href="/" className="brand-lockup footer-brand" aria-label="Barwa Developments">
-          <img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt="" aria-hidden="true" />
+          <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt="" aria-hidden="true" />
         </Link>
         <p>{isArabic ? <>نبني التميز<br />نصنع القيمة</> : <>Building Excellence<br />Creating Value</>}</p>
         <div className="footer-contact">
           <span>{isArabic ? CONTACT.officeAddress.arabic : CONTACT.officeAddress.english}</span>
-          <a href={CONTACT.phoneHref}>{CONTACT.hotline}</a>
+          <a href={CONTACT.phoneHref} dir="ltr">{CONTACT.hotline}</a>
+          <a href={CONTACT.emailHref}>{CONTACT.email}</a>
+          <a href={CONTACT.websiteHref}>{CONTACT.websiteLabel}</a>
         </div>
       </div>
       <nav className="footer-social-links" aria-label={isArabic ? 'تابعونا على منصات التواصل الاجتماعي' : 'Follow Barwa on social media'}>
@@ -46,7 +48,7 @@ export function SiteFooter() {
       </nav>
       <div className="footer-bottom">
         <span>© 2026 BARWA DEVELOPMENTS</span>
-        <span>BarwaDevelopments.com</span>
+        <a href={CONTACT.websiteHref}>{CONTACT.websiteLabel}</a>
         <span>AR <b>·</b> EN</span>
       </div>
     </footer>

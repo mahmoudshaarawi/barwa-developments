@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
@@ -167,7 +167,7 @@
   --c-gray-light: #EFEFEF;
   --c-gray-neutral: #E8E7E4;
   
-  font-family: 'Noto Kufi Arabic', Tahoma, Arial, sans-serif;
+  font-family: 'IBM Plex Sans Arabic', Tahoma, Arial, sans-serif;
 }
 
 @layer base {
@@ -183,7 +183,7 @@
   }
   
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Noto Kufi Arabic', Tahoma, Arial, sans-serif;
+    font-family: 'IBM Plex Sans Arabic', Tahoma, Arial, sans-serif;
     font-weight: 600;
   }
   

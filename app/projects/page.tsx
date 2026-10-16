@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, Mail, MoveUpRight, Phone } from 'lucide-react'
 import { ProjectInquiryForm } from '@/components/project-inquiry-form'
+import { UsePills } from '@/components/use-pills'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { useLanguage } from '@/components/language-provider'
@@ -47,7 +48,7 @@ export default function ProjectsPage() {
               <div className="listing-project-content">
                 <span className="eyebrow">{isArabic ? project.location : project.englishLocation}</span>
                 <h2 dir="auto">{isArabic ? project.arabic : project.displayName}</h2>
-                <span className="listing-project-type">{isArabic ? project.type : project.englishType}</span>
+                <UsePills arabic={project.type} english={project.englishType} isArabic={isArabic} />
                 <p>{isArabic ? project.description : project.englishDescription}</p>
                 <div className="listing-project-actions">
                   <div className="listing-project-contact">

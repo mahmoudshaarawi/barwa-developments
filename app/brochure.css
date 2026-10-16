@@ -1,0 +1,566 @@
+/* Brochure identity — light architectural print system */
+
+:root {
+  --c-black: #161616;
+  --c-gray-dark: #5c5c5c;
+  --c-gray: #b9b9b4;
+  --c-magenta: #E51C6E;
+  --c-magenta-secondary: #c4125c;
+  --c-magenta-light: #f47ab2;
+  --c-ivory-warm: #f3f1ec;
+  --c-ivory-off: #f7f6f4;
+  --c-ivory-soft: #ffffff;
+  --c-gray-light: #efefec;
+  --c-gray-neutral: #dedcd6;
+  --c-stone: #e7e7e3;
+  --c-ink: #161616;
+  --font-brochure: 'IBM Plex Sans Arabic', Tahoma, Arial, sans-serif;
+}
+
+body,
+h1, h2, h3, h4, h5, h6,
+button, input, textarea, select {
+  font-family: var(--font-brochure);
+}
+
+body {
+  background: #fff;
+  color: var(--c-ink);
+}
+
+/* Header — white editorial bar, colored wordmark */
+.site-header:not(.is-scrolled),
+.site-header,
+.site-header.is-scrolled,
+.site-header-solid {
+  padding: .85rem clamp(1.1rem, 3.5vw, 3.25rem);
+  background: rgba(255, 255, 255, .94);
+  color: var(--c-ink);
+  border-bottom: 1px solid rgba(22, 22, 22, .08);
+  box-shadow: none;
+  backdrop-filter: blur(16px);
+}
+
+.site-header:not(.is-scrolled) .brand-lockup,
+.site-header:not(.is-scrolled) .desktop-nav a,
+.site-header:not(.is-scrolled) .menu-button,
+.site-header.is-scrolled .desktop-nav a,
+.site-header-solid .desktop-nav a,
+.site-header-solid .menu-button {
+  color: var(--c-ink);
+}
+
+.site-header .brand-logo-white { opacity: 0; }
+.site-header .brand-logo-colored,
+.footer-brand .brand-logo-colored { opacity: 1; }
+
+.desktop-nav { gap: 1.7rem; }
+.desktop-nav a {
+  font-size: .8rem;
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+
+.language {
+  border-radius: 999px;
+  border-color: rgba(22, 22, 22, .18);
+  letter-spacing: .08em;
+  color: var(--c-ink);
+}
+
+.scroll-progress { box-shadow: none; }
+
+/* Cover hero */
+.hero {
+  background: #1a1c20;
+  padding-top: 7.5rem;
+}
+
+.hero-grid,
+.hero-star,
+.carousel-star,
+.contact-star { display: none; }
+
+.hero-image::after {
+  background:
+    linear-gradient(180deg, rgba(18, 20, 24, .62) 0%, rgba(18, 20, 24, .18) 42%, rgba(18, 20, 24, .05) 68%, rgba(18, 20, 24, .38) 100%);
+}
+
+.hero-copy {
+  top: clamp(6.75rem, 16vh, 9.5rem);
+  bottom: auto;
+  max-width: min(46rem, 88vw);
+  text-align: start;
+}
+
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  margin-bottom: .85rem;
+  color: rgba(255, 255, 255, .88);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+}
+
+.hero-kicker::before,
+.section-kicker span:last-child::before,
+.about-eyebrow::before,
+.contact-page-eyebrow::before,
+.project-section-heading .eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: .42rem;
+  height: .42rem;
+  margin-inline-end: .45rem;
+  background: var(--c-magenta);
+  transform: rotate(45deg);
+  vertical-align: .05em;
+}
+
+.hero-kicker::before { margin: 0; }
+
+.hero-copy h1 {
+  font-weight: 500;
+  letter-spacing: -.03em;
+  text-shadow: 0 10px 28px rgba(0, 0, 0, .28);
+}
+
+.hero-copy h1 small {
+  margin-top: .85rem;
+  letter-spacing: .18em;
+  font-weight: 400;
+}
+
+.hero-copy p {
+  max-width: 36rem;
+  margin-bottom: .35rem;
+  font-size: .95rem;
+  letter-spacing: .04em;
+}
+
+.hero-project-link,
+.button-link,
+.contact-form-submit,
+.project-call-link,
+.project-unit-reserve {
+  border-radius: 999px;
+}
+
+.hero-arrow,
+.carousel-arrow {
+  border-radius: 999px;
+}
+
+/* Use chips from the brochure covers */
+.use-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin: .85rem 0 1rem;
+}
+
+.use-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 34px;
+  padding: .15rem .8rem;
+  border: 1px solid rgba(22, 22, 22, .22);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--c-ink);
+  line-height: 1;
+}
+
+.use-pill b { font-weight: 500; font-size: .78rem; }
+.use-pill small {
+  font-size: .62rem;
+  font-weight: 400;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .62;
+}
+
+.hero-copy .use-pill,
+.project-detail-hero .use-pill {
+  border-color: rgba(255, 255, 255, .72);
+  background: rgba(12, 12, 12, .28);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.hero-copy .use-pill small,
+.project-detail-hero .use-pill small { opacity: .8; }
+
+/* Developer spread */
+.intro,
+.projects,
+.projects-listing,
+.project-detail-page,
+.about-page,
+.contact-page {
+  background: #fff;
+  background-image: none;
+}
+
+.section-kicker { letter-spacing: .12em; opacity: 1; color: var(--c-gray-dark); }
+.intro-heading h2,
+.projects-heading h2,
+.philosophy-content h2,
+.projects-page-heading h1,
+.about-company-copy h2,
+.about-section-heading h2 {
+  font-weight: 500;
+  letter-spacing: -.02em;
+}
+
+.intro-visual {
+  background: var(--c-stone);
+  background-image: none;
+  border-radius: 0;
+  min-height: 280px;
+}
+
+.intro-visual .visual-number,
+.numbers-grid > div strong,
+.about-stat strong,
+.contact-hotline strong,
+.brochure-hotline {
+  font-family: var(--font-brochure);
+  font-weight: 500;
+  letter-spacing: -.055em;
+}
+
+.intro-visual .visual-caption { letter-spacing: .16em; opacity: .55; }
+
+/* Stats column */
+.numbers {
+  background: var(--c-stone);
+  color: var(--c-ink);
+  padding: clamp(3.5rem, 7vw, 6rem) clamp(1.5rem, 6vw, 5rem);
+}
+
+.numbers .light-kicker,
+.numbers .section-kicker { color: var(--c-gray-dark); }
+.numbers .section-kicker i,
+.numbers .light-kicker i { background: rgba(22, 22, 22, .2); }
+
+.numbers-grid { gap: 0; }
+.numbers-grid > div {
+  padding: 1.25rem 1.5rem 0;
+  border-top: 1px solid rgba(22, 22, 22, .16);
+}
+.numbers-grid > div strong {
+  font-size: clamp(3.4rem, 6vw, 5.6rem);
+  color: var(--c-ink);
+}
+.numbers-grid > div span { color: var(--c-gray-dark); opacity: 1; }
+
+/* Project carousel caption plate */
+.project-card {
+  border-radius: 0;
+  box-shadow: 0 16px 40px rgba(22, 22, 22, .12);
+}
+
+.project-card-info {
+  margin-inline: calc(-1 * clamp(1.25rem, 3vw, 2.25rem));
+  margin-bottom: calc(-1 * clamp(1.25rem, 3vw, 2.25rem));
+  padding: 1.05rem 1.15rem 1.15rem;
+  background: rgba(255, 255, 255, .96);
+  color: var(--c-ink);
+}
+
+.project-card-info .eyebrow,
+.project-card-info h3,
+.project-card-info h3 small { color: var(--c-ink); opacity: 1; }
+.project-card-info .eyebrow { color: var(--c-magenta); letter-spacing: .08em; }
+.project-card-info h3 small { font-family: var(--font-brochure); letter-spacing: .12em; }
+.project-card-bottom > span { color: var(--c-gray-dark); opacity: 1; }
+.project-card-bottom a { border-radius: 999px; }
+
+.carousel-footer,
+.pagination button { color: var(--c-gray-dark); }
+
+/* Philosophy — photographic + white editorial */
+.philosophy { min-height: 0; background: #fff; }
+.philosophy-image {
+  min-height: 460px;
+  background-image: url('/projects/barwa-mall/gallery-01.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.philosophy-content {
+  background: #fff;
+  color: var(--c-ink);
+}
+.philosophy-content .light-kicker,
+.philosophy-content .eyebrow { color: var(--c-gray-dark); }
+.philosophy-content .values p,
+.philosophy-content .values span { color: var(--c-ink); }
+.philosophy-content .values p { color: var(--c-gray-dark); opacity: 1; }
+
+/* Brochure closing contact band */
+.brochure-close {
+  display: grid;
+  grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr);
+  min-height: 560px;
+  padding: 0;
+  background: #111;
+  color: #f6f5f3;
+  text-align: start;
+}
+
+.brochure-close-photo {
+  min-height: 280px;
+  background-position: center;
+  background-size: cover;
+}
+
+.brochure-close-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(2.5rem, 6vw, 5.5rem);
+}
+
+.brochure-hotline {
+  margin: .15rem 0 .35rem;
+  color: inherit;
+  font-size: clamp(4rem, 8vw, 6.8rem);
+  line-height: .9;
+  text-decoration: none;
+}
+
+.brochure-hotline:hover { color: var(--c-magenta-light); }
+
+.brochure-close h2,
+.project-contact h2 {
+  font-weight: 500;
+  letter-spacing: -.02em;
+}
+
+.brochure-close-links {
+  display: grid;
+  gap: .35rem;
+  margin-top: 1rem;
+  font-size: .92rem;
+}
+
+.brochure-close-links a,
+.project-contact .brochure-close-links a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.brochure-close-links a:hover,
+.project-contact .brochure-close-links a:hover { color: var(--c-magenta-light); }
+
+.brochure-close .button-link { margin-top: 1.4rem; }
+
+/* Footer on stone */
+footer {
+  background: var(--c-stone);
+  color: var(--c-ink);
+  border-top: 0;
+}
+
+.footer-top { border-bottom-color: rgba(22, 22, 22, .12); }
+.footer-top p,
+.footer-contact,
+.footer-bottom { color: var(--c-gray-dark); opacity: 1; }
+.footer-contact a { color: var(--c-magenta); }
+.footer-bottom a { color: inherit; text-decoration: none; }
+.footer-bottom b { color: var(--c-magenta); }
+
+.footer-social-link {
+  border-color: rgba(22, 22, 22, .16);
+  color: var(--c-ink);
+  border-radius: 999px;
+}
+
+.footer-social-link:hover,
+.footer-social-link:focus-visible { color: var(--c-magenta); }
+
+/* Project index */
+.projects-page-intro { background: #fff; }
+.listing-project-card {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.listing-project-card:hover { transform: none; box-shadow: none; }
+.listing-project-image { aspect-ratio: 4 / 3; background: var(--c-stone); }
+.listing-project-content { min-height: 0; padding-inline: .15rem; }
+.listing-project-link { border-bottom-color: transparent; padding-inline: 0; }
+.projects-inquiry {
+  background: var(--c-stone);
+  color: var(--c-ink);
+}
+.projects-inquiry-content > p { color: var(--c-gray-dark); }
+.project-inquiry-form label { color: var(--c-gray-dark); }
+.project-inquiry-form input {
+  border-color: rgba(22, 22, 22, .16);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--c-ink);
+}
+.project-inquiry-status { color: var(--c-gray-dark); }
+.projects-back-home { background: #fff; }
+
+/* Project detail */
+.project-detail-hero-overlay {
+  background:
+    linear-gradient(180deg, rgba(16, 18, 22, .58), rgba(16, 18, 22, .12) 46%, rgba(16, 18, 22, .2) 100%);
+}
+
+.project-detail-hero-copy h1 { letter-spacing: -.03em; }
+
+.project-facts {
+  background: var(--c-stone);
+  color: var(--c-ink);
+}
+
+.project-fact { border-inline-start-color: rgba(22, 22, 22, .12); }
+.project-fact > span { color: var(--c-gray-dark); letter-spacing: .06em; }
+.project-fact strong {
+  color: var(--c-ink);
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+  font-weight: 500;
+}
+
+.project-overview,
+.project-gallery,
+.project-units,
+.project-construction { background: #fff; }
+.project-location,
+.project-floor-plans,
+.project-features,
+.project-other,
+.project-construction-updates,
+.about-vision-mission,
+.about-journey,
+.contact-form-panel { background: var(--c-ivory-warm); }
+
+.project-overview-copy .brochure-points { grid-template-columns: 1fr; }
+
+.brochure-points {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .9rem 1.4rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brochure-points li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .7rem;
+  align-items: start;
+  padding-top: .75rem;
+  border-top: 1px solid rgba(22, 22, 22, .12);
+}
+
+.brochure-points span {
+  color: var(--c-magenta);
+  font-size: .75rem;
+  font-weight: 500;
+}
+
+.brochure-points p {
+  margin: 0;
+  color: var(--c-ink);
+  font-size: .86rem;
+  line-height: 1.65;
+}
+
+.project-floor-activity {
+  max-width: 48rem;
+  margin: .85rem 0 0;
+  color: var(--c-gray-dark);
+  font-size: .95rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.project-floor-tabs button,
+.project-plan-enlarge,
+.project-unit-card,
+.contact-detail-icon { border-radius: 999px; }
+
+.project-feature { background: #fff; }
+
+.project-contact {
+  align-items: flex-start;
+  text-align: start;
+  background: #111;
+}
+
+.project-contact .brochure-close-links { margin-bottom: .4rem; }
+
+/* About */
+.about-statistics {
+  background: var(--c-stone);
+  color: var(--c-ink);
+}
+.about-statistics .about-eyebrow { color: var(--c-magenta); }
+.about-statistics-heading h2,
+.about-stat strong { color: var(--c-ink); }
+.about-stat > span { color: var(--c-gray-dark); }
+.about-stat { border-inline-start-color: rgba(22, 22, 22, .14); }
+.about-hero-copy h1,
+.contact-page-hero h1,
+.about-cta-content h2 { letter-spacing: -.03em; }
+
+.about-pillar,
+.about-principle,
+.about-development { background: transparent; }
+
+/* Contact */
+.contact-page { background: #fff; }
+.contact-hotline { border-color: rgba(22, 22, 22, .12); }
+.contact-hotline strong { color: var(--c-ink); }
+.contact-form-grid input,
+.contact-form-grid select,
+.contact-form-grid textarea { border-radius: 0; background: #fff; }
+
+@media (max-width: 900px) {
+  .brochure-close,
+  .brochure-points { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 767px) {
+  .hero { min-height: 100svh; padding: 6.5rem 1.25rem 7.5rem; }
+  .hero-copy {
+    inset-inline-start: 1.25rem;
+    top: 5.6rem;
+    bottom: auto;
+    max-width: calc(100% - 2.5rem);
+  }
+  .hero-copy h1 { font-size: clamp(2rem, 10vw, 2.75rem); margin-bottom: .7rem; }
+  .hero-copy h1 small { letter-spacing: .12em; }
+  .hero-copy p { font-size: .82rem; }
+  .hero-project-link { margin-top: .35rem; }
+  .hero-meta { bottom: 4.2rem; }
+  .numbers-grid > div { padding-inline: 0; }
+  .philosophy-image { display: block; min-height: 240px; }
+  .brochure-close-copy,
+  .project-contact { padding: 2.4rem 1.25rem 2.8rem; }
+  .brochure-hotline { font-size: clamp(3.4rem, 18vw, 4.6rem); }
+  .listing-project-content { padding-inline: 0; }
+  .project-facts { grid-template-columns: 1fr 1fr; }
+  .project-fact { border-bottom-color: rgba(22, 22, 22, .12); }
+  .about-stat { border-top-color: rgba(22, 22, 22, .14); }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: light;
+    --background: #fff;
+    --foreground: #161616;
+  }
+}
