@@ -22,8 +22,9 @@ const heroSlides = [
     href: `/projects/${projects[2].slug}`,
     type: projects[2].type,
     englishType: projects[2].englishType,
-    imagePosition: 'center 42%',
-    mobileImagePosition: '35% 48%',
+    imagePosition: 'center 50%',
+    mobileImagePosition: '35% 53%',
+    mobileImageAspectRatio: '2422 / 1457',
   },
   {
     image: '/projects/central-mall/hero.jpg',
@@ -35,8 +36,9 @@ const heroSlides = [
     href: `/projects/${projects[1].slug}`,
     type: projects[1].type,
     englishType: projects[1].englishType,
-    imagePosition: 'center 46%',
-    mobileImagePosition: 'center 42%',
+    imagePosition: 'center 50%',
+    mobileImagePosition: 'center 50%',
+    mobileImageAspectRatio: '2421 / 1457',
   },
   {
     image: '/projects/hub5-mall/hero.jpg',
@@ -48,22 +50,10 @@ const heroSlides = [
     href: `/projects/${projects[0].slug}`,
     type: projects[0].type,
     englishType: projects[0].englishType,
-    imagePosition: 'center 48%',
-    mobileImagePosition: 'center 46%',
-  },
-  {
-    image: '/projects/barwa-mall/gallery-01.jpg',
-    eyebrow: 'بروة للتطوير العقاري',
-    title: 'نبني التميز',
-    emphasis: 'نصنع القيمة',
-    englishName: 'BARWA DEVELOPMENTS',
-    description: 'وجهات استثنائية تصنع قيمة حقيقية لأجيال اليوم والغد.',
-    href: '/projects',
-    type: '',
-    englishType: '',
     imagePosition: 'center 50%',
-    mobileImagePosition: 'center 47%',
-  },
+    mobileImagePosition: 'center 50%',
+    mobileImageAspectRatio: '2422 / 1458',
+  }
 ]
 
 export default function Page() {
@@ -183,13 +173,72 @@ export default function Page() {
   }
 
   return (
-    <main dir="rtl" className="site-shell" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
+    <main dir="rtl" className="site-shell homepage-projects-first" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
       <div className="scroll-progress" aria-hidden="true" />
       <SiteHeader scrolled={scrolled} />
 
+      <section id="projects" className="projects section-pad reveal">
+        <div
+          className="carousel-wrap"
+          role="group"
+          aria-label="مشاريع بروة"
+          tabIndex={0}
+          onKeyDown={handleCarouselKeyDown}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={() => { dragStartX.current = null }}
+          onPointerLeave={() => { dragStartX.current = null }}
+        >
+          <div className="carousel-star" aria-hidden="true"><img src={brandStarUrl} alt="" /></div>
+          <button className="carousel-arrow prev" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
+          {projects.map((item, index) => {
+            const position = index === active ? 'active' : index === (active + projects.length - 1) % projects.length ? 'previous' : 'next'
+            return (
+              <article
+                key={item.name}
+                className={`project-card project-card-${position}`}
+                style={{
+                  '--project-card-image': `url(${item.assetDirectory}/hero.jpg)`,
+                  '--project-card-mobile-image': `url(${item.assetDirectory}/hero.jpg)`,
+                } as React.CSSProperties}
+                aria-current={position === 'active' ? 'true' : undefined}
+              >
+                <img
+                  className="project-card-mobile-image"
+                  src={`${item.assetDirectory}/hero.jpg`}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                />
+                {position !== 'active' && <button className="project-card-select" onClick={() => setActive(index)} aria-label={`استكشف ${item.arabic}`} />}
+                <div className="project-card-top"><span>{item.number} / 0{projects.length}</span><span>BARWA DEVELOPMENTS</span></div>
+                <div className="project-card-info">
+                  <span className="eyebrow light">{item.location}</span>
+                  <h3>{item.arabic}<small>{item.name}</small></h3>
+                  <p>{item.type}</p>
+                  <div className="project-card-bottom">
+                    <span>{item.description}</span>
+                    <a href={`/projects/${item.slug}`} aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
+                      <span className="project-cta-en">View Project</span>
+                      <span className="project-cta-ar">استكشف المشروع</span>
+                      <ArrowUpLeft />
+                    </a>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
+          <button className="carousel-arrow next" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
+        </div>
+        <div className="carousel-footer"><span>اسحب للتنقل بين المشاريع</span><div className="pagination">{projects.map((item, index) => <button key={item.name} className={active === index ? 'active' : ''} onClick={() => setActive(index)} aria-label={`مشروع ${index + 1}`}><span>0{index + 1}</span></button>)}</div></div>
+        <div className="section-kicker"><span>01</span><i /><span>مشاريعنا</span></div>
+        <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
+      </section>
+
       <section
         id="top"
-        className="hero"
+        className="hero hero-mobile-composition"
+        style={{ '--mobile-image-aspect-ratio': heroSlides[heroActive].mobileImageAspectRatio } as React.CSSProperties}
         aria-label="مشاريع بروة"
         aria-roledescription="carousel"
         tabIndex={0}
@@ -230,13 +279,16 @@ export default function Page() {
           </h1>
           <p>{heroSlides[heroActive].description}</p>
           {heroSlides[heroActive].type && (
-            <UsePills arabic={heroSlides[heroActive].type} english={heroSlides[heroActive].englishType} />
+            <UsePills
+              arabic={heroSlides[heroActive].type}
+              english={heroSlides[heroActive].englishType}
+            />
           )}
           <a className="hero-project-link" href={heroSlides[heroActive].href}>استكشف المشروع <MoveUpRight /></a>
         </div>
         <div className="hero-meta">
           <button type="button" className="hero-arrow" onClick={() => moveHero(-1)} aria-label="الشريحة السابقة"><ChevronRight /></button>
-          <span>{String(heroActive + 1).padStart(2, '0')}</span><i /><span>04</span>
+          <span>{String(heroActive + 1).padStart(2, '0')}</span><i /><span>{String(heroSlides.length).padStart(2, '0')}</span>
           <button type="button" className="hero-arrow" onClick={() => moveHero(1)} aria-label="الشريحة التالية"><ChevronLeft /></button>
           <small>اسحب للأسفل</small>
         </div>
@@ -260,7 +312,7 @@ export default function Page() {
       </section>
 
       <section className="intro section-pad reveal">
-        <div className="section-kicker"><span>01</span><i /><span>عن بروة</span></div>
+        <div className="section-kicker"><span>02</span><i /><span>عن بروة</span></div>
         <div className="intro-layout">
           <div className="intro-heading"><span className="eyebrow">OUR APPROACH</span><h2>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></h2></div>
           <div className="intro-copy"><p>منذ تأسيسها، تواصل بروة للتطوير العقاري بناء إرث من التميز والإنجازات البارزة. نخلق مشاريع استثنائية تجمع بين المواقع المتميزة، الجودة، وفرص الاستثمار المدروسة.</p><a className="text-link" href="#contact">تعرف على بروة <ArrowUpRight /></a></div>
@@ -269,56 +321,8 @@ export default function Page() {
       </section>
 
       <section className="numbers">
-        <div className="section-kicker light-kicker"><span>02</span><i /><span>إرث من الإنجاز</span></div>
+        <div className="section-kicker light-kicker"><span>03</span><i /><span>إرث من الإنجاز</span></div>
         <div className="numbers-grid"><div><strong>55<sup>+</sup></strong><span>مشروعاً تم إنجازه<br />خلال ١٥ عاماً</span></div><div><strong>12<sup>+</sup></strong><span>عمارة سكنية<br />تم تسليمها</span></div><div><strong>15</strong><span>عاماً من الخبرة<br />والتطوير العقاري</span></div></div>
-      </section>
-
-      <section id="projects" className="projects section-pad reveal">
-        <div className="section-kicker"><span>03</span><i /><span>مشاريعنا</span></div>
-        <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
-        <div
-          className="carousel-wrap"
-          role="group"
-          aria-label="مشاريع بروة"
-          tabIndex={0}
-          onKeyDown={handleCarouselKeyDown}
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={() => { dragStartX.current = null }}
-          onPointerLeave={() => { dragStartX.current = null }}
-        >
-          <div className="carousel-star" aria-hidden="true"><img src={brandStarUrl} alt="" /></div>
-          <button className="carousel-arrow prev" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
-          {projects.map((item, index) => {
-            const position = index === active ? 'active' : index === (active + projects.length - 1) % projects.length ? 'previous' : 'next'
-            return (
-              <article
-                key={item.name}
-                className={`project-card project-card-${position}`}
-                style={{ backgroundImage: `linear-gradient(0deg, rgba(0,0,0,.88), rgba(0,0,0,.08) 70%), url(${item.image})` }}
-                aria-current={position === 'active' ? 'true' : undefined}
-              >
-                {position !== 'active' && <button className="project-card-select" onClick={() => setActive(index)} aria-label={`استكشف ${item.arabic}`} />}
-                <div className="project-card-top"><span>{item.number} / 0{projects.length}</span><span>BARWA DEVELOPMENTS</span></div>
-                <div className="project-card-info">
-                  <span className="eyebrow light">{item.location}</span>
-                  <h3>{item.arabic}<small>{item.name}</small></h3>
-                  <UsePills arabic={item.type} english={item.englishType} />
-                  <div className="project-card-bottom">
-                    <span>{item.description}</span>
-                    <a href={`/projects/${item.slug}`} aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
-                      <span className="project-cta-en">View Project</span>
-                      <span className="project-cta-ar">استكشف المشروع</span>
-                      <ArrowUpLeft />
-                    </a>
-                  </div>
-                </div>
-              </article>
-            )
-          })}
-          <button className="carousel-arrow next" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
-        </div>
-        <div className="carousel-footer"><span>اسحب للتنقل بين المشاريع</span><div className="pagination">{projects.map((item, index) => <button key={item.name} className={active === index ? 'active' : ''} onClick={() => setActive(index)} aria-label={`مشروع ${index + 1}`}><span>0{index + 1}</span></button>)}</div></div>
       </section>
 
       <section className="philosophy reveal">
