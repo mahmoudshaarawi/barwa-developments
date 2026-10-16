@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, MoveUpRight } from 'lucide-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
-import { InstallmentCalculator } from '@/components/installment-calculator'
 import { UsePills } from '@/components/use-pills'
 import { CONTACT } from '@/lib/contact'
 import { projects } from '@/lib/projects'
@@ -230,6 +229,76 @@ export default function Page() {
       <div className="scroll-progress" aria-hidden="true" />
       <SiteHeader scrolled={scrolled} />
 
+      <section id="projects" className="projects home-projects section-pad reveal">
+        <div className="section-kicker"><span>01</span><i /><span>مشاريعنا</span></div>
+        <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
+        <div
+          className="project-fan"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="مشاريع بروة"
+          tabIndex={0}
+          onKeyDown={handleCarouselKeyDown}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={() => { dragStartX.current = null }}
+          onClick={handleFanClick}
+          onMouseEnter={() => setFanHovered(true)}
+          onMouseLeave={() => setFanHovered(false)}
+          onFocus={() => setFanHovered(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFanHovered(false)
+          }}
+        >
+          <div className="project-fan-stage">
+            {showcase.map((item, index) => {
+              const offset = (index - active + showcase.length) % showcase.length
+              const slot = offset === 0 ? 'center' : offset === 1 ? 'next' : 'prev'
+              const mark = projectWordmark(item.displayName)
+              const photo = `${item.assetDirectory}/hero.jpg`
+              return (
+                <a
+                  key={item.slug}
+                  className={`project-fan-card is-${slot}`}
+                  href={`/projects/${item.slug}`}
+                  aria-current={slot === 'center' ? 'true' : undefined}
+                  aria-hidden={slot === 'center' ? undefined : true}
+                  tabIndex={slot === 'center' ? 0 : -1}
+                >
+                  <span className="project-fan-photo">
+                    <img className="project-fan-picture" src={photo} alt="" />
+                    <span className="project-fan-mark" lang="en" dir="ltr">
+                      <b>{mark.title}</b>
+                      <i aria-hidden="true" />
+                      {mark.subtitle && <small>{mark.subtitle}</small>}
+                    </span>
+                  </span>
+                  <span className="project-fan-panel">
+                    <span className="project-fan-location">
+                      <MapPin aria-hidden="true" />
+                      <span>{item.location}</span>
+                    </span>
+                    <strong className="project-fan-arabic">{item.arabic}</strong>
+                    <span className="project-fan-english" lang="en" dir="ltr">{item.displayName}</span>
+                    <span className="project-fan-rule" aria-hidden="true" />
+                    <span className="project-fan-use">
+                      <Building2 aria-hidden="true" />
+                      <span>{item.type}</span>
+                    </span>
+                  </span>
+                </a>
+              )
+            })}
+          </div>
+          <div className="project-fan-controls">
+            <button type="button" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
+            <span aria-live="polite">{showcase[active].arabic}</span>
+            <button type="button" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
+          </div>
+        </div>
+      </section>
+
+
       <section
         id="top"
         className="hero"
@@ -303,7 +372,7 @@ export default function Page() {
       </section>
 
       <section className="intro section-pad reveal">
-        <div className="section-kicker"><span>01</span><i /><span>عن بروة</span></div>
+        <div className="section-kicker"><span>02</span><i /><span>عن بروة</span></div>
         <div className="intro-layout">
           <div className="intro-heading"><span className="eyebrow">OUR APPROACH</span><h2>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></h2></div>
           <div className="intro-copy"><p>منذ تأسيسها، تواصل بروة للتطوير العقاري بناء إرث من التميز والإنجازات البارزة. نخلق مشاريع استثنائية تجمع بين المواقع المتميزة، الجودة، وفرص الاستثمار المدروسة.</p><a className="text-link" href="#contact">تعرف على بروة <ArrowUpRight /></a></div>
@@ -312,92 +381,13 @@ export default function Page() {
       </section>
 
       <section className="numbers">
-        <div className="section-kicker light-kicker"><span>02</span><i /><span>إرث من الإنجاز</span></div>
+        <div className="section-kicker light-kicker"><span>03</span><i /><span>إرث من الإنجاز</span></div>
         <div className="numbers-grid"><div><strong>55<sup>+</sup></strong><span>مشروعاً تم إنجازه<br />خلال ١٥ عاماً</span></div><div><strong>12<sup>+</sup></strong><span>عمارة سكنية<br />تم تسليمها</span></div><div><strong>15</strong><span>عاماً من الخبرة<br />والتطوير العقاري</span></div></div>
-      </section>
-
-      <section id="projects" className="projects section-pad reveal">
-        <div className="section-kicker"><span>03</span><i /><span>مشاريعنا</span></div>
-        <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
-        <div
-          className="project-fan"
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="مشاريع بروة"
-          tabIndex={0}
-          onKeyDown={handleCarouselKeyDown}
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={() => { dragStartX.current = null }}
-          onClick={handleFanClick}
-          onMouseEnter={() => setFanHovered(true)}
-          onMouseLeave={() => setFanHovered(false)}
-          onFocus={() => setFanHovered(true)}
-          onBlur={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFanHovered(false)
-          }}
-        >
-          <div className="project-fan-stage">
-            {showcase.map((item, index) => {
-              const offset = (index - active + showcase.length) % showcase.length
-              const slot = offset === 0 ? 'center' : offset === 1 ? 'next' : 'prev'
-              const mark = projectWordmark(item.displayName)
-              const photo = `${item.assetDirectory}/hero.jpg`
-              return (
-                <a
-                  key={item.slug}
-                  className={`project-fan-card is-${slot}`}
-                  href={`/projects/${item.slug}`}
-                  aria-current={slot === 'center' ? 'true' : undefined}
-                  aria-hidden={slot === 'center' ? undefined : true}
-                  tabIndex={slot === 'center' ? 0 : -1}
-                >
-                  <span className="project-fan-photo">
-                    <img className="project-fan-fill" src={photo} alt="" />
-                    <img className="project-fan-picture" src={photo} alt="" />
-                    <span className="project-fan-mark" lang="en" dir="ltr">
-                      <b>{mark.title}</b>
-                      <i aria-hidden="true" />
-                      {mark.subtitle && <small>{mark.subtitle}</small>}
-                    </span>
-                  </span>
-                  <span className="project-fan-panel">
-                    <span className="project-fan-location">
-                      <MapPin aria-hidden="true" />
-                      <span>{item.location}</span>
-                    </span>
-                    <strong className="project-fan-arabic">{item.arabic}</strong>
-                    <span className="project-fan-english" lang="en" dir="ltr">{item.displayName}</span>
-                    <span className="project-fan-rule" aria-hidden="true" />
-                    <span className="project-fan-use">
-                      <Building2 aria-hidden="true" />
-                      <span>{item.type}</span>
-                    </span>
-                  </span>
-                </a>
-              )
-            })}
-          </div>
-          <div className="project-fan-controls">
-            <button type="button" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
-            <span aria-live="polite">{showcase[active].arabic}</span>
-            <button type="button" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
-          </div>
-        </div>
-      </section>
-
-      <section id="installments" className="installments section-pad">
-        <div className="section-kicker"><span>04</span><i /><span>احسب القسط</span></div>
-        <div className="installments-heading">
-          <h2>احسب القسط <em>المناسب لوحدتك</em></h2>
-          <p>اختر المشروع والنوع والمساحة، ثم أرسل بياناتك لنرسل لك الحسبة.</p>
-        </div>
-        <InstallmentCalculator />
       </section>
 
       <section className="philosophy reveal">
         <div className="philosophy-image" />
-        <div className="philosophy-content"><div className="section-kicker light-kicker"><span>05</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
+        <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
       </section>
 
       <section id="contact" className="brochure-close">

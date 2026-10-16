@@ -23,7 +23,6 @@ export default function ProjectsPage() {
           <div>
             <span className="eyebrow">{isArabic ? 'BARWA DEVELOPMENTS' : 'بروة للتطوير العقاري'}</span>
             <h1>{isArabic ? 'مشاريعنا' : 'Our Projects'}</h1>
-            <Link className="button-link" href="/#installments">{isArabic ? 'احسب القسط' : 'Calculate installments'}</Link>
           </div>
           <p>
             {isArabic

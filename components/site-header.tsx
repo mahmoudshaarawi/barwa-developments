@@ -32,7 +32,7 @@ export function SiteHeader({ scrolled: controlledScrolled, variant = 'overlay' }
     { label: isArabic ? 'الرئيسية' : 'Home', href: '/' },
     { label: isArabic ? 'من نحن' : 'About', href: '/about-us' },
     { label: isArabic ? 'مشاريعنا' : 'Projects', href: '/projects' },
-    { label: isArabic ? 'احسب القسط' : 'Installments', href: '/#installments' },
+    { label: isArabic ? 'احسب القسط' : 'Installments', href: '/installments' },
     { label: isArabic ? 'سابقة أعمالنا' : 'Portfolio', href: '/#contact' },
     { label: isArabic ? 'الأخبار' : 'News', href: '/#contact' },
     { label: isArabic ? 'تواصل معنا' : 'Contact', href: '/contact-us' },
