@@ -1,6 +1,6 @@
 'use client'
 
-import { Mail, MapPin, Phone } from 'lucide-react'
+import { Globe, Mail, MapPin, Phone } from 'lucide-react'
 import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
 import { useLanguage } from './language-provider'
@@ -54,6 +54,13 @@ export function ContactUsContent() {
               <div>
                 <span>{isArabic ? 'البريد الإلكتروني' : 'Email'}</span>
                 <p dir="ltr">{CONTACT.email}</p>
+              </div>
+            </a>
+            <a className="contact-detail-item" href={CONTACT.websiteHref}>
+              <span className="contact-detail-icon"><Globe aria-hidden="true" /></span>
+              <div>
+                <span>{isArabic ? 'الموقع الإلكتروني' : 'Website'}</span>
+                <p dir="ltr">{CONTACT.websiteLabel}</p>
               </div>
             </a>
           </div>

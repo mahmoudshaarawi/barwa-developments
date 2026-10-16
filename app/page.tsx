@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, MoveUpRight } from 'lucide-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
+import { UsePills } from '@/components/use-pills'
+import { CONTACT } from '@/lib/contact'
 import { projects } from '@/lib/projects'
 
 const brandStarUrl = '/brand/barwa-star.svg'
@@ -12,41 +14,53 @@ const brandStarUrl = '/brand/barwa-star.svg'
 const heroSlides = [
   {
     image: '/projects/barwa-mall/hero.jpg',
-    eyebrow: 'تطوير عقاري · بروة',
+    eyebrow: 'مدينة الشروق · مصر',
     title: projects[2].arabic,
-    emphasis: '',
-    englishName: projects[2].name,
-    description: projects[2].description,
-    imagePosition: 'center 50%',
-    mobileImagePosition: '35% 53%',
+    emphasis: projects[2].tagline,
+    englishName: projects[2].displayName,
+    description: projects[2].englishTagline,
+    href: `/projects/${projects[2].slug}`,
+    type: projects[2].type,
+    englishType: projects[2].englishType,
+    imagePosition: 'center 42%',
+    mobileImagePosition: '35% 48%',
   },
   {
     image: '/projects/central-mall/hero.jpg',
-    eyebrow: projects[1].type,
+    eyebrow: projects[1].englishLocation,
     title: projects[1].arabic,
-    emphasis: '',
-    englishName: projects[1].name,
-    description: projects[1].description,
-    imagePosition: 'center 50%',
-    mobileImagePosition: 'center 50%',
+    emphasis: projects[1].tagline,
+    englishName: projects[1].displayName,
+    description: projects[1].englishTagline,
+    href: `/projects/${projects[1].slug}`,
+    type: projects[1].type,
+    englishType: projects[1].englishType,
+    imagePosition: 'center 46%',
+    mobileImagePosition: 'center 42%',
   },
   {
     image: '/projects/hub5-mall/hero.jpg',
-    eyebrow: projects[0].type,
+    eyebrow: 'مدينة الشروق · مصر',
     title: projects[0].arabic,
-    emphasis: '',
-    englishName: projects[0].name,
-    description: projects[0].description,
-    imagePosition: 'center 50%',
-    mobileImagePosition: 'center 50%',
+    emphasis: projects[0].tagline,
+    englishName: projects[0].displayName,
+    description: projects[0].englishTagline,
+    href: `/projects/${projects[0].slug}`,
+    type: projects[0].type,
+    englishType: projects[0].englishType,
+    imagePosition: 'center 48%',
+    mobileImagePosition: 'center 46%',
   },
   {
-    image: '/banners/offer.jpg',
-    eyebrow: 'تطوير عقاري · بروة',
+    image: '/projects/barwa-mall/gallery-01.jpg',
+    eyebrow: 'بروة للتطوير العقاري',
     title: 'نبني التميز',
     emphasis: 'نصنع القيمة',
-    englishName: 'HUB 5 MALL',
+    englishName: 'BARWA DEVELOPMENTS',
     description: 'وجهات استثنائية تصنع قيمة حقيقية لأجيال اليوم والغد.',
+    href: '/projects',
+    type: '',
+    englishType: '',
     imagePosition: 'center 50%',
     mobileImagePosition: 'center 47%',
   },
@@ -208,12 +222,17 @@ export default function Page() {
           ))}
         </div>
         <div className="hero-copy" key={heroActive} aria-live="polite">
-          <h1 className="sr-only">
+          <span className="hero-kicker">{heroSlides[heroActive].eyebrow}</span>
+          <h1>
             {heroSlides[heroActive].title}
             {heroSlides[heroActive].emphasis && <em>{heroSlides[heroActive].emphasis}</em>}
             <small lang="en" dir="ltr">{heroSlides[heroActive].englishName}</small>
           </h1>
-          <a className="hero-project-link" href="/projects">استكشف المشروع <MoveUpRight /></a>
+          <p>{heroSlides[heroActive].description}</p>
+          {heroSlides[heroActive].type && (
+            <UsePills arabic={heroSlides[heroActive].type} english={heroSlides[heroActive].englishType} />
+          )}
+          <a className="hero-project-link" href={heroSlides[heroActive].href}>استكشف المشروع <MoveUpRight /></a>
         </div>
         <div className="hero-meta">
           <button type="button" className="hero-arrow" onClick={() => moveHero(-1)} aria-label="الشريحة السابقة"><ChevronRight /></button>
@@ -284,10 +303,10 @@ export default function Page() {
                 <div className="project-card-info">
                   <span className="eyebrow light">{item.location}</span>
                   <h3>{item.arabic}<small>{item.name}</small></h3>
-                  <p>{item.type}</p>
+                  <UsePills arabic={item.type} english={item.englishType} />
                   <div className="project-card-bottom">
                     <span>{item.description}</span>
-                    <a href="/projects" aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
+                    <a href={`/projects/${item.slug}`} aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
                       <span className="project-cta-en">View Project</span>
                       <span className="project-cta-ar">استكشف المشروع</span>
                       <ArrowUpLeft />
@@ -307,7 +326,21 @@ export default function Page() {
         <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
       </section>
 
-      <section id="contact" className="contact section-pad"><div className="contact-star"><img src={brandStarUrl} alt="" /></div><span className="eyebrow">LET&apos;S BUILD VALUE</span><h2>اكتشف فرصتك القادمة<br /><em>مع بروة</em></h2><p>استثمارات مدروسة، لمستقبل أكثر قيمة</p><Link className="button-link" href="/contact-us">تواصل معنا الآن <ArrowUpLeft /></Link></section>
+      <section id="contact" className="brochure-close">
+        <div className="brochure-close-photo" style={{ backgroundImage: 'url(/projects/central-mall/gallery-01.jpg)' }} aria-hidden="true" />
+        <div className="brochure-close-copy">
+          <span className="eyebrow">HOTLINE · الخط الساخن</span>
+          <a className="brochure-hotline" href={CONTACT.phoneHref} dir="ltr">{CONTACT.hotline}</a>
+          <h2>اكتشف فرصتك القادمة<br /><em>مع بروة</em></h2>
+          <p>استثمارات مدروسة، لمستقبل أكثر قيمة</p>
+          <div className="brochure-close-links">
+            <a href={CONTACT.emailHref}>{CONTACT.email}</a>
+            <a href={CONTACT.websiteHref}>{CONTACT.websiteLabel}</a>
+            <span>{CONTACT.officeAddress.arabic}</span>
+          </div>
+          <Link className="button-link" href="/contact-us">تواصل معنا الآن <ArrowUpLeft /></Link>
+        </div>
+      </section>
 
       <SiteFooter />
     </main>
