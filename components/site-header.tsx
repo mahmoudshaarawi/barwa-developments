@@ -28,18 +28,15 @@ export function SiteHeader({ scrolled: controlledScrolled, variant = 'overlay' }
     return () => window.removeEventListener('scroll', onScroll)
   }, [controlledScrolled])
 
-  const navItems = isArabic
-    ? ['الرئيسية', 'من نحن', 'مشاريعنا', 'سابقة أعمالنا', 'الأخبار', 'تواصل معنا']
-    : ['Home', 'About', 'Projects', 'Portfolio', 'News', 'Contact']
-  const hrefFor = (index: number) => index === 0
-    ? '/'
-    : index === 1
-      ? '/about-us'
-      : index === 2
-        ? '/projects'
-        : index === 5
-          ? '/contact-us'
-          : '/#contact'
+  const navItems = [
+    { label: isArabic ? 'الرئيسية' : 'Home', href: '/' },
+    { label: isArabic ? 'من نحن' : 'About', href: '/about-us' },
+    { label: isArabic ? 'مشاريعنا' : 'Projects', href: '/projects' },
+    { label: isArabic ? 'احسب القسط' : 'Installments', href: '/#installments' },
+    { label: isArabic ? 'سابقة أعمالنا' : 'Portfolio', href: '/#contact' },
+    { label: isArabic ? 'الأخبار' : 'News', href: '/#contact' },
+    { label: isArabic ? 'تواصل معنا' : 'Contact', href: '/contact-us' },
+  ]
 
   return (
     <>
@@ -49,7 +46,7 @@ export function SiteHeader({ scrolled: controlledScrolled, variant = 'overlay' }
           <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt="" aria-hidden="true" />
         </Link>
         <nav className="desktop-nav" aria-label={isArabic ? 'التنقل الرئيسي' : 'Main navigation'}>
-          {navItems.map((item, index) => <Link key={item} href={hrefFor(index)}>{item}</Link>)}
+          {navItems.map((item) => <Link key={item.label} href={item.href}>{item.label}</Link>)}
         </nav>
         <div className="header-actions">
           <button
@@ -81,8 +78,8 @@ export function SiteHeader({ scrolled: controlledScrolled, variant = 'overlay' }
           <span className="eyebrow">BARWA / NAVIGATION</span>
           <nav aria-label={isArabic ? 'التنقل الرئيسي' : 'Main navigation'}>
             {navItems.map((item, index) => (
-              <Link key={item} href={hrefFor(index)} onClick={() => setMenuOpen(false)}>
-                <span>0{index + 1}</span>{item}
+              <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)}>
+                <span>0{index + 1}</span>{item.label}
               </Link>
             ))}
           </nav>

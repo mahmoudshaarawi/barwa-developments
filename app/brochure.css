@@ -564,3 +564,332 @@ footer {
     --foreground: #161616;
   }
 }
+
+/* Full-frame images. Hero covers and the offer banner stay as designed. */
+.listing-project-image,
+.project-overview-image,
+.project-gallery-item,
+.project-other-image,
+.about-company-image,
+.about-editorial-image,
+.about-development-image,
+.project-showcase-media,
+.project-thumb img,
+.philosophy-image,
+.projects-inquiry-image,
+.brochure-close-photo {
+  background-color: var(--c-stone);
+  background-repeat: no-repeat;
+}
+
+.listing-project-image { aspect-ratio: 16 / 9; }
+.listing-project-image img,
+.project-overview-image img,
+.project-gallery-item img,
+.project-other-image img,
+.about-company-image img,
+.about-editorial-image img,
+.about-development-image img,
+.project-showcase-media img,
+.project-thumb img {
+  object-fit: contain;
+  object-position: center;
+  background: var(--c-stone);
+}
+
+.project-overview-image,
+.project-gallery-item,
+.project-other-image,
+.about-development-image,
+.about-editorial-image,
+.about-company-image {
+  aspect-ratio: 1.66 / 1;
+  height: auto;
+  min-height: 0;
+}
+
+.project-gallery-item:hover img,
+.project-overview-image:hover img,
+.project-other-card:hover .project-other-image img,
+.about-development:hover .about-development-image img,
+.listing-project-image:hover img,
+.about-editorial-row:hover .about-editorial-image img { transform: none; }
+
+.philosophy-image {
+  aspect-ratio: 1.66 / 1;
+  min-height: 0;
+  background-size: contain;
+  background-position: center;
+}
+
+.projects-inquiry-image {
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  background-size: contain;
+  background-position: center;
+  background-color: #111;
+}
+
+.brochure-close-photo {
+  aspect-ratio: 1.66 / 1;
+  min-height: 0;
+  background-size: contain;
+  background-position: center;
+}
+
+.brochure-close { min-height: 0; align-items: stretch; }
+
+/* Tighter sections */
+.section-pad { padding: 2.4rem clamp(1.1rem, 3vw, 2.5rem); }
+.section-kicker { margin-bottom: 1.1rem; }
+.intro-layout { gap: 1.25rem; margin-bottom: 1rem; }
+.intro-heading h2 { margin-bottom: .8rem; }
+.intro-visual { min-height: 0; padding: 1.4rem 1.2rem; }
+.intro-visual .visual-number { font-size: clamp(2.8rem, 5vw, 4rem); }
+.numbers { padding: 2rem clamp(1.1rem, 3vw, 2.5rem) 2.2rem; }
+.numbers-grid > div strong { font-size: clamp(2.6rem, 5vw, 4.2rem); }
+.projects-heading { gap: 1.25rem; margin-bottom: 1.25rem; }
+.philosophy-content { padding: 2rem 1.5rem; }
+.philosophy-content h2 { margin-bottom: 1.25rem; }
+.values { gap: 1rem; }
+.project-overview,
+.project-location,
+.project-gallery,
+.project-floor-plans,
+.project-features,
+.project-other,
+.project-units,
+.project-construction,
+.project-construction-updates { padding: 2.2rem clamp(1.1rem, 3vw, 2.5rem); }
+.project-section-heading { margin-bottom: 1.2rem; }
+.about-company,
+.about-approach,
+.about-vision-mission,
+.about-developments,
+.about-philosophy,
+.about-journey { padding-block: 2.2rem; }
+.about-section-heading,
+.about-journey-heading { margin-bottom: 1.3rem; }
+.about-editorial-row { margin-top: 1.6rem; }
+.about-company-copy h2,
+.about-section-heading h2,
+.about-journey-heading h2 { margin-bottom: .7rem; }
+.contact-main { padding-block: 2.2rem; gap: 2rem; }
+.projects-page-heading .button-link { margin-top: .8rem; }
+
+@media (max-width: 1100px) {
+  .desktop-nav { display: none; }
+  .site-header .menu-button { display: flex; }
+  .site-header .language { display: none; }
+}
+
+/* Project showcase: one full image plus complete thumbnails */
+.project-showcase { outline: none; }
+.project-showcase:focus-visible { outline: 2px solid var(--c-magenta); outline-offset: 4px; }
+.project-showcase-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, .8fr);
+  gap: 1.1rem;
+  align-items: center;
+  min-width: 0;
+}
+.project-showcase-media {
+  aspect-ratio: 1.66 / 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.project-showcase-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.project-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.66 / 1;
+  object-fit: contain;
+}
+.project-showcase-copy { min-width: 0; }
+.project-showcase-copy .eyebrow { color: var(--c-magenta); }
+.project-showcase-copy h3 {
+  margin: .25rem 0 .4rem;
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.project-showcase-copy h3 small {
+  display: block;
+  margin-top: .25rem;
+  font-size: .78rem;
+  letter-spacing: .12em;
+  font-weight: 400;
+}
+.project-showcase-copy p {
+  margin: 0 0 .8rem;
+  color: var(--c-gray-dark);
+  line-height: 1.7;
+}
+.project-showcase-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .55rem;
+}
+.project-showcase-actions button,
+.project-thumb {
+  border: 1px solid rgba(22, 22, 22, .16);
+  background: #fff;
+  color: var(--c-ink);
+  cursor: pointer;
+}
+.project-showcase-actions button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 999px;
+}
+.project-showcase-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 40px;
+  padding: .35rem .9rem;
+  border-radius: 999px;
+  background: var(--c-magenta);
+  color: #fff;
+  text-decoration: none;
+}
+.project-thumbs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .7rem;
+  margin-top: .9rem;
+}
+.project-thumb {
+  display: grid;
+  gap: .35rem;
+  min-width: 0;
+  padding: .35rem;
+  text-align: start;
+}
+.project-thumb img { aspect-ratio: 1.66 / 1; }
+.project-thumb span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: .82rem;
+}
+.project-thumb.is-active { border-color: var(--c-magenta); }
+
+/* Installment calculator */
+#installments { scroll-margin-top: 5.5rem; }
+.installments { background: var(--c-stone); }
+.installments-heading { margin-bottom: 1rem; }
+.installments-heading h2 {
+  margin: 0 0 .35rem;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  font-weight: 500;
+}
+.installments-heading em { color: var(--c-magenta); font-style: normal; }
+.installments-heading p { margin: 0; color: var(--c-gray-dark); }
+.installment-form {
+  display: grid;
+  gap: .85rem;
+}
+.installment-form fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: .85rem;
+  border: 0;
+  background: #fff;
+}
+.installment-form fieldset:disabled { opacity: .48; }
+.installment-form legend {
+  padding: 0;
+  margin-bottom: .55rem;
+  font-weight: 500;
+}
+.installment-choices,
+.installment-amounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+.installment-choices label,
+.installment-field {
+  display: flex;
+  flex-direction: column;
+  gap: .3rem;
+  min-width: 0;
+}
+.installment-choices label {
+  position: relative;
+  min-height: 42px;
+  justify-content: center;
+  padding: .45rem .8rem;
+  border: 1px solid rgba(22, 22, 22, .16);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.installment-choices input { position: absolute; opacity: 0; }
+.installment-choices label.is-selected {
+  border-color: var(--c-magenta);
+  background: var(--c-magenta);
+  color: #fff;
+}
+.installment-amounts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.installment-field input,
+.installment-field select {
+  width: 100%;
+  min-height: 44px;
+  padding: .55rem .7rem;
+  border: 1px solid rgba(22, 22, 22, .16);
+  background: #fff;
+  color: var(--c-ink);
+  font: inherit;
+}
+.installment-submit {
+  justify-self: start;
+  min-height: 46px;
+  padding: .6rem 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-magenta);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.installment-submit:disabled { opacity: .6; cursor: progress; }
+.installment-error { margin: .2rem 0 0; color: #9d123f; font-size: .85rem; }
+.installment-result {
+  padding: 1.5rem;
+  background: #fff;
+}
+.installment-result p {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 500;
+}
+.hero-secondary-link {
+  margin-inline-start: .6rem;
+  color: #fff;
+}
+.project-detail-hero-copy .button-link,
+.project-detail-hero-copy .hero-secondary-link { margin-top: .6rem; }
+
+@media (max-width: 767px) {
+  .project-showcase-card,
+  .installment-amounts { grid-template-columns: 1fr; }
+  .philosophy-image { min-height: 0; }
+  .section-pad { padding: 1.8rem 1rem; }
+  .project-showcase-copy h3 { font-size: 1.65rem; }
+  .use-pills { max-width: 100%; }
+  .hero-copy,
+  .hero-copy h1,
+  .project-showcase-copy,
+  .listing-project-content,
+  .project-detail-hero-copy { max-width: 100%; min-width: 0; }
+}

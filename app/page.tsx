@@ -5,11 +5,12 @@ import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, MoveUpRight } from 'lucide-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
+import { InstallmentCalculator } from '@/components/installment-calculator'
 import { UsePills } from '@/components/use-pills'
 import { CONTACT } from '@/lib/contact'
 import { projects } from '@/lib/projects'
 
-const brandStarUrl = '/brand/barwa-star.svg'
+const showcase = [...projects].reverse()
 
 const heroSlides = [
   {
@@ -22,8 +23,8 @@ const heroSlides = [
     href: `/projects/${projects[2].slug}`,
     type: projects[2].type,
     englishType: projects[2].englishType,
-    imagePosition: 'center 42%',
-    mobileImagePosition: '35% 48%',
+    imagePosition: 'center 50%',
+    mobileImagePosition: '35% 53%',
   },
   {
     image: '/projects/central-mall/hero.jpg',
@@ -35,8 +36,8 @@ const heroSlides = [
     href: `/projects/${projects[1].slug}`,
     type: projects[1].type,
     englishType: projects[1].englishType,
-    imagePosition: 'center 46%',
-    mobileImagePosition: 'center 42%',
+    imagePosition: 'center 50%',
+    mobileImagePosition: 'center 50%',
   },
   {
     image: '/projects/hub5-mall/hero.jpg',
@@ -48,11 +49,11 @@ const heroSlides = [
     href: `/projects/${projects[0].slug}`,
     type: projects[0].type,
     englishType: projects[0].englishType,
-    imagePosition: 'center 48%',
-    mobileImagePosition: 'center 46%',
+    imagePosition: 'center 50%',
+    mobileImagePosition: 'center 50%',
   },
   {
-    image: '/projects/barwa-mall/gallery-01.jpg',
+    image: '/banners/offer.jpg',
     eyebrow: 'بروة للتطوير العقاري',
     title: 'نبني التميز',
     emphasis: 'نصنع القيمة',
@@ -129,7 +130,7 @@ export default function Page() {
     if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
   }, [])
 
-  const move = (direction: number) => setActive((active + direction + projects.length) % projects.length)
+  const move = (direction: number) => setActive((current) => (current + direction + showcase.length) % showcase.length)
   const pauseHeroAfterInteraction = () => {
     setHeroInteractionPaused(true)
     if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
@@ -277,7 +278,7 @@ export default function Page() {
         <div className="section-kicker"><span>03</span><i /><span>مشاريعنا</span></div>
         <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
         <div
-          className="carousel-wrap"
+          className="project-showcase"
           role="group"
           aria-label="مشاريع بروة"
           tabIndex={0}
@@ -287,43 +288,52 @@ export default function Page() {
           onPointerCancel={() => { dragStartX.current = null }}
           onPointerLeave={() => { dragStartX.current = null }}
         >
-          <div className="carousel-star" aria-hidden="true"><img src={brandStarUrl} alt="" /></div>
-          <button className="carousel-arrow prev" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
-          {projects.map((item, index) => {
-            const position = index === active ? 'active' : index === (active + projects.length - 1) % projects.length ? 'previous' : 'next'
-            return (
-              <article
-                key={item.name}
-                className={`project-card project-card-${position}`}
-                style={{ backgroundImage: `linear-gradient(0deg, rgba(0,0,0,.88), rgba(0,0,0,.08) 70%), url(${item.image})` }}
-                aria-current={position === 'active' ? 'true' : undefined}
+          <article className="project-showcase-card" aria-current="true">
+            <div className="project-showcase-media">
+              <img src={showcase[active].image} alt="" />
+            </div>
+            <div className="project-showcase-copy">
+              <span className="eyebrow">{showcase[active].location}</span>
+              <h3>{showcase[active].arabic}<small lang="en" dir="ltr">{showcase[active].displayName}</small></h3>
+              <UsePills arabic={showcase[active].type} english={showcase[active].englishType} />
+              <p>{showcase[active].description}</p>
+              <div className="project-showcase-actions">
+                <button type="button" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
+                <a href={`/projects/${showcase[active].slug}`}>استكشف المشروع <ArrowUpLeft /></a>
+                <button type="button" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
+              </div>
+            </div>
+          </article>
+          <div className="project-thumbs">
+            {showcase.map((item, index) => (
+              <button
+                key={item.slug}
+                type="button"
+                className={active === index ? 'is-active' : ''}
+                onClick={() => setActive(index)}
+                aria-label={item.arabic}
+                aria-current={active === index ? 'true' : undefined}
               >
-                {position !== 'active' && <button className="project-card-select" onClick={() => setActive(index)} aria-label={`استكشف ${item.arabic}`} />}
-                <div className="project-card-top"><span>{item.number} / 0{projects.length}</span><span>BARWA DEVELOPMENTS</span></div>
-                <div className="project-card-info">
-                  <span className="eyebrow light">{item.location}</span>
-                  <h3>{item.arabic}<small>{item.name}</small></h3>
-                  <UsePills arabic={item.type} english={item.englishType} />
-                  <div className="project-card-bottom">
-                    <span>{item.description}</span>
-                    <a href={`/projects/${item.slug}`} aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
-                      <span className="project-cta-en">View Project</span>
-                      <span className="project-cta-ar">استكشف المشروع</span>
-                      <ArrowUpLeft />
-                    </a>
-                  </div>
-                </div>
-              </article>
-            )
-          })}
-          <button className="carousel-arrow next" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
+                <img src={item.image} alt="" />
+                <span>{item.arabic}</span>
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="carousel-footer"><span>اسحب للتنقل بين المشاريع</span><div className="pagination">{projects.map((item, index) => <button key={item.name} className={active === index ? 'active' : ''} onClick={() => setActive(index)} aria-label={`مشروع ${index + 1}`}><span>0{index + 1}</span></button>)}</div></div>
+      </section>
+
+      <section id="installments" className="installments section-pad">
+        <div className="section-kicker"><span>04</span><i /><span>احسب القسط</span></div>
+        <div className="installments-heading">
+          <h2>احسب القسط <em>المناسب لوحدتك</em></h2>
+          <p>اختر المشروع والنوع والمساحة، ثم أرسل بياناتك لنرسل لك الحسبة.</p>
+        </div>
+        <InstallmentCalculator />
       </section>
 
       <section className="philosophy reveal">
         <div className="philosophy-image" />
-        <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
+        <div className="philosophy-content"><div className="section-kicker light-kicker"><span>05</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
       </section>
 
       <section id="contact" className="brochure-close">

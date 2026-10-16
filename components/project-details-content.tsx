@@ -131,7 +131,11 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           <UsePills arabic={project.type} english={project.englishType} isArabic={isArabic} />
           <h2>{isArabic ? project.tagline : project.englishTagline}</h2>
           <p>{isArabic ? project.description : project.englishDescription}</p>
-          <Link href={`/contact-us?project=${project.slug}`} className="button-link">
+          <Link href={`/?project=${project.slug}#installments`} className="button-link">
+            {isArabic ? 'احسب القسط' : 'Calculate installments'}
+            {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
+          </Link>
+          <Link href={`/contact-us?project=${project.slug}`} className="project-call-link hero-secondary-link">
             {isArabic ? 'استفسر عن المشروع' : 'Enquire about this project'}
             {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
           </Link>
@@ -509,6 +513,9 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           <span>{isArabic ? CONTACT.officeAddress.arabic : CONTACT.officeAddress.english}</span>
         </div>
         <div className="project-contact-actions">
+          <Link href={`/?project=${project.slug}#installments`} className="button-link">
+            {isArabic ? 'احسب القسط' : 'Calculate installments'}
+          </Link>
           <Link href={`/contact-us?project=${project.slug}`} className="button-link">
             <Mail aria-hidden="true" />
             {isArabic ? 'أرسل استفسارك' : 'Send an enquiry'}
