@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, MoveUpRight } from 'lucide-react'
+import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, MoveUpRight } from 'lucide-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { InstallmentCalculator } from '@/components/installment-calculator'
@@ -11,6 +11,14 @@ import { CONTACT } from '@/lib/contact'
 import { projects } from '@/lib/projects'
 
 const showcase = [...projects].reverse()
+
+function projectWordmark(displayName: string) {
+  const parts = displayName.trim().split(/\s+/)
+  if (parts.length > 1 && parts[parts.length - 1].toUpperCase() === 'MALL') {
+    return { title: parts.slice(0, -1).join(' '), subtitle: 'MALL' }
+  }
+  return { title: displayName, subtitle: '' }
+}
 
 const heroSlides = [
   {
@@ -69,6 +77,8 @@ const heroSlides = [
 
 export default function Page() {
   const [active, setActive] = useState(0)
+  const [fanHovered, setFanHovered] = useState(false)
+  const [fanPaused, setFanPaused] = useState(false)
   const [heroActive, setHeroActive] = useState(0)
   const [heroHovered, setHeroHovered] = useState(false)
   const [heroFocused, setHeroFocused] = useState(false)
@@ -78,6 +88,8 @@ export default function Page() {
   const [scrolled, setScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const dragStartX = useRef<number | null>(null)
+  const fanDragged = useRef(false)
+  const fanPauseTimeout = useRef<number | null>(null)
   const heroDragStartX = useRef<number | null>(null)
   const heroPauseTimeout = useRef<number | null>(null)
 
@@ -126,11 +138,31 @@ export default function Page() {
     return () => window.clearInterval(autoplay)
   }, [heroFocused, heroHovered, heroInteractionPaused, pageVisible, reducedMotion])
 
+  useEffect(() => {
+    if (reducedMotion || !pageVisible || fanHovered || fanPaused) return
+    const autoplay = window.setInterval(() => {
+      setActive((current) => (current + 1) % showcase.length)
+    }, 7000)
+    return () => window.clearInterval(autoplay)
+  }, [fanHovered, fanPaused, pageVisible, reducedMotion])
+
   useEffect(() => () => {
     if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
+    if (fanPauseTimeout.current) window.clearTimeout(fanPauseTimeout.current)
   }, [])
 
-  const move = (direction: number) => setActive((current) => (current + direction + showcase.length) % showcase.length)
+  const pauseFan = () => {
+    setFanPaused(true)
+    if (fanPauseTimeout.current) window.clearTimeout(fanPauseTimeout.current)
+    fanPauseTimeout.current = window.setTimeout(() => {
+      setFanPaused(false)
+      fanPauseTimeout.current = null
+    }, 8000)
+  }
+  const move = (direction: number) => {
+    setActive((current) => (current + direction + showcase.length) % showcase.length)
+    pauseFan()
+  }
   const pauseHeroAfterInteraction = () => {
     setHeroInteractionPaused(true)
     if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
@@ -166,21 +198,31 @@ export default function Page() {
   const handleCarouselKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'ArrowLeft') {
       event.preventDefault()
-      move(-1)
+      move(1)
     } else if (event.key === 'ArrowRight') {
       event.preventDefault()
-      move(1)
+      move(-1)
     }
   }
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0 || (event.target instanceof Element && event.target.closest('a, button'))) return
+    if (event.button !== 0 || (event.target instanceof Element && event.target.closest('button'))) return
     dragStartX.current = event.clientX
+    fanDragged.current = false
+    event.currentTarget.setPointerCapture(event.pointerId)
   }
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     if (dragStartX.current === null) return
     const distance = event.clientX - dragStartX.current
     dragStartX.current = null
-    if (Math.abs(distance) > 48) move(distance < 0 ? 1 : -1)
+    if (Math.abs(distance) > 48) {
+      fanDragged.current = true
+      move(distance > 0 ? 1 : -1)
+    }
+  }
+  const handleFanClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!fanDragged.current) return
+    event.preventDefault()
+    fanDragged.current = false
   }
 
   return (
@@ -278,46 +320,68 @@ export default function Page() {
         <div className="section-kicker"><span>03</span><i /><span>مشاريعنا</span></div>
         <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
         <div
-          className="project-showcase"
-          role="group"
+          className="project-fan"
+          role="region"
+          aria-roledescription="carousel"
           aria-label="مشاريع بروة"
           tabIndex={0}
           onKeyDown={handleCarouselKeyDown}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           onPointerCancel={() => { dragStartX.current = null }}
-          onPointerLeave={() => { dragStartX.current = null }}
+          onClick={handleFanClick}
+          onMouseEnter={() => setFanHovered(true)}
+          onMouseLeave={() => setFanHovered(false)}
+          onFocus={() => setFanHovered(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFanHovered(false)
+          }}
         >
-          <article className="project-showcase-card" aria-current="true">
-            <div className="project-showcase-media">
-              <img src={showcase[active].image} alt="" />
-            </div>
-            <div className="project-showcase-copy">
-              <span className="eyebrow">{showcase[active].location}</span>
-              <h3>{showcase[active].arabic}<small lang="en" dir="ltr">{showcase[active].displayName}</small></h3>
-              <UsePills arabic={showcase[active].type} english={showcase[active].englishType} />
-              <p>{showcase[active].description}</p>
-              <div className="project-showcase-actions">
-                <button type="button" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
-                <a href={`/projects/${showcase[active].slug}`}>استكشف المشروع <ArrowUpLeft /></a>
-                <button type="button" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
-              </div>
-            </div>
-          </article>
-          <div className="project-thumbs">
-            {showcase.map((item, index) => (
-              <button
-                key={item.slug}
-                type="button"
-                className={active === index ? 'is-active' : ''}
-                onClick={() => setActive(index)}
-                aria-label={item.arabic}
-                aria-current={active === index ? 'true' : undefined}
-              >
-                <img src={item.image} alt="" />
-                <span>{item.arabic}</span>
-              </button>
-            ))}
+          <div className="project-fan-stage">
+            {showcase.map((item, index) => {
+              const offset = (index - active + showcase.length) % showcase.length
+              const slot = offset === 0 ? 'center' : offset === 1 ? 'next' : 'prev'
+              const mark = projectWordmark(item.displayName)
+              const photo = `${item.assetDirectory}/hero.jpg`
+              return (
+                <a
+                  key={item.slug}
+                  className={`project-fan-card is-${slot}`}
+                  href={`/projects/${item.slug}`}
+                  aria-current={slot === 'center' ? 'true' : undefined}
+                  aria-hidden={slot === 'center' ? undefined : true}
+                  tabIndex={slot === 'center' ? 0 : -1}
+                >
+                  <span className="project-fan-photo">
+                    <img className="project-fan-fill" src={photo} alt="" />
+                    <img className="project-fan-picture" src={photo} alt="" />
+                    <span className="project-fan-mark" lang="en" dir="ltr">
+                      <b>{mark.title}</b>
+                      <i aria-hidden="true" />
+                      {mark.subtitle && <small>{mark.subtitle}</small>}
+                    </span>
+                  </span>
+                  <span className="project-fan-panel">
+                    <span className="project-fan-location">
+                      <MapPin aria-hidden="true" />
+                      <span>{item.location}</span>
+                    </span>
+                    <strong className="project-fan-arabic">{item.arabic}</strong>
+                    <span className="project-fan-english" lang="en" dir="ltr">{item.displayName}</span>
+                    <span className="project-fan-rule" aria-hidden="true" />
+                    <span className="project-fan-use">
+                      <Building2 aria-hidden="true" />
+                      <span>{item.type}</span>
+                    </span>
+                  </span>
+                </a>
+              )
+            })}
+          </div>
+          <div className="project-fan-controls">
+            <button type="button" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
+            <span aria-live="polite">{showcase[active].arabic}</span>
+            <button type="button" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
           </div>
         </div>
       </section>
