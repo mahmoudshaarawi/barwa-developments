@@ -98,6 +98,16 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
     }
   }
 
+  const steps = [
+    { id: 1, label: isArabic ? 'المشروع' : 'Project', done: Boolean(projectSlug) },
+    { id: 2, label: isArabic ? 'النوع' : 'Type', done: Boolean(unitUse) },
+    { id: 3, label: isArabic ? 'المساحة' : 'Area', done: Boolean(area) },
+    { id: 4, label: isArabic ? 'السداد' : 'Payment', done: Boolean(payment) && (payment === 'cash' || Boolean(downPayment && installmentAmount)) },
+    { id: 5, label: isArabic ? 'بياناتك' : 'Details', done: Boolean(name.trim()) && phonePattern.test(phone) },
+  ]
+  const currentStep = steps.find((step) => !step.done)?.id ?? 5
+  const useLabel = availableUses.find((item) => item.id === unitUse)
+
   if (status === 'sent') {
     return (
       <div className="installment-result" role="status">
@@ -107,7 +117,16 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
   }
 
   return (
+    <div className="calc-layout">
     <form className="installment-form" onSubmit={handleSubmit}>
+      <ol className="calc-progress" aria-label={isArabic ? 'خطوات الحسبة' : 'Estimate steps'}>
+        {steps.map((step) => (
+          <li key={step.id} className={step.done ? 'is-done' : step.id === currentStep ? 'is-current' : ''}>
+            <b>{String(step.id).padStart(2, '0')}</b>
+            <span>{step.label}</span>
+          </li>
+        ))}
+      </ol>
       <fieldset>
         <legend>{isArabic ? '١. اختر المشروع' : '1. Choose a project'}</legend>
         <div className="installment-choices">
@@ -234,5 +253,23 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
         </p>
       )}
     </form>
+    <aside className="calc-summary" aria-live="polite">
+      <h2>{isArabic ? 'ملخص الطلب' : 'Request summary'}</h2>
+      <dl>
+        <div><dt>{isArabic ? 'المشروع' : 'Project'}</dt><dd>{selectedProject ? (isArabic ? selectedProject.arabic : selectedProject.displayName) : '—'}</dd></div>
+        <div><dt>{isArabic ? 'النوع' : 'Type'}</dt><dd>{useLabel ? (isArabic ? useLabel.arabic : useLabel.english) : '—'}</dd></div>
+        <div><dt>{isArabic ? 'المساحة' : 'Area'}</dt><dd>{area ? formatArea(Number(area)) : '—'}</dd></div>
+        <div><dt>{isArabic ? 'السداد' : 'Payment'}</dt><dd>{payment === 'cash' ? (isArabic ? 'كاش' : 'Cash') : payment === 'installments' ? (isArabic ? 'تقسيط' : 'Installments') : '—'}</dd></div>
+        {payment === 'installments' && (
+          <>
+            <div><dt>{isArabic ? 'المقدم' : 'Down payment'}</dt><dd>{downPayment ? `${downPayment} ${isArabic ? 'جنيه' : 'EGP'}` : '—'}</dd></div>
+            <div><dt>{isArabic ? 'القسط' : 'Installment'}</dt><dd>{installmentAmount ? `${installmentAmount} ${isArabic ? 'جنيه' : 'EGP'}` : '—'}</dd></div>
+          </>
+        )}
+        <div><dt>{isArabic ? 'الاسم' : 'Name'}</dt><dd>{name.trim() || '—'}</dd></div>
+        <div><dt>{isArabic ? 'الهاتف' : 'Phone'}</dt><dd dir="ltr">{phone || '—'}</dd></div>
+      </dl>
+    </aside>
+    </div>
   )
 }

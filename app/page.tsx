@@ -231,7 +231,7 @@ export default function Page() {
 
       <section id="projects" className="projects home-projects section-pad reveal">
         <div className="section-kicker"><span>01</span><i /><span>مشاريعنا</span></div>
-        <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
+        <div className="projects-heading home-projects-heading"><h2>وجهات صُممت <em>للمستقبل</em></h2></div>
         <div
           className="project-fan"
           role="region"
@@ -296,6 +296,7 @@ export default function Page() {
             <button type="button" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
           </div>
         </div>
+        <p className="home-projects-note">نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p>
       </section>
 
 
@@ -371,27 +372,45 @@ export default function Page() {
         </nav>
       </section>
 
-      <section className="intro section-pad reveal">
-        <div className="section-kicker"><span>02</span><i /><span>عن بروة</span></div>
-        <div className="intro-layout">
-          <div className="intro-heading"><span className="eyebrow">OUR APPROACH</span><h2>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></h2></div>
-          <div className="intro-copy"><p>منذ تأسيسها، تواصل بروة للتطوير العقاري بناء إرث من التميز والإنجازات البارزة. نخلق مشاريع استثنائية تجمع بين المواقع المتميزة، الجودة، وفرص الاستثمار المدروسة.</p><a className="text-link" href="#contact">تعرف على بروة <ArrowUpRight /></a></div>
+      <section className="legacy section-pad reveal" aria-labelledby="legacy-title">
+        <div className="legacy-intro">
+          <div className="section-kicker"><span>02</span><i /><span>إرث من الإنجاز</span></div>
+          <h2 id="legacy-title">إرث من <em>الإنجاز</em></h2>
         </div>
-        <div className="intro-visual"><div className="visual-caption">A SIGNATURE<br />OF QUALITY</div><div className="visual-number">3.2<span>مليار جنيه<br /><small>حجم الاستثمارات</small></span></div></div>
+        <ol className="legacy-stats">
+          <li><strong>55<sup>+</sup></strong><span>مشروعاً تم إنجازه خلال ١٥ عاماً</span></li>
+          <li><strong>12<sup>+</sup></strong><span>عمارة سكنية تم تسليمها</span></li>
+          <li><strong>15</strong><span>عاماً من الخبرة والتطوير العقاري</span></li>
+        </ol>
       </section>
 
-      <section className="numbers">
-        <div className="section-kicker light-kicker"><span>03</span><i /><span>إرث من الإنجاز</span></div>
-        <div className="numbers-grid"><div><strong>55<sup>+</sup></strong><span>مشروعاً تم إنجازه<br />خلال ١٥ عاماً</span></div><div><strong>12<sup>+</sup></strong><span>عمارة سكنية<br />تم تسليمها</span></div><div><strong>15</strong><span>عاماً من الخبرة<br />والتطوير العقاري</span></div></div>
+      <section className="approach section-pad reveal">
+        <div className="approach-copy">
+          <div className="section-kicker"><span>03</span><i /><span>عن بروة</span></div>
+          <h2>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></h2>
+          <p>منذ تأسيسها، تواصل بروة للتطوير العقاري بناء إرث من التميز والإنجازات البارزة. نخلق مشاريع استثنائية تجمع بين المواقع المتميزة، الجودة، وفرص الاستثمار المدروسة.</p>
+          <a className="text-link" href="#contact">تعرف على بروة <ArrowUpRight /></a>
+        </div>
+        <figure className="approach-figure">
+          <img src="/projects/hub5-mall/hero.jpg" alt="" />
+          <figcaption>
+            <strong>3.2</strong>
+            <span>مليار جنيه<small>حجم الاستثمارات</small></span>
+          </figcaption>
+        </figure>
       </section>
 
       <section className="philosophy reveal">
-        <div className="philosophy-image" />
-        <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
+        <div className="philosophy-collage" aria-hidden="true">
+          <img className="philosophy-main" src="/projects/barwa-mall/hero.jpg" alt="" />
+          <img className="philosophy-float philosophy-float-top" src="/projects/central-mall/hero.jpg" alt="" />
+          <img className="philosophy-float philosophy-float-bottom" src="/projects/hub5-mall/hero.jpg" alt="" />
+        </div>
+        <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
       </section>
 
       <section id="contact" className="brochure-close">
-        <div className="brochure-close-photo" style={{ backgroundImage: 'url(/projects/central-mall/gallery-01.jpg)' }} aria-hidden="true" />
+        <div className="brochure-close-photo" style={{ backgroundImage: 'url(/projects/barwa-mall/hero.jpg)' }} aria-hidden="true" />
         <div className="brochure-close-copy">
           <span className="eyebrow">HOTLINE · الخط الساخن</span>
           <a className="brochure-hotline" href={CONTACT.phoneHref} dir="ltr">{CONTACT.hotline}</a>
