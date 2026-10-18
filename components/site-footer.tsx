@@ -43,6 +43,7 @@ export function SiteFooter() {
           <Link href="/about-us">{isArabic ? 'من نحن' : 'About'}</Link>
           <Link href="/projects">{isArabic ? 'مشاريعنا' : 'Projects'}</Link>
           <Link href="/installments">{isArabic ? 'احسب القسط' : 'Installments'}</Link>
+          <Link href="/news">{isArabic ? 'الأخبار' : 'News'}</Link>
           <Link href="/contact-us">{isArabic ? 'تواصل معنا' : 'Contact'}</Link>
         </nav>
 
