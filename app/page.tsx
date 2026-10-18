@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, MoveUpRight } from 'lucide-react'
+import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, Volume2, VolumeX } from 'lucide-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
-import { UsePills } from '@/components/use-pills'
 import { CONTACT } from '@/lib/contact'
 import { projects } from '@/lib/projects'
 
@@ -19,78 +18,22 @@ function projectWordmark(displayName: string) {
   return { title: displayName, subtitle: '' }
 }
 
-const heroSlides = [
-  {
-    image: '/projects/barwa-mall/hero.jpg',
-    eyebrow: 'مدينة الشروق · مصر',
-    title: projects[2].arabic,
-    emphasis: projects[2].tagline,
-    englishName: projects[2].displayName,
-    description: projects[2].englishTagline,
-    href: `/projects/${projects[2].slug}`,
-    type: projects[2].type,
-    englishType: projects[2].englishType,
-    imagePosition: 'center 50%',
-    mobileImagePosition: '35% 53%',
-  },
-  {
-    image: '/projects/central-mall/hero.jpg',
-    eyebrow: projects[1].englishLocation,
-    title: projects[1].arabic,
-    emphasis: projects[1].tagline,
-    englishName: projects[1].displayName,
-    description: projects[1].englishTagline,
-    href: `/projects/${projects[1].slug}`,
-    type: projects[1].type,
-    englishType: projects[1].englishType,
-    imagePosition: 'center 50%',
-    mobileImagePosition: 'center 50%',
-  },
-  {
-    image: '/projects/hub5-mall/hero.jpg',
-    eyebrow: 'مدينة الشروق · مصر',
-    title: projects[0].arabic,
-    emphasis: projects[0].tagline,
-    englishName: projects[0].displayName,
-    description: projects[0].englishTagline,
-    href: `/projects/${projects[0].slug}`,
-    type: projects[0].type,
-    englishType: projects[0].englishType,
-    imagePosition: 'center 50%',
-    mobileImagePosition: 'center 50%',
-  },
-  {
-    image: '/banners/offer.jpg',
-    eyebrow: 'بروة للتطوير العقاري',
-    title: 'نبني التميز',
-    emphasis: 'نصنع القيمة',
-    englishName: 'BARWA DEVELOPMENTS',
-    description: 'وجهات استثنائية تصنع قيمة حقيقية لأجيال اليوم والغد.',
-    href: '/projects',
-    type: '',
-    englishType: '',
-    imagePosition: 'center 50%',
-    mobileImagePosition: 'center 47%',
-  },
-]
+const promoVideo = '/banners/Barwa-Promo-1920X8686551.mp4'
+const promoPoster = '/projects/barwa-mall/hero.jpg'
 
 export default function Page() {
   const [active, setActive] = useState(0)
   const [fanHovered, setFanHovered] = useState(false)
   const [fanPaused, setFanPaused] = useState(false)
-  const [heroActive, setHeroActive] = useState(0)
-  const [heroHovered, setHeroHovered] = useState(false)
-  const [heroFocused, setHeroFocused] = useState(false)
-  const [heroInteractionPaused, setHeroInteractionPaused] = useState(false)
   const [pageVisible, setPageVisible] = useState(true)
+  const [promoMuted, setPromoMuted] = useState(true)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const dragStartX = useRef<number | null>(null)
   const fanDragged = useRef(false)
   const fanPauseTimeout = useRef<number | null>(null)
-  const heroDragStartX = useRef<number | null>(null)
-  const heroPauseTimeout = useRef<number | null>(null)
+  const promoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     const onScroll = () => {
@@ -129,13 +72,12 @@ export default function Page() {
   }, [])
 
   useEffect(() => {
-    if (reducedMotion || !pageVisible || heroHovered || heroFocused || heroInteractionPaused) return
-    const autoplay = window.setInterval(() => {
-      setHeroActive((current) => (current + 1) % heroSlides.length)
-    }, 6000)
-
-    return () => window.clearInterval(autoplay)
-  }, [heroFocused, heroHovered, heroInteractionPaused, pageVisible, reducedMotion])
+    const video = promoRef.current
+    if (!video) return
+    video.muted = true
+    const play = video.play()
+    if (play) play.catch(() => {})
+  }, [])
 
   useEffect(() => {
     if (reducedMotion || !pageVisible || fanHovered || fanPaused) return
@@ -146,7 +88,6 @@ export default function Page() {
   }, [fanHovered, fanPaused, pageVisible, reducedMotion])
 
   useEffect(() => () => {
-    if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
     if (fanPauseTimeout.current) window.clearTimeout(fanPauseTimeout.current)
   }, [])
 
@@ -162,37 +103,16 @@ export default function Page() {
     setActive((current) => (current + direction + showcase.length) % showcase.length)
     pauseFan()
   }
-  const pauseHeroAfterInteraction = () => {
-    setHeroInteractionPaused(true)
-    if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
-    heroPauseTimeout.current = window.setTimeout(() => {
-      setHeroInteractionPaused(false)
-      heroPauseTimeout.current = null
-    }, 6000)
-  }
-  const moveHero = (direction: number) => {
-    setHeroActive((current) => (current + direction + heroSlides.length) % heroSlides.length)
-    pauseHeroAfterInteraction()
-  }
-  const handleHeroKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault()
-      moveHero(1)
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault()
-      moveHero(-1)
+  const togglePromoSound = () => {
+    const video = promoRef.current
+    if (!video) return
+    const nextMuted = !video.muted
+    video.muted = nextMuted
+    setPromoMuted(nextMuted)
+    if (!nextMuted) {
+      const play = video.play()
+      if (play) play.catch(() => {})
     }
-  }
-  const handleHeroPointerDown = (event: React.PointerEvent<HTMLElement>) => {
-    if (event.button !== 0 || (event.target instanceof Element && event.target.closest('a, button'))) return
-    heroDragStartX.current = event.clientX
-    event.currentTarget.setPointerCapture(event.pointerId)
-  }
-  const handleHeroPointerUp = (event: React.PointerEvent<HTMLElement>) => {
-    if (heroDragStartX.current === null) return
-    const distance = event.clientX - heroDragStartX.current
-    heroDragStartX.current = null
-    if (Math.abs(distance) > 48) moveHero(distance < 0 ? 1 : -1)
   }
   const handleCarouselKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'ArrowLeft') {
@@ -300,76 +220,27 @@ export default function Page() {
       </section>
 
 
-      <section
-        id="top"
-        className="hero"
-        aria-label="مشاريع بروة"
-        aria-roledescription="carousel"
-        tabIndex={0}
-        onKeyDown={handleHeroKeyDown}
-        onPointerDown={handleHeroPointerDown}
-        onPointerUp={handleHeroPointerUp}
-        onPointerCancel={() => { heroDragStartX.current = null }}
-        onPointerLeave={() => { heroDragStartX.current = null }}
-        onMouseEnter={() => setHeroHovered(true)}
-        onMouseLeave={() => setHeroHovered(false)}
-        onFocus={() => setHeroFocused(true)}
-        onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setHeroFocused(false)
-        }}
-      >
-        <div className="hero-image" aria-hidden="true">
-          {heroSlides.map((slide, index) => (
-            <img
-              key={slide.image}
-              className={`hero-slide-image ${index === heroActive ? 'is-active' : ''}`}
-              src={slide.image}
-              alt=""
-              aria-hidden="true"
-              style={{
-                '--image-position': slide.imagePosition,
-                '--mobile-image-position': slide.mobileImagePosition,
-              } as React.CSSProperties}
-              fetchPriority={index === 0 ? 'high' : 'auto'}
-            />
-          ))}
-        </div>
-        <div className="hero-copy" key={heroActive} aria-live="polite">
-          <span className="hero-kicker">{heroSlides[heroActive].eyebrow}</span>
-          <h1>
-            {heroSlides[heroActive].title}
-            {heroSlides[heroActive].emphasis && <em>{heroSlides[heroActive].emphasis}</em>}
-            <small lang="en" dir="ltr">{heroSlides[heroActive].englishName}</small>
-          </h1>
-          <p>{heroSlides[heroActive].description}</p>
-          {heroSlides[heroActive].type && (
-            <UsePills arabic={heroSlides[heroActive].type} english={heroSlides[heroActive].englishType} />
-          )}
-          <a className="hero-project-link" href={heroSlides[heroActive].href}>استكشف المشروع <MoveUpRight /></a>
-        </div>
-        <div className="hero-meta">
-          <button type="button" className="hero-arrow" onClick={() => moveHero(-1)} aria-label="الشريحة السابقة"><ChevronRight /></button>
-          <span>{String(heroActive + 1).padStart(2, '0')}</span><i /><span>04</span>
-          <button type="button" className="hero-arrow" onClick={() => moveHero(1)} aria-label="الشريحة التالية"><ChevronLeft /></button>
-          <small>اسحب للأسفل</small>
-        </div>
-        <nav className="hero-rail" aria-label="شرائح المشاريع">
-          {heroSlides.map((slide, index) => (
-            <button
-              type="button"
-              key={slide.image}
-              className={heroActive === index ? 'is-active' : ''}
-              onClick={() => {
-                setHeroActive(index)
-                pauseHeroAfterInteraction()
-              }}
-              aria-label={`الشريحة ${String(index + 1).padStart(2, '0')}`}
-              aria-current={heroActive === index ? 'true' : undefined}
-            >
-              {String(index + 1).padStart(2, '0')}
-            </button>
-          ))}
-        </nav>
+      <section id="top" className="home-promo" aria-label="عرض بروة">
+        <video
+          ref={promoRef}
+          className="home-promo-video"
+          src={promoVideo}
+          poster={promoPoster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+        <button
+          type="button"
+          className="home-promo-sound"
+          aria-pressed={!promoMuted}
+          aria-label={promoMuted ? 'تشغيل الصوت' : 'كتم الصوت'}
+          onClick={togglePromoSound}
+        >
+          {promoMuted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
+        </button>
       </section>
 
       <section className="legacy section-pad reveal" aria-labelledby="legacy-title">
