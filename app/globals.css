@@ -1624,7 +1624,7 @@ footer {
   min-height: 100%;
   background-image:
     linear-gradient(90deg, rgba(0,0,0,.06), rgba(0,0,0,.3)),
-    url('/banners/central-mall.jpg');
+    url('/projects/central-mall/hero.jpg');
   background-position: center;
   background-size: cover;
 }
@@ -2233,7 +2233,7 @@ footer {
   text-align: center;
   background:
     linear-gradient(90deg, rgba(0,0,0,.88), rgba(0,0,0,.76)),
-    url('/banners/offer.jpg') center 55% / cover;
+    url('/projects/barwa-mall/hero.jpg') center 46% / cover;
   color: var(--c-ivory-soft);
 
   .eyebrow { margin-bottom: 1rem; color: var(--c-magenta-light); }

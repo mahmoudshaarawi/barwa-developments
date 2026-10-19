@@ -107,23 +107,28 @@ export type Project = {
   operations: ProjectOperations
   features: ProjectFeature[]
   facts: Array<{ label: string; value: string; englishLabel: string; englishValue: string }>
+  brochure: string
+  liveStreamUrl?: string
 }
 
-const constructionStageTemplates: ConstructionStage[] = [
-  { id: 'excavation', titleAr: 'أعمال الحفر', titleEn: 'Excavation', status: null },
-  { id: 'foundations', titleAr: 'الأساسات', titleEn: 'Foundations', status: null },
-  { id: 'structure', titleAr: 'الهيكل الإنشائي', titleEn: 'Structural Works', status: null },
-  { id: 'facade', titleAr: 'الواجهات', titleEn: 'Facade Works', status: null },
-  { id: 'interior', titleAr: 'الأعمال الداخلية', titleEn: 'Interior Works', status: null },
-  { id: 'finishing', titleAr: 'التشطيبات', titleEn: 'Finishing', status: null },
-  { id: 'handover', titleAr: 'التسليم', titleEn: 'Handover', status: null },
+const constructionSteps: Array<Pick<ConstructionStage, 'id' | 'titleAr' | 'titleEn'>> = [
+  { id: 'permits', titleAr: 'الترخيص / الحفر', titleEn: 'Permits / excavation' },
+  { id: 'foundations', titleAr: 'الأساسات', titleEn: 'Foundations' },
+  { id: 'structure', titleAr: 'الهيكل الخرساني', titleEn: 'Concrete structure' },
+  { id: 'facades', titleAr: 'الواجهات', titleEn: 'Facades' },
+  { id: 'finishes', titleAr: 'التشطيبات', titleEn: 'Finishes' },
+  { id: 'handover', titleAr: 'التسليم', titleEn: 'Handover' },
 ]
 
-function emptyProjectOperations(): ProjectOperations {
+function projectOperations(currentStageId: string): ProjectOperations {
+  const currentIndex = constructionSteps.findIndex((stage) => stage.id === currentStageId)
   return {
     units: [],
-    constructionStages: constructionStageTemplates.map((stage) => ({ ...stage })),
-    currentConstructionStage: null,
+    constructionStages: constructionSteps.map((stage, index) => ({
+      ...stage,
+      status: index < currentIndex ? 'completed' : index === currentIndex ? 'current' : 'upcoming',
+    })),
+    currentConstructionStage: currentStageId,
     constructionProgress: null,
     constructionUpdates: [],
   }
@@ -145,12 +150,13 @@ const projectRecords: Omit<Project, 'floorPlans'>[] = [
     englishDetailDescription: 'HUB 5 is a multi-purpose centre for retail, office and medical use — ground and first floors offer retail spaces of different sizes, while the second and third floors are dedicated to administrative offices and medical clinics, designed for maximum comfort and efficiency.',
     tagline: 'حيث تلتقي مسارات الحياة',
     englishTagline: "Where Life's Paths Meet",
-    image: '/projects/hub5-mall/gallery-01.jpg',
-    listingImage: '/banners/hub5-mall.jpg',
-    imagePosition: 'center 58%',
+    image: '/projects/hub5-mall/hero.jpg',
+    listingImage: '/projects/hub5-mall/hero.jpg',
+    imagePosition: 'center 48%',
     number: '01',
     assetDirectory: '/projects/hub5-mall',
-    galleryImages: ['gallery-01.jpg'],
+    brochure: '/brochures/hub5.pdf',
+    galleryImages: ['gallery-01.jpg', 'gallery-02.jpg', 'gallery-03.jpg'],
     locationContext: 'المنطقة الخامسة – مجاورة ٢. على بُعد دقائق من طريق الحرية وطريق جمال عبد الناصر وطريق السويس، ويخدم المناطق الخامسة والرابعة والثامنة. أكثر من ٩٬٠٠٠ وحدة سكنية حول المشروع، منها إسكان المستقبل.',
     englishLocationContext: 'District 5 – Neighbourhood 2. Minutes from Al-Horreya Road, Gamal Abdel Nasser Road and Suez Road — serving Districts 5, 4 and 8. More than 9,000 residential units around the project, including Mostakbal Housing.',
     projectComposition: 'أربعة أدوار و٤٨ وحدة ومدخلان. الأرضي والأول تجاري، والثاني والثالث مكاتب إدارية وعيادات طبية. مساحات الوحدات من ١٢ إلى ٨٦ م².',
@@ -169,7 +175,7 @@ const projectRecords: Omit<Project, 'floorPlans'>[] = [
       { arabic: 'مساحات مرنة ١٢–٨٦ م²', english: 'Flexible areas 12–86 m²' },
       { arabic: 'عائد مرتفع وتصميم عصري', english: 'High ROI · modern design' },
     ],
-    operations: emptyProjectOperations(),
+    operations: projectOperations('facades'),
     features: [
       { icon: 'trees', arabic: 'مساحات خارجية', english: 'Outdoor areas' },
       { icon: 'access', arabic: 'تحكم في الدخول', english: 'Access control' },
@@ -208,13 +214,14 @@ const projectRecords: Omit<Project, 'floorPlans'>[] = [
     englishDetailDescription: 'Central Mall comprises two basements (one parking garage, one hypermarket), a ground floor and three upper floors — shops on the ground and first floors, administrative offices and medical clinics on the second and third.',
     tagline: 'حيث تنبض التجارة بالحياة',
     englishTagline: 'Where Commerce Comes Alive',
-    image: '/projects/central-mall/gallery-01.jpg',
-    listingImage: '/banners/central-mall.jpg',
-    imagePosition: 'center 52%',
+    image: '/projects/central-mall/hero.jpg',
+    listingImage: '/projects/central-mall/hero.jpg',
+    imagePosition: 'center 42%',
     number: '02',
     assetDirectory: '/projects/central-mall',
+    brochure: '/brochures/central-mall.pdf',
     locationMap: 'location-map.jpg',
-    galleryImages: ['gallery-01.jpg'],
+    galleryImages: ['gallery-01.jpg', 'gallery-02.jpg', 'gallery-03.jpg'],
     locationContext: 'المنطقة المركزية الثانية – مدينة الشروق. على طريق النصر مباشرة أمام الحي الثالث، بجوار دار مصر وجنة مصر، وموازٍ لمحور الحرية الرئيسي، وعلى بُعد نحو ثلاث دقائق من طريق السويس.',
     englishLocationContext: 'Second Central Area – El Shorouk City. On Al-Nasr Road, directly in front of the Third District — beside Dar Misr and Jannat Misr. Parallel to the main Horreya Axis, about three minutes from Suez Road.',
     projectComposition: 'ستة مستويات و١١٧ وحدة: بدرومان (جراج وهايبر ماركت)، وطابق أرضي، وثلاثة طوابق علوية. الأرضي والأول تجاري، والثاني والثالث مكاتب وعيادات.',
@@ -233,7 +240,7 @@ const projectRecords: Omit<Project, 'floorPlans'>[] = [
       { arabic: 'بلازا مركزية وسلم كهربائي', english: 'Central plaza & escalator' },
       { arabic: 'تجاري + مكاتب + طبي', english: 'Retail + offices + medical' },
     ],
-    operations: emptyProjectOperations(),
+    operations: projectOperations('foundations'),
     features: [
       { icon: 'parking', arabic: 'جراج بالبدروم', english: 'Basement parking' },
       { icon: 'plaza', arabic: 'هايبر ماركت بالبدروم', english: 'Basement hypermarket' },
@@ -271,13 +278,14 @@ const projectRecords: Omit<Project, 'floorPlans'>[] = [
     englishDetailDescription: 'Barwa Mall is an integrated retail, office and medical complex in one of El Shorouk City’s most distinguished locations — overlooking a landscaped garden and designed with contemporary architecture to maximise investment return and user experience.',
     tagline: 'حيث يلتقي الموقع بالفرصة',
     englishTagline: 'Where Location Meets Opportunity',
-    image: '/projects/barwa-mall/gallery-01.jpg',
-    listingImage: '/banners/barwa-mall.jpg',
-    imagePosition: 'center 55%',
+    image: '/projects/barwa-mall/hero.jpg',
+    listingImage: '/projects/barwa-mall/hero.jpg',
+    imagePosition: 'center 46%',
     number: '03',
     assetDirectory: '/projects/barwa-mall',
+    brochure: '/brochures/barwa-mall.pdf',
     locationMap: 'location-map.jpg',
-    galleryImages: ['gallery-01.jpg'],
+    galleryImages: ['gallery-01.jpg', 'gallery-02.jpg', 'gallery-03.jpg'],
     locationContext: 'منطقة خدمات الحي المتميز، بالقرب من الحي الثامن والحي التاسع وحي الوزراء وطريق الشباب — مدينة الشروق، القاهرة.',
     englishLocationContext: 'Services zone of the Distinguished District, near District 8, District 9, the Ministers’ District and El Shabab Road — El Shorouk City, Cairo.',
     projectComposition: 'أربعة أدوار و٥١ وحدة ومدخلان رئيسيان. الأرضي والأول تجاري، والثاني والثالث مكاتب إدارية وعيادات طبية.',
@@ -296,7 +304,7 @@ const projectRecords: Omit<Project, 'floorPlans'>[] = [
       { arabic: 'خطط سداد مرنة', english: 'Flexible payment plans' },
       { arabic: 'دعم ما بعد البيع', english: 'After-sales support' },
     ],
-    operations: emptyProjectOperations(),
+    operations: projectOperations('facades'),
     features: [
       { icon: 'facade', arabic: 'واجهة عصرية', english: 'Modern façade' },
       { icon: 'entrances', arabic: 'مدخلان رئيسيان', english: 'Two entrances' },

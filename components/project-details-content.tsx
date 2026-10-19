@@ -8,9 +8,8 @@ import {
   ArrowUpRight,
   Building2,
   Car,
-  Check,
-  Circle,
   DoorOpen,
+  Download,
   Flame,
   Layers,
   Mail,
@@ -31,10 +30,10 @@ import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
 import { UsePills } from './use-pills'
 import { useLanguage } from './language-provider'
+import { LiveCamera } from './live-camera'
 import { CONTACT } from '@/lib/contact'
 import {
   projects,
-  type ConstructionStageStatus,
   type Project,
   type ProjectFeature,
   type ProjectUnit,
@@ -112,7 +111,9 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
   }, [lightbox, selectedUnit])
 
   const visibleUnits = project.operations.units.filter((unit) => unit.floorKey === selectedFloor)
-  const constructionProgress = project.operations.constructionProgress
+  const currentStageTitle = currentConstructionStage
+    ? (isArabic ? `مرحلة ${currentConstructionStage.titleAr}` : currentConstructionStage.titleEn)
+    : ''
 
   return (
     <main className="site-shell project-detail-page" dir={isArabic ? 'rtl' : 'ltr'}>
@@ -131,10 +132,16 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           <UsePills arabic={project.type} english={project.englishType} isArabic={isArabic} />
           <h2>{isArabic ? project.tagline : project.englishTagline}</h2>
           <p>{isArabic ? project.description : project.englishDescription}</p>
-          <Link href={`/contact-us?project=${project.slug}`} className="project-call-link hero-secondary-link">
-            {isArabic ? 'استفسر عن المشروع' : 'Enquire about this project'}
-            {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
-          </Link>
+          <div className="project-hero-actions">
+            <Link href={`/contact-us?project=${project.slug}`} className="project-call-link hero-secondary-link">
+              {isArabic ? 'استفسر عن المشروع' : 'Enquire about this project'}
+              {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
+            </Link>
+            <a className="project-brochure-link" href={project.brochure} download>
+              <Download aria-hidden="true" />
+              {isArabic ? 'تحميل البروشور' : 'Download brochure'}
+            </a>
+          </div>
         </div>
         <span className="project-detail-hero-number">{project.number} / 03</span>
       </section>
@@ -407,96 +414,34 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
         </section>
       )}
 
-      <section className="project-construction section-pad">
+      <section className="project-construction section-pad" aria-labelledby="construction-title">
         <div className="project-section-heading">
-          <span className="eyebrow">{isArabic ? '07 / مراحل التطوير' : '07 / DEVELOPMENT JOURNEY'}</span>
-          <h2>{isArabic ? 'مراحل الإنشاء' : 'Construction Progress'}</h2>
-          <p>{isArabic
-            ? 'تُحدّث حالة المراحل عند توفر معلومات موثقة.'
-            : 'Stage status is updated when verified information is available.'}</p>
+          <span className="eyebrow">{isArabic ? '07 / مرحلة المشروع' : '07 / PROJECT STAGE'}</span>
+          <h2 id="construction-title">{isArabic ? 'مراحل التنفيذ' : 'Construction stages'}</h2>
         </div>
-        {currentConstructionStage && (
-          <div className="project-current-stage">
-            <span>{isArabic ? 'المرحلة الحالية' : 'Current Stage'}</span>
-            <strong>{isArabic ? currentConstructionStage.titleAr : currentConstructionStage.titleEn}</strong>
-          </div>
-        )}
-        {constructionProgress != null && constructionProgress >= 0 && constructionProgress <= 100 && (
-          <div className="project-progress">
-            <span>{isArabic ? 'نسبة الإنجاز' : 'Construction Progress'}</span>
-            <strong>{constructionProgress}%</strong>
-          </div>
-        )}
-        {project.operations.constructionStages.length > 0 ? (
-          <>
-            {!project.operations.constructionStages.some((stage) =>
-              stage.status !== null || stage.id === project.operations.currentConstructionStage
-            ) && (
-              <p className="project-construction-unreported">
-                {isArabic ? 'لم تُنشر بعد حالة موثقة لمراحل الإنشاء.' : 'Verified construction stage updates have not been published yet.'}
-              </p>
-            )}
-            <ol className="project-construction-timeline">
-              {project.operations.constructionStages.map((stage, index) => {
-                const stageStatus = project.operations.currentConstructionStage === stage.id
-                  ? 'current'
-                  : stage.status
-                return (
-                  <li className={`project-construction-stage ${stageStatus ? `is-${stageStatus}` : 'is-unreported'}`} key={stage.id}>
-                    <span className="project-stage-marker" aria-hidden="true">
-                      {stageStatus === 'completed' ? <Check /> : stageStatus === 'current' ? <i /> : <Circle />}
-                    </span>
-                    <span className="project-stage-number" dir="ltr">0{index + 1}</span>
-                    <div className="project-stage-copy">
-                      <h3>{isArabic ? stage.titleAr : stage.titleEn}</h3>
-                      {stage.date && <span>{stage.date}</span>}
-                      {(isArabic ? stage.descriptionAr ?? stage.descriptionEn : stage.descriptionEn ?? stage.descriptionAr) && (
-                        <p>{isArabic ? stage.descriptionAr ?? stage.descriptionEn : stage.descriptionEn ?? stage.descriptionAr}</p>
-                      )}
-                      {stageStatus && (
-                        <span className="project-stage-status">
-                          {isArabic ? stageStatusArabic[stageStatus] : stageStatusEnglish[stageStatus]}
-                        </span>
-                      )}
-                    </div>
-                    {stage.image && (
-                      <img className="project-stage-image" src={asset(stage.image)} alt="" loading="lazy" />
-                    )}
-                  </li>
-                )
-              })}
-            </ol>
-          </>
-        ) : (
-          <p className="project-construction-unreported">
-            {isArabic ? 'سيتم نشر مراحل الإنشاء عند توفر تحديثات موثقة.' : 'Construction stages will be published when verified updates are available.'}
-          </p>
-        )}
+        {currentStageTitle && <p className="stage-badge stage-badge-current">{currentStageTitle}</p>}
+        <ol className="stage-timeline">
+          {project.operations.constructionStages.map((stage) => {
+            const stageStatus = stage.status ?? 'upcoming'
+            return (
+              <li className={`is-${stageStatus}`} key={stage.id} aria-current={stageStatus === 'current' ? 'step' : undefined}>
+                <span className="stage-dot" aria-hidden="true" />
+                <span className="stage-name">{isArabic ? stage.titleAr : stage.titleEn}</span>
+              </li>
+            )
+          })}
+        </ol>
       </section>
 
-      <section className="project-construction-updates section-pad">
-        <div className="project-section-heading">
-          <span className="eyebrow">{isArabic ? '08 / تحديثات الموقع' : '08 / SITE UPDATES'}</span>
-          <h2>{isArabic ? 'آخر تحديثات المشروع' : 'Latest Construction Updates'}</h2>
-        </div>
-        {project.operations.constructionUpdates.length > 0 ? (
-          <div className="project-updates-grid">
-            {project.operations.constructionUpdates.map((update) => (
-              <figure className="project-update" key={update.id}>
-                <img src={asset(update.image)} alt={isArabic ? update.captionAr ?? '' : update.captionEn ?? ''} loading="lazy" />
-                <figcaption>
-                  <time>{update.date}</time>
-                  {(isArabic ? update.captionAr : update.captionEn) && <span>{isArabic ? update.captionAr : update.captionEn}</span>}
-                </figcaption>
-              </figure>
-            ))}
+      {project.liveStreamUrl ? (
+        <section className="live-camera section-pad" aria-labelledby="live-camera-title">
+          <div className="project-section-heading">
+            <span className="eyebrow">{isArabic ? '08 / الموقع' : '08 / SITE'}</span>
+            <h2 id="live-camera-title">{isArabic ? 'مشاهدة الموقع مباشرة' : 'Watch the site live'}</h2>
           </div>
-        ) : (
-          <p className="project-construction-unreported">
-            {isArabic ? 'لا توجد تحديثات مصوّرة منشورة حاليًا.' : 'No construction photo updates have been published yet.'}
-          </p>
-        )}
-      </section>
+          <LiveCamera src={project.liveStreamUrl} />
+        </section>
+      ) : null}
 
       <section className="project-contact brochure-close-band section-pad">
         <span className="eyebrow light">{isArabic ? 'HOTLINE · الخط الساخن' : 'HOTLINE'}</span>
@@ -652,18 +597,6 @@ const unitStatusEnglish = {
   reserved: 'Reserved',
   sold: 'Sold',
 } as const
-
-const stageStatusArabic: Record<ConstructionStageStatus, string> = {
-  completed: 'مكتملة',
-  current: 'المرحلة الحالية',
-  upcoming: 'قادمة',
-}
-
-const stageStatusEnglish: Record<ConstructionStageStatus, string> = {
-  completed: 'Completed',
-  current: 'Current Stage',
-  upcoming: 'Upcoming',
-}
 
 function floorForUnit(project: Project, unit: ProjectUnit) {
   return project.floors.find((floor) => floor.key === unit.floorKey)

@@ -1,14 +1,27 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowUpLeft, ArrowUpRight, Mail, MoveUpRight, Phone } from 'lucide-react'
+import { ArrowUpLeft, ArrowUpRight, Download, MoveUpRight } from 'lucide-react'
 import { ProjectInquiryForm } from '@/components/project-inquiry-form'
 import { UsePills } from '@/components/use-pills'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { useLanguage } from '@/components/language-provider'
-import { CONTACT } from '@/lib/contact'
-import { projects } from '@/lib/projects'
+import { projects, type Project } from '@/lib/projects'
+
+function projectWordmark(displayName: string) {
+  const parts = displayName.trim().split(/\s+/)
+  if (parts.length > 1 && parts[parts.length - 1].toUpperCase() === 'MALL') {
+    return { title: parts.slice(0, -1).join(' '), subtitle: 'MALL' }
+  }
+  return { title: displayName, subtitle: '' }
+}
+
+function currentStageLabel(project: Project, isArabic: boolean) {
+  const stage = project.operations.constructionStages.find((item) => item.id === project.operations.currentConstructionStage)
+  if (!stage) return ''
+  return isArabic ? `مرحلة ${stage.titleAr}` : stage.titleEn
+}
 
 export default function ProjectsPage() {
   const { language } = useLanguage()
@@ -32,52 +45,47 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="projects-listing section-pad" aria-label={isArabic ? 'مشاريع بروة' : 'Barwa projects'}>
-        <div className="projects-listing-grid">
-          {[...projects].reverse().map((project) => (
-            <article className="listing-project-card" key={project.slug}>
-              <Link href={`/projects/${project.slug}`} className="listing-project-image" aria-label={isArabic ? `تفاصيل ${project.arabic}` : `${project.name} project details`}>
-                <img
-                  src={project.listingImage}
-                  alt=""
-                  loading="lazy"
-                  style={{ objectPosition: project.imagePosition }}
-                />
-                <span className="listing-project-number">{project.number}</span>
+      <section className="destination-list section-pad" aria-label={isArabic ? 'مشاريع بروة' : 'Barwa projects'}>
+        {[...projects].reverse().map((project) => {
+          const mark = projectWordmark(project.displayName)
+          const facts = project.facts.filter((fact) => fact.label !== 'الموقع').slice(0, 3)
+          return (
+            <article className="destination-row" key={project.slug}>
+              <Link href={`/projects/${project.slug}`} className="destination-media" aria-label={isArabic ? `تفاصيل ${project.arabic}` : `${project.displayName} details`}>
+                <img src={project.listingImage} alt="" style={{ objectPosition: project.imagePosition }} />
+                <span className="destination-mark" lang="en" dir="ltr">
+                  <b>{mark.title}</b>
+                  {mark.subtitle && <small>{mark.subtitle}</small>}
+                </span>
+                <span className="stage-badge stage-badge-on-photo">{currentStageLabel(project, isArabic)}</span>
               </Link>
-              <div className="listing-project-content">
-                <span className="eyebrow">{isArabic ? project.location : project.englishLocation}</span>
-                <h2 dir="auto">{isArabic ? project.arabic : project.displayName}</h2>
+              <div className="destination-copy">
+                <span className="eyebrow" dir="ltr">{project.number} / 03</span>
+                <h2>{isArabic ? project.arabic : project.displayName}</h2>
+                <p className="destination-location">{isArabic ? project.location : project.englishLocation}</p>
                 <UsePills arabic={project.type} english={project.englishType} isArabic={isArabic} />
-                <p>{isArabic ? project.description : project.englishDescription}</p>
-                <div className="listing-project-actions">
-                  <div className="listing-project-contact">
-                    <a
-                      className="listing-contact-icon"
-                      href={CONTACT.phoneHref}
-                      aria-label={isArabic ? `اتصل للاستفسار عن ${project.arabic}` : `Call about ${project.displayName}`}
-                      title={isArabic ? 'اتصال' : 'Call'}
-                    >
-                      <Phone aria-hidden="true" />
-                    </a>
-                    <Link
-                      className="listing-contact-icon"
-                      href={`/contact-us?project=${project.slug}`}
-                      aria-label={isArabic ? `أرسل استفسارًا عن ${project.arabic}` : `Enquire about ${project.displayName}`}
-                      title={isArabic ? 'استفسار' : 'Enquiry'}
-                    >
-                      <Mail aria-hidden="true" />
-                    </Link>
-                  </div>
-                  <Link className="listing-project-link" href={`/projects/${project.slug}`}>
-                    {isArabic ? 'تفاصيل المشروع' : 'Project Details'}
+                <dl className="destination-facts">
+                  {facts.map((fact) => (
+                    <div key={fact.englishLabel}>
+                      <dt>{isArabic ? fact.label : fact.englishLabel}</dt>
+                      <dd>{isArabic ? fact.value : fact.englishValue}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="destination-actions">
+                  <Link className="button-link" href={`/projects/${project.slug}`}>
+                    {isArabic ? 'تفاصيل المشروع' : 'Project details'}
                     {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
                   </Link>
+                  <a className="project-brochure-link" href={project.brochure} download>
+                    <Download aria-hidden="true" />
+                    {isArabic ? 'تحميل البروشور' : 'Download brochure'}
+                  </a>
                 </div>
               </div>
             </article>
-          ))}
-        </div>
+          )
+        })}
       </section>
 
       <section className="projects-inquiry section-pad">
