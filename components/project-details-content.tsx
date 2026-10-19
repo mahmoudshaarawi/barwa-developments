@@ -30,7 +30,7 @@ import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
 import { UsePills } from './use-pills'
 import { useLanguage } from './language-provider'
-import { LiveCamera } from './live-camera'
+import { LiveConstruction } from './live-construction'
 import { CONTACT } from '@/lib/contact'
 import {
   projects,
@@ -433,15 +433,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
         </ol>
       </section>
 
-      {project.liveStreamUrl ? (
-        <section className="live-camera section-pad" aria-labelledby="live-camera-title">
-          <div className="project-section-heading">
-            <span className="eyebrow">{isArabic ? '08 / الموقع' : '08 / SITE'}</span>
-            <h2 id="live-camera-title">{isArabic ? 'مشاهدة الموقع مباشرة' : 'Watch the site live'}</h2>
-          </div>
-          <LiveCamera src={project.liveStreamUrl} />
-        </section>
-      ) : null}
+      <LiveConstruction items={[project]} isArabic={isArabic} />
 
       <section className="project-contact brochure-close-band section-pad">
         <span className="eyebrow light">{isArabic ? 'HOTLINE · الخط الساخن' : 'HOTLINE'}</span>

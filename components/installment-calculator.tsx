@@ -11,7 +11,7 @@ const calculatorProjects = showcaseOrder
   .filter((project): project is (typeof projects)[number] => Boolean(project))
 
 const phonePattern = /^01\d{9}$/
-const FORM_ENDPOINT = 'https://formsubmit.co/ajax/moud.designs@gmail.com'
+const FORM_ENDPOINT = 'https://formsubmit.co/ajax/Barwadevelopments.eg@gmail.com'
 
 type Payment = 'installments' | 'cash'
 
@@ -69,17 +69,17 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
 
     const useLabel = availableUses.find((item) => item.id === unitUse)
     const payload = {
-      _subject: `طلب حسبة أقساط — ${selectedProject.arabic}`,
+      _subject: `Installment request — ${selectedProject.displayName}`,
       _template: 'table',
       _captcha: 'false',
-      الاسم: name.trim(),
-      الهاتف: phone,
-      المشروع: `${selectedProject.arabic} / ${selectedProject.displayName}`,
-      النوع: useLabel ? `${useLabel.arabic} / ${useLabel.english}` : unitUse,
-      المساحة: formatArea(Number(area)),
-      السداد: payment === 'cash' ? 'كاش' : 'تقسيط',
-      المقدم: payment === 'installments' ? `${downPayment} جنيه` : '—',
-      'القسط التقريبي': payment === 'installments' ? `${installmentAmount} جنيه` : '—',
+      name: name.trim(),
+      phone,
+      project: `${selectedProject.displayName} — ${selectedProject.arabic}`,
+      unit_type: useLabel ? `${useLabel.english} — ${useLabel.arabic}` : unitUse,
+      area: formatArea(Number(area), 'en'),
+      payment: payment === 'cash' ? 'Cash' : 'Installments',
+      down_payment: payment === 'installments' ? `${downPayment} EGP` : '—',
+      installment: payment === 'installments' ? `${installmentAmount} EGP` : '—',
     }
 
     setStatus('sending')
@@ -172,7 +172,7 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
           <select name="area" value={area} onChange={(event) => setArea(event.target.value)} required>
             <option value="">{isArabic ? 'اختر المساحة' : 'Select an area'}</option>
             {availableAreas.map((value) => (
-              <option key={value} value={value}>{formatArea(value)}</option>
+              <option key={value} value={value}>{formatArea(value, isArabic ? 'ar' : 'en')}</option>
             ))}
           </select>
         </label>
@@ -258,7 +258,7 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
       <dl>
         <div><dt>{isArabic ? 'المشروع' : 'Project'}</dt><dd>{selectedProject ? (isArabic ? selectedProject.arabic : selectedProject.displayName) : '—'}</dd></div>
         <div><dt>{isArabic ? 'النوع' : 'Type'}</dt><dd>{useLabel ? (isArabic ? useLabel.arabic : useLabel.english) : '—'}</dd></div>
-        <div><dt>{isArabic ? 'المساحة' : 'Area'}</dt><dd>{area ? formatArea(Number(area)) : '—'}</dd></div>
+        <div><dt>{isArabic ? 'المساحة' : 'Area'}</dt><dd>{area ? formatArea(Number(area), isArabic ? 'ar' : 'en') : '—'}</dd></div>
         <div><dt>{isArabic ? 'السداد' : 'Payment'}</dt><dd>{payment === 'cash' ? (isArabic ? 'كاش' : 'Cash') : payment === 'installments' ? (isArabic ? 'تقسيط' : 'Installments') : '—'}</dd></div>
         {payment === 'installments' && (
           <>

@@ -1,27 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowUpLeft, ArrowUpRight, Download, MoveUpRight } from 'lucide-react'
+import { ArrowUpLeft, ArrowUpRight, Download, MapPin, MoveUpRight } from 'lucide-react'
+import { LiveConstruction } from '@/components/live-construction'
 import { ProjectInquiryForm } from '@/components/project-inquiry-form'
 import { UsePills } from '@/components/use-pills'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { useLanguage } from '@/components/language-provider'
-import { projects, type Project } from '@/lib/projects'
+import { constructionStageLabel, projects } from '@/lib/projects'
 
-function projectWordmark(displayName: string) {
-  const parts = displayName.trim().split(/\s+/)
-  if (parts.length > 1 && parts[parts.length - 1].toUpperCase() === 'MALL') {
-    return { title: parts.slice(0, -1).join(' '), subtitle: 'MALL' }
-  }
-  return { title: displayName, subtitle: '' }
-}
-
-function currentStageLabel(project: Project, isArabic: boolean) {
-  const stage = project.operations.constructionStages.find((item) => item.id === project.operations.currentConstructionStage)
-  if (!stage) return ''
-  return isArabic ? `مرحلة ${stage.titleAr}` : stage.titleEn
-}
+const orderedProjects = [...projects].reverse()
 
 export default function ProjectsPage() {
   const { language } = useLanguage()
@@ -34,7 +23,7 @@ export default function ProjectsPage() {
         <div className="section-kicker"><span>01</span><i /><span>{isArabic ? 'وجهات بروة' : 'BARWA DESTINATIONS'}</span></div>
         <div className="projects-page-heading">
           <div>
-            <span className="eyebrow">{isArabic ? 'BARWA DEVELOPMENTS' : 'بروة للتطوير العقاري'}</span>
+            <span className="eyebrow">{isArabic ? 'بروة للتطوير العقاري' : 'BARWA DEVELOPMENTS'}</span>
             <h1>{isArabic ? 'مشاريعنا' : 'Our Projects'}</h1>
           </div>
           <p>
@@ -46,24 +35,27 @@ export default function ProjectsPage() {
       </section>
 
       <section className="destination-list section-pad" aria-label={isArabic ? 'مشاريع بروة' : 'Barwa projects'}>
-        {[...projects].reverse().map((project) => {
-          const mark = projectWordmark(project.displayName)
+        {orderedProjects.map((project) => {
           const facts = project.facts.filter((fact) => fact.label !== 'الموقع').slice(0, 3)
+          const highlights = (project.highlights ?? []).slice(0, 2)
+          const name = isArabic ? project.arabic : project.displayName
           return (
-            <article className="destination-row" key={project.slug}>
+            <article className="destination-card" key={project.slug}>
               <Link href={`/projects/${project.slug}`} className="destination-media" aria-label={isArabic ? `تفاصيل ${project.arabic}` : `${project.displayName} details`}>
-                <img src={project.listingImage} alt="" style={{ objectPosition: project.imagePosition }} />
-                <span className="destination-mark" lang="en" dir="ltr">
-                  <b>{mark.title}</b>
-                  {mark.subtitle && <small>{mark.subtitle}</small>}
-                </span>
-                <span className="stage-badge stage-badge-on-photo">{currentStageLabel(project, isArabic)}</span>
+                <img src={project.listingImage} alt={isArabic ? `واجهة ${name}` : `${name} facade`} style={{ objectPosition: project.imagePosition }} />
+                <span className="stage-badge stage-badge-on-photo">{constructionStageLabel(project, isArabic)}</span>
               </Link>
               <div className="destination-copy">
-                <span className="eyebrow" dir="ltr">{project.number} / 03</span>
-                <h2>{isArabic ? project.arabic : project.displayName}</h2>
-                <p className="destination-location">{isArabic ? project.location : project.englishLocation}</p>
+                <h2>{name}</h2>
+                <p className="destination-location"><MapPin aria-hidden="true" />{isArabic ? project.location : project.englishLocation}</p>
                 <UsePills arabic={project.type} english={project.englishType} isArabic={isArabic} />
+                {highlights.length > 0 && (
+                  <ul className="destination-highlights">
+                    {highlights.map((item) => (
+                      <li key={item.english}>{isArabic ? item.arabic : item.english}</li>
+                    ))}
+                  </ul>
+                )}
                 <dl className="destination-facts">
                   {facts.map((fact) => (
                     <div key={fact.englishLabel}>
@@ -88,10 +80,12 @@ export default function ProjectsPage() {
         })}
       </section>
 
+      <LiveConstruction items={orderedProjects} isArabic={isArabic} />
+
       <section className="projects-inquiry section-pad">
         <div className="projects-inquiry-image" aria-hidden="true" />
         <div className="projects-inquiry-content">
-          <span className="eyebrow light">{isArabic ? 'BARWA DEVELOPMENTS' : 'بروة للتطوير العقاري'}</span>
+          <span className="eyebrow light">{isArabic ? 'بروة للتطوير العقاري' : 'BARWA DEVELOPMENTS'}</span>
           <h2>{isArabic ? 'اكتشف فرصتك القادمة معنا' : 'Discover your next opportunity with us'}</h2>
           <p>
             {isArabic

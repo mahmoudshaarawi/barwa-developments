@@ -576,8 +576,7 @@
   inset-inline-start: clamp(1.5rem, 8vw, 8rem);
   bottom: clamp(6rem, 10vh, 8rem);
   width: auto;
-  direction: rtl;
-  text-align: right;
+  text-align: start;
   animation: hero-copy-enter 650ms cubic-bezier(.2,.75,.25,1) both;
 }
 

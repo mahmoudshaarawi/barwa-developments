@@ -64,7 +64,7 @@ export function ContactUsForm() {
           <select name="project" value={selectedProject} onChange={(event) => setSelectedProject(event.target.value)}>
             <option value="general-inquiry">{isArabic ? 'استفسار عام' : 'General Inquiry'}</option>
             {projectChoices.map((project) => (
-              <option key={project.slug} value={project.slug}>{project.displayName}</option>
+              <option key={project.slug} value={project.slug}>{isArabic ? project.arabic : project.displayName}</option>
             ))}
           </select>
         </label>

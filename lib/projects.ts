@@ -120,6 +120,12 @@ const constructionSteps: Array<Pick<ConstructionStage, 'id' | 'titleAr' | 'title
   { id: 'handover', titleAr: 'التسليم', titleEn: 'Handover' },
 ]
 
+export function constructionStageLabel(project: Pick<Project, 'operations'>, isArabic: boolean) {
+  const stage = project.operations.constructionStages.find((item) => item.id === project.operations.currentConstructionStage)
+  if (!stage) return ''
+  return isArabic ? `مرحلة ${stage.titleAr}` : stage.titleEn
+}
+
 function projectOperations(currentStageId: string): ProjectOperations {
   const currentIndex = constructionSteps.findIndex((stage) => stage.id === currentStageId)
   return {

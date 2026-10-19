@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, Volume2, VolumeX } from 'lucide-react'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
+import { useLanguage } from '@/components/language-provider'
 import { CONTACT } from '@/lib/contact'
 import { projects } from '@/lib/projects'
 
@@ -22,6 +23,8 @@ const promoVideo = '/banners/Barwa-Promo-1920X8686551.mp4'
 const promoPoster = '/projects/barwa-mall/hero.jpg'
 
 export default function Page() {
+  const { language } = useLanguage()
+  const isArabic = language === 'ar'
   const [active, setActive] = useState(0)
   const [fanHovered, setFanHovered] = useState(false)
   const [fanPaused, setFanPaused] = useState(false)
@@ -115,12 +118,11 @@ export default function Page() {
     }
   }
   const handleCarouselKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'ArrowLeft') {
+    const forward = isArabic ? event.key === 'ArrowLeft' : event.key === 'ArrowRight'
+    const back = isArabic ? event.key === 'ArrowRight' : event.key === 'ArrowLeft'
+    if (forward || back) {
       event.preventDefault()
-      move(1)
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault()
-      move(-1)
+      move(forward ? 1 : -1)
     }
   }
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -135,7 +137,8 @@ export default function Page() {
     dragStartX.current = null
     if (Math.abs(distance) > 48) {
       fanDragged.current = true
-      move(distance > 0 ? 1 : -1)
+      const forward = isArabic ? distance > 0 : distance < 0
+      move(forward ? 1 : -1)
     }
   }
   const handleFanClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -145,18 +148,20 @@ export default function Page() {
   }
 
   return (
-    <main dir="rtl" className="site-shell" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
+    <main dir={isArabic ? 'rtl' : 'ltr'} className="site-shell" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
       <div className="scroll-progress" aria-hidden="true" />
       <SiteHeader scrolled={scrolled} />
 
       <section id="projects" className="projects home-projects section-pad reveal">
-        <div className="section-kicker"><span>01</span><i /><span>مشاريعنا</span></div>
-        <div className="projects-heading home-projects-heading"><h2>وجهات صُممت <em>للمستقبل</em></h2></div>
+        <div className="section-kicker"><span>01</span><i /><span>{isArabic ? 'مشاريعنا' : 'PROJECTS'}</span></div>
+        <div className="projects-heading home-projects-heading">
+          <h2>{isArabic ? <>وجهات صُممت <em>للمستقبل</em></> : <>Destinations designed <em>for the future</em></>}</h2>
+        </div>
         <div
           className="project-fan"
           role="region"
           aria-roledescription="carousel"
-          aria-label="مشاريع بروة"
+          aria-label={isArabic ? 'مشاريع بروة' : 'Barwa projects'}
           tabIndex={0}
           onKeyDown={handleCarouselKeyDown}
           onPointerDown={handlePointerDown}
@@ -196,14 +201,14 @@ export default function Page() {
                   <span className="project-fan-panel">
                     <span className="project-fan-location">
                       <MapPin aria-hidden="true" />
-                      <span>{item.location}</span>
+                      <span>{isArabic ? item.location : item.englishLocation}</span>
                     </span>
-                    <strong className="project-fan-arabic">{item.arabic}</strong>
-                    <span className="project-fan-english" lang="en" dir="ltr">{item.displayName}</span>
+                    <strong className="project-fan-arabic">{isArabic ? item.arabic : item.displayName}</strong>
+                    {isArabic && <span className="project-fan-english" lang="en" dir="ltr">{item.displayName}</span>}
                     <span className="project-fan-rule" aria-hidden="true" />
                     <span className="project-fan-use">
                       <Building2 aria-hidden="true" />
-                      <span>{item.type}</span>
+                      <span>{isArabic ? item.type : item.englishType}</span>
                     </span>
                   </span>
                 </a>
@@ -211,16 +216,24 @@ export default function Page() {
             })}
           </div>
           <div className="project-fan-controls">
-            <button type="button" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
-            <span aria-live="polite">{showcase[active].arabic}</span>
-            <button type="button" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
+            <button type="button" onClick={() => move(-1)} aria-label={isArabic ? 'المشروع السابق' : 'Previous project'}>
+              {isArabic ? <ChevronRight /> : <ChevronLeft />}
+            </button>
+            <span aria-live="polite">{isArabic ? showcase[active].arabic : showcase[active].displayName}</span>
+            <button type="button" onClick={() => move(1)} aria-label={isArabic ? 'المشروع التالي' : 'Next project'}>
+              {isArabic ? <ChevronLeft /> : <ChevronRight />}
+            </button>
           </div>
         </div>
-        <p className="home-projects-note">نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p>
+        <p className="home-projects-note">
+          {isArabic
+            ? 'نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.'
+            : 'We create spaces where life, work and investment meet, shaped by considered detail and a distinctive presence.'}
+        </p>
       </section>
 
 
-      <section id="top" className="home-promo" aria-label="عرض بروة">
+      <section id="top" className="home-promo" aria-label={isArabic ? 'عرض بروة' : 'Barwa film'}>
         <video
           ref={promoRef}
           className="home-promo-video"
@@ -236,7 +249,7 @@ export default function Page() {
           type="button"
           className="home-promo-sound"
           aria-pressed={!promoMuted}
-          aria-label={promoMuted ? 'تشغيل الصوت' : 'كتم الصوت'}
+          aria-label={promoMuted ? (isArabic ? 'تشغيل الصوت' : 'Play sound') : (isArabic ? 'كتم الصوت' : 'Mute')}
           onClick={togglePromoSound}
         >
           {promoMuted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
@@ -245,28 +258,32 @@ export default function Page() {
 
       <section className="legacy section-pad reveal" aria-labelledby="legacy-title">
         <div className="legacy-intro">
-          <div className="section-kicker"><span>02</span><i /><span>إرث من الإنجاز</span></div>
-          <h2 id="legacy-title">إرث من <em>الإنجاز</em></h2>
+          <div className="section-kicker"><span>02</span><i /><span>{isArabic ? 'إرث من الإنجاز' : 'A RECORD OF DELIVERY'}</span></div>
+          <h2 id="legacy-title">{isArabic ? <>إرث من <em>الإنجاز</em></> : <>A record of <em>delivery</em></>}</h2>
         </div>
         <ol className="legacy-stats">
-          <li><strong>55<sup>+</sup></strong><span>مشروعاً تم إنجازه خلال ١٥ عاماً</span></li>
-          <li><strong>12<sup>+</sup></strong><span>عمارة سكنية تم تسليمها</span></li>
-          <li><strong>15</strong><span>عاماً من الخبرة والتطوير العقاري</span></li>
+          <li><strong>55<sup>+</sup></strong><span>{isArabic ? 'مشروعاً تم إنجازه خلال ١٥ عاماً' : 'Projects delivered over 15 years'}</span></li>
+          <li><strong>12<sup>+</sup></strong><span>{isArabic ? 'عمارة سكنية تم تسليمها' : 'Residential buildings handed over'}</span></li>
+          <li><strong>15</strong><span>{isArabic ? 'عاماً من الخبرة والتطوير العقاري' : 'Years of real-estate development'}</span></li>
         </ol>
       </section>
 
       <section className="approach section-pad reveal">
         <div className="approach-copy">
-          <div className="section-kicker"><span>03</span><i /><span>عن بروة</span></div>
-          <h2>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></h2>
-          <p>منذ تأسيسها، تواصل بروة للتطوير العقاري بناء إرث من التميز والإنجازات البارزة. نخلق مشاريع استثنائية تجمع بين المواقع المتميزة، الجودة، وفرص الاستثمار المدروسة.</p>
-          <a className="text-link" href="#contact">تعرف على بروة <ArrowUpRight /></a>
+          <div className="section-kicker"><span>03</span><i /><span>{isArabic ? 'عن بروة' : 'ABOUT BARWA'}</span></div>
+          <h2>{isArabic ? <>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></> : <>We develop destinations<br /><em>that create real value</em></>}</h2>
+          <p>
+            {isArabic
+              ? 'منذ تأسيسها، تواصل بروة للتطوير العقاري بناء إرث من التميز والإنجازات البارزة. نخلق مشاريع استثنائية تجمع بين المواقع المتميزة، الجودة، وفرص الاستثمار المدروسة.'
+              : 'Since its founding, Barwa Developments has built a record of distinction and delivery. We create exceptional projects that bring together distinguished locations, quality and considered investment opportunities.'}
+          </p>
+          <a className="text-link" href="#contact">{isArabic ? 'تعرف على بروة' : 'Discover Barwa'} <ArrowUpRight /></a>
         </div>
         <figure className="approach-figure">
           <img src="/projects/hub5-mall/hero.jpg" alt="" />
           <figcaption>
             <strong>3.2</strong>
-            <span>مليار جنيه<small>حجم الاستثمارات</small></span>
+            <span>{isArabic ? 'مليار جنيه' : 'EGP billion'}<small>{isArabic ? 'حجم الاستثمارات' : 'Investment volume'}</small></span>
           </figcaption>
         </figure>
       </section>
@@ -277,22 +294,35 @@ export default function Page() {
           <img className="philosophy-float philosophy-float-top" src="/projects/central-mall/hero.jpg" alt="" />
           <img className="philosophy-float philosophy-float-bottom" src="/projects/hub5-mall/hero.jpg" alt="" />
         </div>
-        <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
+        <div className="philosophy-content">
+          <div className="section-kicker light-kicker"><span>04</span><i /><span>{isArabic ? 'فلسفة بروة' : 'BARWA PHILOSOPHY'}</span></div>
+          <h2>{isArabic ? <>نبني ما يبقى<br /><em>ويصنع الفرق</em></> : <>We build what lasts<br /><em>and makes a difference</em></>}</h2>
+          <div className="values">
+            <div>
+              <strong>01</strong>
+              <span>{isArabic ? 'قيمة مستدامة' : 'Lasting value'}</span>
+              <p>{isArabic ? 'وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.' : 'Destinations designed to stay relevant and create real value for residents, investors and communities.'}</p>
+            </div>
+            <div><strong>02</strong><span>{isArabic ? 'تصميم مدروس' : 'Considered design'}</span></div>
+            <div><strong>03</strong><span>{isArabic ? 'الثقة' : 'Trust'}</span></div>
+            <div><strong>04</strong><span>{isArabic ? 'التطور' : 'Progress'}</span></div>
+          </div>
+        </div>
       </section>
 
       <section id="contact" className="brochure-close">
         <div className="brochure-close-photo" style={{ backgroundImage: 'url(/projects/barwa-mall/hero.jpg)' }} aria-hidden="true" />
         <div className="brochure-close-copy">
-          <span className="eyebrow">HOTLINE · الخط الساخن</span>
+          <span className="eyebrow">{isArabic ? 'HOTLINE · الخط الساخن' : 'HOTLINE'}</span>
           <a className="brochure-hotline" href={CONTACT.phoneHref} dir="ltr">{CONTACT.hotline}</a>
-          <h2>اكتشف فرصتك القادمة<br /><em>مع بروة</em></h2>
-          <p>استثمارات مدروسة، لمستقبل أكثر قيمة</p>
+          <h2>{isArabic ? <>اكتشف فرصتك القادمة<br /><em>مع بروة</em></> : <>Discover your next opportunity<br /><em>with Barwa</em></>}</h2>
+          <p>{isArabic ? 'استثمارات مدروسة، لمستقبل أكثر قيمة' : 'Considered investments for a more valuable future'}</p>
           <div className="brochure-close-links">
             <a href={CONTACT.emailHref}>{CONTACT.email}</a>
             <a href={CONTACT.websiteHref}>{CONTACT.websiteLabel}</a>
-            <span>{CONTACT.officeAddress.arabic}</span>
+            <span>{isArabic ? CONTACT.officeAddress.arabic : CONTACT.officeAddress.english}</span>
           </div>
-          <Link className="button-link" href="/contact-us">تواصل معنا الآن <ArrowUpLeft /></Link>
+          <Link className="button-link" href="/contact-us">{isArabic ? 'تواصل معنا الآن' : 'Contact us now'} {isArabic ? <ArrowUpLeft /> : <ArrowUpRight />}</Link>
         </div>
       </section>
 

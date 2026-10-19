@@ -47,6 +47,7 @@ export function areasForSelection(slug: string, use: UnitUse | '') {
   return unitAreasByProject[slug]?.[use] ?? []
 }
 
-export function formatArea(area: number) {
-  return `${Number.isInteger(area) ? area : area} م²`
+export function formatArea(area: number, language: 'ar' | 'en' = 'ar') {
+  const unit = language === 'ar' ? 'م²' : 'm²'
+  return `${Number.isInteger(area) ? area : area} ${unit}`
 }

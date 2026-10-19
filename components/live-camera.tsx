@@ -33,5 +33,10 @@ export function LiveCamera({ src }: { src: string }) {
     }
   }, [src])
 
-  return <video className="live-camera-video" ref={videoRef} controls playsInline />
+  return (
+    <div className="live-camera-frame">
+      <video className="live-camera-video" ref={videoRef} controls playsInline />
+      <span className="live-badge">LIVE</span>
+    </div>
+  )
 }
