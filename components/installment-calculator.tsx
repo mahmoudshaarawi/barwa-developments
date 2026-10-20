@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import Link from 'next/link'
 import { useLanguage } from './language-provider'
 import { projects } from '@/lib/projects'
 import { submitBarwaForm } from '@/lib/forms'
@@ -95,8 +96,19 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
 
   if (status === 'sent') {
     return (
-      <div className="installment-result" role="status">
-        <p>سوف تصلك الحسبة خلال دقايق</p>
+      <div className="installment-success" role="status">
+        <img className="installment-success-star" src="/brand/barwa-star.svg" alt="" />
+        <h2>{isArabic ? 'تم استلام طلب حساب القسط بنجاح!' : 'Your installment request has been received!'}</h2>
+        <p>{isArabic ? 'شكرًا لاهتمامك بمشاريع بروة.' : 'Thank you for your interest in Barwa’s projects.'}</p>
+        <p>
+          {isArabic
+            ? 'سيقوم أحد مستشارينا العقاريين بالتواصل معك قريبًا لتوضيح تفاصيل الأقساط وخيارات السداد المناسبة لك.'
+            : 'One of our property consultants will contact you shortly to explain the installment details and the payment options that suit you.'}
+        </p>
+        <div className="installment-success-actions">
+          <Link href="/projects">{isArabic ? 'العودة إلى المشاريع' : 'Back to projects'}</Link>
+          <button type="button" onClick={() => setStatus('idle')}>{isArabic ? 'حساب جديد' : 'New calculation'}</button>
+        </div>
       </div>
     )
   }

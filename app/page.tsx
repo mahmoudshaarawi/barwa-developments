@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, Volume2, VolumeX } from 'lucide-react'
+import { BrochureFigures } from '@/components/brochure-figures'
+import { PartnerCarousel } from '@/components/partner-carousel'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
 import { useLanguage } from '@/components/language-provider'
@@ -263,11 +265,7 @@ export default function Page() {
           <div className="section-kicker"><span>02</span><i /><span>{isArabic ? 'إرث من الإنجاز' : 'A RECORD OF DELIVERY'}</span></div>
           <h2 id="legacy-title">{isArabic ? <>إرث من <em>الإنجاز</em></> : <>A record of <em>delivery</em></>}</h2>
         </div>
-        <ol className="legacy-stats">
-          <li><strong>55<sup>+</sup></strong><span>{isArabic ? 'مشروعاً تم إنجازه خلال ١٥ عاماً' : 'Projects delivered over 15 years'}</span></li>
-          <li><strong>12<sup>+</sup></strong><span>{isArabic ? 'عمارة سكنية تم تسليمها' : 'Residential buildings handed over'}</span></li>
-          <li><strong>15</strong><span>{isArabic ? 'عاماً من الخبرة والتطوير العقاري' : 'Years of real-estate development'}</span></li>
-        </ol>
+        <BrochureFigures />
       </section>
 
       <section className="approach section-pad reveal">
@@ -310,6 +308,12 @@ export default function Page() {
             <div><strong>04</strong><span>{isArabic ? 'التطور' : 'Progress'}</span></div>
           </div>
         </div>
+      </section>
+
+      <section className="partners section-pad reveal" aria-labelledby="partners-title">
+        <div className="section-kicker"><span>05</span><i /><span>{isArabic ? 'شركاؤنا' : 'PARTNERS'}</span></div>
+        <h2 id="partners-title">{isArabic ? 'شركاء النجاح' : 'Success Partners'}</h2>
+        <PartnerCarousel />
       </section>
 
       <section id="contact" className="brochure-close">

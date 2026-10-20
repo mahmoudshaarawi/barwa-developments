@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { BrochureFigures } from './brochure-figures'
 import Link from 'next/link'
 import {
   ArrowUpLeft,
@@ -86,13 +87,13 @@ export function AboutUsContent() {
           <h2>{isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'}</h2>
           <p>
             {isArabic
-              ? 'تأسست بروة للتطوير العقاري عام 2008 على يد ثلاثة مستثمرين في القطاع العقاري، ونمت لتصبح من الأسماء البارزة في سوق العقارات المصري.'
-              : 'Founded in 2008 by three real-estate investors, Barwa Developments has grown into a prominent player in Egypt’s real-estate sector.'}
+              ? 'تأسست بروة للتطوير العقاري على يد ثلاثة مستثمرين في القطاع العقاري، ونمت لتصبح من الأسماء البارزة في سوق العقارات المصري.'
+              : 'Founded by three real-estate investors, Barwa Developments has grown into a prominent player in Egypt’s real-estate sector.'}
           </p>
           <p>
             {isArabic
-              ? 'وعلى مدى نحو 15 عاماً، أنجزت الشركة أكثر من 55 مشروعاً. ويرتكز نهجها على اختيار المواقع المتميزة، وجودة التطوير، وتهيئة فرص استثمارية مدروسة.'
-              : 'Over approximately 15 years, the company completed more than 55 projects. Its approach brings together distinguished locations, development quality and considered investment opportunities.'}
+              ? 'سلّمت الشركة أكثر من 150 مشروعًا، بحجم استثمارات يبلغ 3.2 مليار جنيه، وتواصل العمل على 5 مشروعات تجارية جديدة. ويرتكز نهجها على اختيار المواقع المتميزة، وجودة التطوير، وتهيئة فرص استثمارية مدروسة.'
+              : 'The company has delivered 150+ projects, with EGP 3.2 billion in investments, and is developing 5 new commercial projects. Its approach brings together distinguished locations, development quality and considered investment opportunities.'}
           </p>
           <p>
             {isArabic
@@ -107,11 +108,7 @@ export function AboutUsContent() {
           <span className="about-eyebrow">{isArabic ? '03 / بروة بالأرقام' : '03 / BARWA IN NUMBERS'}</span>
           <h2>{isArabic ? 'خبرة تُبنى مع الزمن' : 'Experience Built Over Time'}</h2>
         </div>
-        <div className="about-statistics-grid">
-          <Stat value={2008} label={isArabic ? 'عام التأسيس' : 'Year Established'} />
-          <Stat value={55} suffix={isArabic ? '' : '+'} prefix={isArabic ? '+' : ''} label={isArabic ? 'مشروعًا منجزًا' : 'Completed Projects'} />
-          <Stat value={15} suffix={isArabic ? '' : '+'} prefix={isArabic ? '+' : ''} label={isArabic ? 'عامًا من الخبرة' : 'Years of Experience'} />
-        </div>
+        <BrochureFigures />
       </section>
 
       <section className="about-approach section-pad">
@@ -174,16 +171,16 @@ export function AboutUsContent() {
         </div>
         <div className="about-journey-track about-reveal">
           <div className="about-journey-origin">
-            <span className="about-journey-year" dir="ltr">2008</span>
-            <span>{isArabic ? 'عام التأسيس' : 'Year Established'}</span>
+            <span className="about-journey-year" dir="ltr"><span className="figure-plus">+</span>150</span>
+            <span>{isArabic ? 'مشروعًا تم تسليمها' : 'Projects delivered'}</span>
           </div>
           <div className="about-journey-line"><i /></div>
           <div className="about-journey-story">
             <span className="about-eyebrow">{isArabic ? 'مسار مستمر' : 'A CONTINUING STORY'}</span>
             <p>
               {isArabic
-                ? 'منذ تأسيسها على يد ثلاثة مستثمرين عقاريين، واصلت بروة تطوير حضورها في السوق المصري. واليوم، تعكس محفظتها أكثر من 55 مشروعاً منجزاً، فيما تستمر الشركة في التوسع وتطوير وجهات جديدة.'
-                : 'Founded by three real-estate investors, Barwa has continued to build its presence in Egypt. Its portfolio now reflects more than 55 completed projects, as the company continues to expand and develop new destinations.'}
+                ? 'منذ تأسيسها على يد ثلاثة مستثمرين عقاريين، واصلت بروة تطوير حضورها في السوق المصري. واليوم، تعكس محفظتها أكثر من 150 مشروعًا تم تسليمها، واستثمارات بحجم 3.2 مليار جنيه، إلى جانب 5 مشروعات تجارية جديدة.'
+                : 'Founded by three real-estate investors, Barwa has continued to build its presence in Egypt. Its portfolio now reflects 150+ delivered projects, EGP 3.2 billion in investments, and 5 new commercial projects.'}
             </p>
           </div>
         </div>
@@ -230,60 +227,6 @@ export function AboutUsContent() {
       <SiteFooter />
     </main>
   )
-}
-
-function Stat({ value, prefix = '', suffix = '', label }: { value: number; prefix?: string; suffix?: string; label: string }) {
-  return (
-    <div className="about-stat about-reveal">
-      <strong dir="ltr">{prefix}<NumberTicker value={value} />{suffix}</strong>
-      <span>{label}</span>
-    </div>
-  )
-}
-
-function NumberTicker({ value }: { value: number }) {
-  const [count, setCount] = useState(value)
-  const ref = useRef<HTMLSpanElement>(null)
-
-  useEffect(() => {
-    const element = ref.current
-    if (!element) return
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduceMotion) {
-      setCount(value)
-      return
-    }
-
-    let timer = 0
-    let started = false
-    const startCount = () => {
-      const bounds = element.getBoundingClientRect()
-      if (started || bounds.top >= window.innerHeight * 0.9 || bounds.bottom <= 0) return
-      started = true
-      const start = performance.now()
-      const duration = 950
-      setCount(0)
-      const tick = (now: number) => {
-        const progress = Math.min((now - start) / duration, 1)
-        setCount(Math.round(value * (1 - (1 - progress) ** 3)))
-        if (progress >= 1) window.clearInterval(timer)
-      }
-      timer = window.setInterval(() => tick(performance.now()), 40)
-      tick(start)
-    }
-
-    startCount()
-    window.addEventListener('scroll', startCount, { passive: true })
-    window.addEventListener('resize', startCount)
-
-    return () => {
-      window.removeEventListener('scroll', startCount)
-      window.removeEventListener('resize', startCount)
-      window.clearInterval(timer)
-    }
-  }, [value])
-
-  return <span ref={ref}>{count}</span>
 }
 
 function Pillar({ number, Icon, title, text }: { number: string; Icon: LucideIcon; title: string; text: string }) {
