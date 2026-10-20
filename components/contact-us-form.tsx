@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { ArrowUpLeft, ArrowUpRight } from 'lucide-react'
 import { useLanguage } from './language-provider'
-import { CONTACT } from '@/lib/contact'
+import { submitBarwaForm } from '@/lib/forms'
 import { projects } from '@/lib/projects'
 
 const projectChoices = ['barwa-mall', 'central-mall', 'hub5-mall']
@@ -15,7 +15,7 @@ export function ContactUsForm() {
   const { language } = useLanguage()
   const isArabic = language === 'ar'
   const [selectedProject, setSelectedProject] = useState('general-inquiry')
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
   useEffect(() => {
     const requestedProject = new URLSearchParams(window.location.search).get('project')
@@ -24,24 +24,31 @@ export function ContactUsForm() {
     }
   }, [])
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
     const selected = projects.find((project) => project.slug === selectedProject)
     const projectName = selected
-      ? isArabic ? selected.arabic : selected.displayName
-      : isArabic ? 'استفسار عام' : 'General Inquiry'
-    const subject = encodeURIComponent(isArabic ? `استفسار عن ${projectName}` : `Inquiry about ${projectName}`)
-    const body = encodeURIComponent([
-      `${isArabic ? 'الاسم' : 'Name'}: ${formData.get('name')}`,
-      `${isArabic ? 'رقم الهاتف' : 'Phone'}: ${formData.get('phone')}`,
-      `${isArabic ? 'البريد الإلكتروني' : 'Email'}: ${formData.get('email')}`,
-      `${isArabic ? 'المشروع' : 'Project'}: ${projectName}`,
-      `${isArabic ? 'الرسالة' : 'Message'}: ${formData.get('message')}`,
-    ].join('\n'))
+      ? `${selected.displayName} — ${selected.arabic}`
+      : 'General inquiry — استفسار عام'
+    setStatus('sending')
+    const accepted = await submitBarwaForm({
+      _subject: `استفسار — ${selected ? selected.displayName : 'عام'}`,
+      name: String(formData.get('name') ?? '').trim(),
+      phone: String(formData.get('phone') ?? '').trim(),
+      email: String(formData.get('email') ?? '').trim(),
+      project: projectName,
+      message: String(formData.get('message') ?? '').trim(),
+    }).catch(() => false)
+    setStatus(accepted ? 'sent' : 'error')
+  }
 
-    setSubmitted(true)
-    window.location.href = `${CONTACT.emailHref}?subject=${subject}&body=${body}`
+  if (status === 'sent') {
+    return (
+      <p className="contact-form-status is-success" role="status">
+        {isArabic ? 'تم إرسال استفسارك. سنتواصل معك قريباً.' : 'Your enquiry has been sent. We will be in touch shortly.'}
+      </p>
+    )
   }
 
   return (
@@ -73,15 +80,13 @@ export function ContactUsForm() {
           <textarea name="message" rows={5} required />
         </label>
       </div>
-      <button type="submit" className="contact-form-submit">
-        {isArabic ? 'إرسال الطلب' : 'Send Inquiry'}
+      <button type="submit" className="contact-form-submit" disabled={status === 'sending'}>
+        {status === 'sending' ? (isArabic ? 'جارٍ الإرسال' : 'Sending') : (isArabic ? 'إرسال الطلب' : 'Send Inquiry')}
         {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
       </button>
-      {submitted && (
-        <p className="contact-form-status" role="status">
-          {isArabic
-            ? 'سيتم فتح تطبيق البريد الإلكتروني لإكمال إرسال طلبك.'
-            : 'Your email application will open so you can complete sending your enquiry.'}
+      {status === 'error' && (
+        <p className="contact-form-status is-error" role="alert">
+          {isArabic ? 'تعذر إرسال الطلب الآن. يرجى الاتصال على ١٧٥٨٢.' : 'The request could not be sent. Please call 17582.'}
         </p>
       )}
     </form>

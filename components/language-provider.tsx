@@ -33,6 +33,10 @@ const pageCopy = {
       title: 'تواصل معنا | بروة للتطوير العقاري',
       description: 'تواصل مع بروة للتطوير العقاري عبر الرقم الموحد 17582 أو أرسل استفسارك عن مشروعاتنا.',
     },
+    careers: {
+      title: 'التوظيف | بروة للتطوير العقاري',
+      description: 'انضم إلى فريق بروة للتطوير العقاري وأرسل طلب التوظيف.',
+    },
   },
   en: {
     home: {
@@ -58,6 +62,10 @@ const pageCopy = {
     contact: {
       title: 'Contact | Barwa Developments',
       description: 'Contact Barwa Developments on hotline 17582 or send an enquiry about our projects.',
+    },
+    careers: {
+      title: 'Careers | Barwa Developments',
+      description: 'Join the Barwa Developments team and send your application.',
     },
   },
 } as const
@@ -85,6 +93,7 @@ function documentCopy(pathname: string, language: Language) {
   if (pathname.startsWith('/installments')) return pack.installments
   if (pathname.startsWith('/news')) return pack.news
   if (pathname.startsWith('/contact-us')) return pack.contact
+  if (pathname.startsWith('/careers')) return pack.careers
   return pack.home
 }
 

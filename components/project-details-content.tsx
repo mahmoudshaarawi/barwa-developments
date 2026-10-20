@@ -32,6 +32,7 @@ import { UsePills } from './use-pills'
 import { useLanguage } from './language-provider'
 import { LiveConstruction } from './live-construction'
 import { CONTACT } from '@/lib/contact'
+import { submitBarwaForm } from '@/lib/forms'
 import {
   projects,
   type Project,
@@ -72,7 +73,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
   const [lightbox, setLightbox] = useState<LightboxImage | null>(null)
   const [selectedUnit, setSelectedUnit] = useState<ProjectUnit | null>(null)
   const [showReservationForm, setShowReservationForm] = useState(false)
-  const [reservationStatus, setReservationStatus] = useState<'idle' | 'email-opened'>('idle')
+  const [reservationStatus, setReservationStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const floor = project.floors.find((item) => item.key === selectedFloor) ?? project.floors[0]
   const asset = (file: string) => `${project.assetDirectory}/${file}`
   const locationMap = project.locationMap
@@ -540,24 +541,22 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
                 floorLabel={isArabic ? floorForUnit(project, selectedUnit)?.arabic ?? '' : floorForUnit(project, selectedUnit)?.english ?? ''}
                 isArabic={isArabic}
                 status={reservationStatus}
-                onSubmit={(event) => {
+                onSubmit={async (event) => {
                   event.preventDefault()
                   const formData = new FormData(event.currentTarget)
-                  const subject = encodeURIComponent(isArabic ? `طلب حجز وحدة ${selectedUnit.unitNumber ?? ''} — ${project.displayName}` : `Reservation request: ${selectedUnit.unitNumber ?? selectedUnit.id} — ${project.displayName}`)
-                  const body = encodeURIComponent([
-                    `${isArabic ? 'الاسم' : 'Name'}: ${formData.get('name')}`,
-                    `${isArabic ? 'رقم الهاتف' : 'Phone'}: ${formData.get('phone')}`,
-                    `${isArabic ? 'البريد الإلكتروني' : 'Email'}: ${formData.get('email')}`,
-                    `${isArabic ? 'المشروع' : 'Project'}: ${project.displayName}`,
-                    `${isArabic ? 'الطابق' : 'Floor'}: ${floorForUnit(project, selectedUnit)?.english ?? ''}`,
-                    `${isArabic ? 'الوحدة' : 'Unit'}: ${selectedUnit.unitNumber ?? selectedUnit.id}`,
-                    `${isArabic ? 'ملاحظات' : 'Message / Notes'}: ${formData.get('message')}`,
-                    isArabic
-                      ? 'هذا طلب استفسار عن الحجز، ولا يُعد تأكيدًا أو حجزًا رسميًا للوحدة.'
-                      : 'This is a reservation request only and does not confirm or reserve the unit.',
-                  ].join('\n'))
-                  setReservationStatus('email-opened')
-                  window.location.href = `${CONTACT.emailHref}?subject=${subject}&body=${body}`
+                  const unitLabel = selectedUnit.unitNumber ?? selectedUnit.id
+                  setReservationStatus('sending')
+                  const accepted = await submitBarwaForm({
+                    _subject: `طلب حجز وحدة ${unitLabel} — ${project.displayName}`,
+                    name: String(formData.get('name') ?? '').trim(),
+                    phone: String(formData.get('phone') ?? '').trim(),
+                    email: String(formData.get('email') ?? '').trim(),
+                    project: `${project.displayName} — ${project.arabic}`,
+                    floor: floorForUnit(project, selectedUnit)?.english ?? '',
+                    unit: unitLabel,
+                    message: String(formData.get('message') ?? '').trim() || '—',
+                  }).catch(() => false)
+                  setReservationStatus(accepted ? 'sent' : 'error')
                 }}
               />
             ) : (
@@ -652,7 +651,7 @@ function ReservationRequestForm({ project, unit, floorLabel, isArabic, status, o
   unit: ProjectUnit
   floorLabel: string
   isArabic: boolean
-  status: 'idle' | 'email-opened'
+  status: 'idle' | 'sending' | 'sent' | 'error'
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }) {
   return (
@@ -693,14 +692,20 @@ function ReservationRequestForm({ project, unit, floorLabel, isArabic, status, o
           <span>{isArabic ? 'رسالة / ملاحظات' : 'Message / Notes'}</span>
           <textarea name="message" rows={3} />
         </label>
-        <button type="submit" className="project-unit-reserve">
-          {isArabic ? 'إرسال طلب الحجز' : 'Submit Reservation Request'}
-        </button>
-        {status === 'email-opened' && (
+        {status === 'sent' ? (
           <p className="project-reservation-status" role="status">
             {isArabic
-              ? 'تم فتح تطبيق البريد لإرسال طلبك. لا يُعد ذلك تأكيدًا للحجز؛ سيتواصل معك فريق بروة لتأكيد التفاصيل.'
-              : 'Your email application was opened to send this request. This does not confirm a reservation; Barwa’s team will contact you to confirm the details.'}
+              ? 'تم إرسال طلب الحجز. سيتواصل معك فريق بروة لتأكيد التفاصيل. لا يُعد ذلك تأكيدًا للحجز.'
+              : 'Your reservation request has been sent. Barwa’s team will contact you to confirm the details. This does not confirm a reservation.'}
+          </p>
+        ) : (
+          <button type="submit" className="project-unit-reserve" disabled={status === 'sending'}>
+            {status === 'sending' ? (isArabic ? 'جارٍ الإرسال' : 'Sending') : (isArabic ? 'إرسال طلب الحجز' : 'Submit Reservation Request')}
+          </button>
+        )}
+        {status === 'error' && (
+          <p className="project-reservation-status is-error" role="alert">
+            {isArabic ? 'تعذر إرسال الطلب الآن. يرجى الاتصال على ١٧٥٨٢.' : 'The request could not be sent. Please call 17582.'}
           </p>
         )}
       </form>

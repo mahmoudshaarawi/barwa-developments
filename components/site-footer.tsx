@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { Briefcase } from 'lucide-react'
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6'
 import { useLanguage } from './language-provider'
 import { CONTACT } from '@/lib/contact'
@@ -45,6 +46,10 @@ export function SiteFooter() {
           <Link href="/installments">{isArabic ? 'احسب القسط' : 'Installments'}</Link>
           <Link href="/news">{isArabic ? 'الأخبار' : 'News'}</Link>
           <Link href="/contact-us">{isArabic ? 'تواصل معنا' : 'Contact'}</Link>
+          <Link className="footer-careers" href="/careers">
+            <Briefcase aria-hidden="true" />
+            {isArabic ? 'التوظيف' : 'Careers'}
+          </Link>
         </nav>
 
         <nav className="site-footer-col" aria-label={isArabic ? 'المشاريع' : 'Projects'}>

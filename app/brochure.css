@@ -1306,6 +1306,36 @@ footer.site-footer {
   text-decoration: none;
 }
 .site-footer-col a:hover { color: var(--c-magenta); }
+.footer-careers { display: inline-flex; align-items: center; gap: .4rem; }
+.footer-careers svg { width: 15px; height: 15px; color: var(--c-magenta); }
+.contact-form-status.is-success { color: var(--c-ink); font-size: 1.05rem; }
+.contact-form-status.is-error,
+.project-reservation-status.is-error { color: #9d123f; }
+.careers-hero {
+  position: relative;
+  display: flex;
+  min-height: min(640px, 74svh);
+  align-items: flex-end;
+  overflow: hidden;
+  padding: 8rem clamp(1.5rem, 8vw, 8rem) 3.4rem;
+  background: #111;
+  color: #fff;
+}
+.careers-hero img,
+.careers-hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; }
+.careers-hero img { object-fit: cover; object-position: center 28%; }
+.careers-hero-shade { background: linear-gradient(180deg, rgba(16, 18, 22, .28), rgba(16, 18, 22, .72)); }
+.careers-hero-copy { position: relative; z-index: 1; max-width: 38rem; }
+.careers-hero h1 { margin: .35rem 0 .5rem; font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 500; }
+.careers-hero p { margin: 0; max-width: 28rem; color: rgba(255, 255, 255, .86); font-size: 1.05rem; line-height: 1.7; }
+.careers-sheet { padding-top: 2.6rem; }
+.careers-intro { max-width: 42rem; margin-bottom: 1.5rem; }
+.careers-intro p { margin: 0; color: var(--c-gray-dark); font-size: 1.02rem; line-height: 1.9; }
+.careers-form { max-width: 860px; }
+@media (max-width: 767px) {
+  .careers-hero { min-height: 520px; padding: 7.2rem 1.25rem 2.4rem; }
+  .careers-hero h1 { font-size: 2.6rem; }
+}
 .site-footer-bottom {
   display: flex;
   justify-content: space-between;

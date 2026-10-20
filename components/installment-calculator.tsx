@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useLanguage } from './language-provider'
 import { projects } from '@/lib/projects'
+import { submitBarwaForm } from '@/lib/forms'
 import { areasForSelection, formatArea, usesForProject, type UnitUse } from '@/lib/unit-areas'
 
 const showcaseOrder = ['barwa-mall', 'central-mall', 'hub5-mall']
@@ -11,7 +12,6 @@ const calculatorProjects = showcaseOrder
   .filter((project): project is (typeof projects)[number] => Boolean(project))
 
 const phonePattern = /^01\d{9}$/
-const FORM_ENDPOINT = 'https://formsubmit.co/ajax/Barwadevelopments.eg@gmail.com'
 
 type Payment = 'installments' | 'cash'
 
@@ -68,10 +68,9 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
     if (payment === 'installments' && (!downPayment || !installmentAmount)) return
 
     const useLabel = availableUses.find((item) => item.id === unitUse)
-    const payload = {
+    setStatus('sending')
+    const accepted = await submitBarwaForm({
       _subject: `Installment request — ${selectedProject.displayName}`,
-      _template: 'table',
-      _captcha: 'false',
       name: name.trim(),
       phone,
       project: `${selectedProject.displayName} — ${selectedProject.arabic}`,
@@ -80,22 +79,8 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
       payment: payment === 'cash' ? 'Cash' : 'Installments',
       down_payment: payment === 'installments' ? `${downPayment} EGP` : '—',
       installment: payment === 'installments' ? `${installmentAmount} EGP` : '—',
-    }
-
-    setStatus('sending')
-    try {
-      const response = await fetch(FORM_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(payload),
-      })
-      const data = await response.json().catch(() => null) as { success?: boolean | string } | null
-      const accepted = response.ok && String(data?.success) === 'true'
-      if (!accepted) throw new Error('Form was not accepted')
-      setStatus('sent')
-    } catch {
-      setStatus('error')
-    }
+    }).catch(() => false)
+    setStatus(accepted ? 'sent' : 'error')
   }
 
   const steps = [
