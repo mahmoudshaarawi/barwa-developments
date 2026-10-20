@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Briefcase } from 'lucide-react'
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6'
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaWhatsapp, FaYoutube } from 'react-icons/fa6'
 import { useLanguage } from './language-provider'
 import { CONTACT } from '@/lib/contact'
 import { projects } from '@/lib/projects'
@@ -14,6 +14,7 @@ const socialLinks = [
   { label: 'Instagram', href: 'https://www.instagram.com/barwadevelopments/', Icon: FaInstagram },
   { label: 'YouTube', href: 'https://www.youtube.com/@BarwaDevelopments', Icon: FaYoutube },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/barwadevelopments', Icon: FaLinkedinIn },
+  { label: 'WhatsApp', href: 'https://wa.me/201270000101', Icon: FaWhatsapp },
 ]
 
 export function SiteFooter() {

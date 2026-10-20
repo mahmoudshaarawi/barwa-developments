@@ -8,7 +8,7 @@ export type UnitUseOption = {
 
 /** Uses published in the 2026 brochures. Office and medical share the upper-floor units. */
 export const unitUses: UnitUseOption[] = [
-  { id: 'retail', arabic: 'تجاري', english: 'Retail' },
+  { id: 'retail', arabic: 'تجاري', english: 'Commercial' },
   { id: 'office', arabic: 'إداري', english: 'Offices' },
   { id: 'medical', arabic: 'طبي', english: 'Medical' },
 ]

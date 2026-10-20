@@ -8,6 +8,7 @@ const partners = [
   { src: '/partners/am-samir.jpg', name: 'عم سمير بتاع الفطير' },
   { src: '/partners/central-care.jpg', name: 'Central Care Clinics' },
   { src: '/partners/we.jpg', name: 'WE' },
+  // Sixth slot, added when public/partners/engineering-consultant.png is present: الاستشاري الهندسي
 ]
 
 const copies = 4
