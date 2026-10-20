@@ -1,19 +1,25 @@
 'use client'
 
-import { useEffect, useRef, type PointerEvent } from 'react'
+import { useEffect, useRef, useState, type PointerEvent } from 'react'
+import { useLanguage } from './language-provider'
 
-const partners = [
+type Partner = { src: string; name: string; englishName?: string }
+
+const partners: Partner[] = [
   { src: '/partners/mrb.jpg', name: 'MRB Total Facility Management' },
   { src: '/partners/tawla.jpg', name: 'قهوة طاولة' },
   { src: '/partners/am-samir.jpg', name: 'عم سمير بتاع الفطير' },
   { src: '/partners/central-care.jpg', name: 'Central Care Clinics' },
   { src: '/partners/we.jpg', name: 'WE' },
-  // Sixth slot, added when public/partners/engineering-consultant.png is present: الاستشاري الهندسي
+  { src: '/partners/engineering-consultant.png', name: 'الاستشاري الهندسي', englishName: 'Engineering Consultant' },
 ]
 
 const copies = 4
 
 export function PartnerCarousel() {
+  const { language } = useLanguage()
+  const isArabic = language === 'ar'
+  const [failed, setFailed] = useState<string[]>([])
   const trackRef = useRef<HTMLDivElement>(null)
   const offsetRef = useRef(0)
   const pausedRef = useRef(false)
@@ -62,7 +68,11 @@ export function PartnerCarousel() {
     draggingRef.current = false
   }
 
-  const loop = Array.from({ length: copies }, () => partners).flat()
+  const visible = partners.filter((partner) => !failed.includes(partner.src))
+  const loop = Array.from({ length: copies }, () => visible).flat()
+  const hidePartner = (src: string) => {
+    setFailed((current) => (current.includes(src) ? current : [...current, src]))
+  }
 
   return (
     <div
@@ -79,8 +89,13 @@ export function PartnerCarousel() {
     >
       <div className="partner-track" ref={trackRef}>
         {loop.map((partner, index) => (
-          <figure className="partner-card" key={`${partner.src}-${index}`} aria-hidden={index >= partners.length}>
-            <img src={partner.src} alt={index < partners.length ? partner.name : ''} draggable={false} />
+          <figure className="partner-card" key={`${partner.src}-${index}`} aria-hidden={index >= visible.length}>
+            <img
+              src={partner.src}
+              alt={index < visible.length ? (isArabic ? partner.name : partner.englishName ?? partner.name) : ''}
+              draggable={false}
+              onError={() => hidePartner(partner.src)}
+            />
           </figure>
         ))}
       </div>
