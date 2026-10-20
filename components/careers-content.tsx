@@ -62,93 +62,98 @@ export function CareersContent() {
         </div>
       </section>
 
-      <section className="careers-sheet section-pad">
-        <div className="careers-intro">
-          <p>
-            {isArabic
-              ? 'إذا كنت تبحث عن دور في بروة، أرسل طلبك من هنا. اكتب الوظيفة التي تتقدم لها، وسنتواصل معك على بياناتك.'
-              : 'If you would like to work at Barwa, send your application here. Tell us the role you are applying for, and we will contact you using the details you share.'}
-          </p>
-        </div>
+      <section className="careers-sheet">
+        <div className="careers-card">
+          <header className="careers-card-head">
+            <span className="eyebrow">{isArabic ? 'طلب التوظيف' : 'APPLICATION'}</span>
+            <h2>{isArabic ? 'قدّم طلبك' : 'Send your application'}</h2>
+            <p>
+              {isArabic
+                ? 'إذا كنت تبحث عن دور في بروة، اكتب الوظيفة التي تتقدم لها. سنتواصل معك على بياناتك.'
+                : 'If you would like to work at Barwa, tell us the role you are applying for. We will contact you using the details you share.'}
+            </p>
+          </header>
 
-        {status === 'sent' ? (
-          <p className="contact-form-status is-success" role="status">
-            {isArabic ? 'تم إرسال طلب التوظيف. سنتواصل معك قريباً.' : 'Your application has been sent. We will be in touch shortly.'}
-          </p>
-        ) : (
-          <form className="contact-form careers-form" onSubmit={handleSubmit}>
-            <div className="contact-form-grid">
-              <label>
-                <span>{isArabic ? 'الاسم بالكامل' : 'Full name'}</span>
-                <input name="name" type="text" autoComplete="name" required />
-              </label>
-              <label>
-                <span>{isArabic ? 'رقم الهاتف' : 'Phone'}</span>
-                <input
-                  name="phone"
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel"
-                  dir="ltr"
-                  pattern="01[0-9]{9}"
-                  minLength={11}
-                  maxLength={11}
-                  placeholder="01xxxxxxxxx"
-                  value={phone}
-                  aria-invalid={phoneError ? true : undefined}
-                  onChange={(event) => {
-                    const value = event.target.value.trim()
-                    setPhone(value)
-                    const message = value ? egyptianPhoneError(value, isArabic) : ''
-                    event.target.setCustomValidity(message)
-                    if (phoneError) setPhoneError(message)
-                  }}
-                  onInvalid={(event) => {
-                    const message = egyptianPhoneError(event.currentTarget.value.trim(), isArabic)
-                    event.currentTarget.setCustomValidity(message)
-                    setPhoneError(message)
-                  }}
-                  required
-                />
-              </label>
-              <label>
-                <span>{isArabic ? 'البريد الإلكتروني' : 'Email'}</span>
-                <input name="email" type="email" autoComplete="email" required />
-              </label>
-              <label>
-                <span>{isArabic ? 'الوظيفة المتقدم لها' : 'Position applied for'}</span>
-                <input name="job" list="career-jobs" value={job} onChange={(event) => setJob(event.target.value)} required />
-                <datalist id="career-jobs">
-                  {jobSuggestions.map((item) => (
-                    <option key={item.en} value={isArabic ? item.ar : item.en} />
-                  ))}
-                </datalist>
-              </label>
-              <label>
-                <span>{isArabic ? 'سنوات الخبرة' : 'Years of experience'}</span>
-                <input name="experience" type="number" inputMode="numeric" min={0} max={60} required />
-              </label>
-              <label>
-                <span>{isArabic ? 'رابط لينكدإن أو السيرة الذاتية (اختياري)' : 'LinkedIn or CV link (optional)'}</span>
-                <input name="profile" type="url" inputMode="url" placeholder="https://" />
-              </label>
-              <label className="contact-form-message">
+          {status === 'sent' ? (
+            <p className="contact-form-status is-success" role="status">
+              {isArabic ? 'تم إرسال طلب التوظيف. سنتواصل معك قريباً.' : 'Your application has been sent. We will be in touch shortly.'}
+            </p>
+          ) : (
+            <form className="careers-form" onSubmit={handleSubmit}>
+              <div className="careers-fields">
+                <label>
+                  <span>{isArabic ? 'الاسم بالكامل' : 'Full name'}</span>
+                  <input name="name" type="text" autoComplete="name" required />
+                </label>
+                <label>
+                  <span>{isArabic ? 'رقم الهاتف' : 'Phone'}</span>
+                  <input
+                    name="phone"
+                    type="tel"
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    dir="ltr"
+                    pattern="01[0-9]{9}"
+                    minLength={11}
+                    maxLength={11}
+                    placeholder="01xxxxxxxxx"
+                    value={phone}
+                    aria-invalid={phoneError ? true : undefined}
+                    onChange={(event) => {
+                      const value = event.target.value.trim()
+                      setPhone(value)
+                      const message = value ? egyptianPhoneError(value, isArabic) : ''
+                      event.target.setCustomValidity(message)
+                      if (phoneError) setPhoneError(message)
+                    }}
+                    onInvalid={(event) => {
+                      const message = egyptianPhoneError(event.currentTarget.value.trim(), isArabic)
+                      event.currentTarget.setCustomValidity(message)
+                      setPhoneError(message)
+                    }}
+                    required
+                  />
+                </label>
+                <label>
+                  <span>{isArabic ? 'البريد الإلكتروني' : 'Email'}</span>
+                  <input name="email" type="email" autoComplete="email" required />
+                </label>
+                <label>
+                  <span>{isArabic ? 'الوظيفة المتقدم لها' : 'Position applied for'}</span>
+                  <input name="job" list="career-jobs" value={job} onChange={(event) => setJob(event.target.value)} required />
+                  <datalist id="career-jobs">
+                    {jobSuggestions.map((item) => (
+                      <option key={item.en} value={isArabic ? item.ar : item.en} />
+                    ))}
+                  </datalist>
+                </label>
+                <label>
+                  <span>{isArabic ? 'سنوات الخبرة' : 'Years of experience'}</span>
+                  <input name="experience" type="number" inputMode="numeric" min={0} max={60} required />
+                </label>
+                <label>
+                  <span>{isArabic ? 'رابط لينكدإن أو السيرة الذاتية' : 'LinkedIn or CV link'}</span>
+                  <input name="profile" type="url" inputMode="url" placeholder="https://" />
+                  <small>{isArabic ? 'اختياري' : 'Optional'}</small>
+                </label>
+              </div>
+              <label className="careers-message">
                 <span>{isArabic ? 'رسالتك' : 'Message'}</span>
                 <textarea name="message" rows={5} required />
               </label>
-            </div>
-            {phoneError && <p className="contact-form-status is-error" role="alert">{phoneError}</p>}
-            <button type="submit" className="contact-form-submit" disabled={status === 'sending'}>
-              {status === 'sending' ? (isArabic ? 'جارٍ الإرسال' : 'Sending') : (isArabic ? 'إرسال الطلب' : 'Send application')}
-              {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
-            </button>
-            {status === 'error' && (
-              <p className="contact-form-status is-error" role="alert">
-                {isArabic ? 'تعذر إرسال الطلب الآن. يرجى الاتصال على ١٧٥٨٢.' : 'The request could not be sent. Please call 17582.'}
-              </p>
-            )}
-          </form>
-        )}
+              {phoneError && <p className="contact-form-status is-error" role="alert">{phoneError}</p>}
+              <button type="submit" className="careers-submit" disabled={status === 'sending'}>
+                {status === 'sending' ? (isArabic ? 'جارٍ الإرسال' : 'Sending') : (isArabic ? 'إرسال الطلب' : 'Send application')}
+                {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
+              </button>
+              {status === 'error' && (
+                <p className="contact-form-status is-error" role="alert">
+                  {isArabic ? 'تعذر إرسال الطلب الآن. يرجى الاتصال على ١٧٥٨٢.' : 'The request could not be sent. Please call 17582.'}
+                </p>
+              )}
+            </form>
+          )}
+        </div>
       </section>
       <SiteFooter />
     </main>
