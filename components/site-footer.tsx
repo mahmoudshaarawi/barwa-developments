@@ -35,6 +35,9 @@ export function SiteFooter() {
                 <Icon aria-hidden="true" />
               </a>
             ))}
+            <Link className="footer-social-link footer-careers-icon" href="/careers" aria-label={isArabic ? 'التوظيف' : 'Careers'}>
+              <Briefcase aria-hidden="true" />
+            </Link>
           </nav>
         </div>
 

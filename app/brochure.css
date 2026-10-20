@@ -383,6 +383,7 @@ footer {
 
 .footer-social-link:hover,
 .footer-social-link:focus-visible { color: var(--c-magenta); }
+.footer-careers-icon svg { fill: none; stroke: currentColor; }
 
 /* Project index */
 .projects-page-intro { background: #fff; }
@@ -718,6 +719,7 @@ footer {
   touch-action: pan-y;
 }
 .project-fan:focus-visible { outline: 2px solid var(--c-magenta); outline-offset: 4px; }
+.project-fan-fit { display: contents; }
 .project-fan-stage {
   position: relative;
   height: 480px;
@@ -1031,25 +1033,38 @@ footer {
   .hero-copy h1,
   .listing-project-content,
   .project-detail-hero-copy { max-width: 100%; min-width: 0; }
-  .project-fan { padding-inline: 0; border-radius: 0; background: #fff; }
-  .project-fan-stage { height: 312px; }
-  .project-fan-card { top: 0; width: 148px; }
-  .project-fan-card.is-center {
-    width: 248px;
-    transform: translate(-50%, 0);
+  .home-projects .project-fan {
+    width: calc(100% + 2rem);
+    margin-inline: -1rem;
+    container-type: inline-size;
+    overflow: hidden;
+    background: #fff;
   }
-  .project-fan-card.is-next { transform: translate(calc(-50% - 152%), 0) rotateY(8deg) scale(.96); }
-  .project-fan-card.is-prev { transform: translate(calc(-50% + 152%), 0) rotateY(-8deg) scale(.96); }
-  .project-fan-card:not(.is-center) .project-fan-panel { display: none; }
-  .project-fan-mark b { letter-spacing: .08em; font-size: .82rem; }
-  .project-fan-mark small { letter-spacing: .2em; font-size: .52rem; }
-  .project-fan-arabic { font-size: 1.15rem; }
-  .project-fan-english { font-size: .58rem; letter-spacing: .06em; }
-  .project-fan-location,
-  .project-fan-use { font-size: .62rem; }
-  .project-fan-panel { padding: .55rem .45rem .65rem; gap: .18rem; }
-  .project-fan-location svg,
-  .project-fan-use svg { width: 12px; height: 12px; }
+  .project-fan-fit {
+    display: block;
+    position: relative;
+    height: calc(520px * (100cqi / 1180px));
+    overflow: hidden;
+  }
+  .project-fan-stage {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1180px;
+    height: 520px;
+    margin-left: -590px;
+    perspective: 1600px;
+    transform: scale(calc(100cqi / 1180px));
+    transform-origin: top center;
+  }
+  .project-fan-card { top: 50%; width: 322px; }
+  .project-fan-card.is-center {
+    width: 414px;
+    transform: translate(-50%, -52%) translateZ(36px);
+  }
+  .project-fan-card.is-next { transform: translate(calc(-50% - 112%), -50%) rotateY(10deg) scale(.97); }
+  .project-fan-card.is-prev { transform: translate(calc(-50% + 112%), -50%) rotateY(-10deg) scale(.97); }
+  .project-fan-controls button { width: 44px; height: 44px; }
 }
 
 /* Promo video replaces the homepage hero slider. Ratio matches the 1920×868 file. */
@@ -1400,9 +1415,12 @@ footer.site-footer {
 }
 @media (max-width: 767px) {
   .careers-hero {
+    width: 100%;
+    max-width: 100%;
     margin-top: 4.6rem;
-    aspect-ratio: 4 / 4.6;
-    min-height: 480px;
+    aspect-ratio: 3 / 2;
+    min-height: 0;
+    height: auto;
     max-height: none;
     padding: 1.4rem 1.15rem 1.6rem;
   }
@@ -1950,6 +1968,91 @@ footer.site-footer {
   [dir='ltr'] .project-fan-card.is-prev { transform: translate(calc(-50% - 108%), -50%) rotateY(8deg) scale(.98); }
 }
 @media (max-width: 767px) {
-  [dir='ltr'] .project-fan-card.is-next { transform: translate(calc(-50% + 152%), 0) rotateY(-8deg) scale(.96); }
-  [dir='ltr'] .project-fan-card.is-prev { transform: translate(calc(-50% - 152%), 0) rotateY(8deg) scale(.96); }
+  [dir='ltr'] .project-fan-card.is-next { transform: translate(calc(-50% + 112%), -50%) rotateY(-10deg) scale(.97); }
+  [dir='ltr'] .project-fan-card.is-prev { transform: translate(calc(-50% - 112%), -50%) rotateY(10deg) scale(.97); }
+}
+
+/* Mobile polish: menu, footer, tap targets, stacking */
+@media (max-width: 767px) {
+  .home-promo-sound { width: 44px; height: 44px; }
+  .home-projects .home-projects-heading h2 { font-size: clamp(1.45rem, 6.4vw, 1.85rem); }
+  .brochure-hotline { font-size: clamp(2.8rem, 14vw, 3.6rem); letter-spacing: -.04em; }
+  .news-filters button { min-height: 44px; }
+  .destination-actions,
+  .project-hero-actions { display: grid; grid-template-columns: 1fr; align-items: stretch; }
+  .destination-actions .button-link,
+  .destination-actions .project-brochure-link,
+  .project-hero-actions .button-link,
+  .project-hero-actions .project-brochure-link,
+  .project-hero-actions .hero-secondary-link,
+  .installment-submit,
+  .contact-form-submit,
+  .brochure-close .button-link,
+  .project-plan-enlarge {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+  .project-detail-hero { min-height: 0; padding: 6.2rem 1.15rem 1.6rem; }
+  .project-detail-hero-copy .project-detail-back { margin-bottom: 1rem; }
+  .project-detail-hero-copy h1 { font-size: clamp(1.85rem, 8vw, 2.4rem); }
+  .project-facts { grid-template-columns: 1fr 1fr; }
+  .calc-progress { gap: .25rem; }
+  .calc-progress span { font-size: .62rem; }
+  .mobile-menu nav { gap: .1rem; }
+  .mobile-menu nav a {
+    min-height: 48px;
+    align-items: center;
+    font-size: 1.2rem;
+  }
+  .mobile-language {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid rgba(22, 22, 22, .18);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--c-ink);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .site-footer-main {
+    justify-items: center;
+    text-align: center;
+    gap: 0;
+    padding: 1.8rem 1.15rem 1rem;
+  }
+  .site-footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 1.35rem;
+  }
+  .site-footer-brand p { max-width: 18rem; margin: .7rem 0 .9rem; }
+  .site-footer .footer-social-links { justify-content: center; gap: .5rem; flex-wrap: wrap; }
+  .site-footer .footer-social-link { width: 44px; height: 44px; flex-basis: 44px; }
+  .footer-careers-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; }
+  .site-footer-col {
+    justify-items: center;
+    width: 100%;
+    gap: 0;
+    padding: 1rem 0 .35rem;
+    border-top: 1px solid rgba(22, 22, 22, .08);
+  }
+  .site-footer-col h2 { margin-bottom: .35rem; }
+  .site-footer-col a,
+  .site-footer-col span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: .15rem .4rem;
+    text-align: center;
+  }
+  .footer-careers { justify-content: center; }
+  .site-footer-bottom { align-items: center; text-align: center; padding-inline: 1.15rem; }
 }

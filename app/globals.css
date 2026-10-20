@@ -286,7 +286,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  z-index: 100;
+  z-index: 200;
   padding: 1.5rem clamp(1.25rem, 5vw, 5rem);
   transition: all 0.3s ease;
 }
@@ -396,13 +396,17 @@
 }
 
 .menu-button {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0;
   color: var(--c-black);
   
   @media (min-width: 768px) {
@@ -415,16 +419,21 @@
   position: fixed;
   inset: 0;
   background: var(--c-ivory-soft);
-  z-index: 90;
-  padding: 2rem;
-  padding-top: 5rem;
+  z-index: 150;
+  padding: 5.4rem 1.35rem 1.5rem;
   display: flex;
   flex-direction: column;
-  animation: slideIn 0.3s ease;
+  overflow: auto;
+  animation: menuFade 0.2s ease;
   
-  @media (min-width: 768px) {
+  @media (min-width: 1100px) {
     display: none;
   }
+}
+
+@keyframes menuFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slideIn {
@@ -2139,14 +2148,15 @@ footer {
 
 .project-floor-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: .55rem;
-  overflow-x: auto;
+  overflow: visible;
   padding: .25rem .15rem 1rem;
   scrollbar-color: var(--c-magenta) transparent;
   scrollbar-width: thin;
 
   button {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
     min-height: 44px;
     padding: .65rem 1.1rem;
     border: 1px solid var(--c-gray-neutral);
@@ -2181,7 +2191,9 @@ footer {
 .project-plan-enlarge {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: .5rem;
+  min-height: 44px;
   margin-top: 1rem;
   padding: .65rem .85rem;
   border: 1px solid var(--c-gray-neutral);

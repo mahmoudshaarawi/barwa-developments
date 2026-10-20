@@ -175,6 +175,7 @@ export default function Page() {
             if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFanHovered(false)
           }}
         >
+          <div className="project-fan-fit">
           <div className="project-fan-stage">
             {showcase.map((item, index) => {
               const offset = (index - active + showcase.length) % showcase.length
@@ -214,6 +215,7 @@ export default function Page() {
                 </a>
               )
             })}
+          </div>
           </div>
           <div className="project-fan-controls">
             <button type="button" onClick={() => move(-1)} aria-label={isArabic ? 'المشروع السابق' : 'Previous project'}>
