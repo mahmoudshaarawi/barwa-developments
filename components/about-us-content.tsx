@@ -103,6 +103,44 @@ export function AboutUsContent() {
         </div>
       </section>
 
+      <section className="about-ceo" aria-labelledby="ceo-message-title">
+        <figure className="about-ceo-photo about-reveal">
+          <span className="about-ceo-frame">
+            <img
+              src="/about/ceo.jpg"
+              width={829}
+              height={1200}
+              alt={isArabic ? 'م. عبد الفتاح محمد، الرئيس التنفيذي لبروة للتطوير العقاري' : 'Eng. Abdelfattah Mohamed, CEO of Barwa Developments'}
+              loading="lazy"
+            />
+          </span>
+        </figure>
+        <div className="about-ceo-copy about-reveal">
+          <h2 id="ceo-message-title" className="about-eyebrow">{isArabic ? 'كلمة الرئيس التنفيذي' : 'CEO MESSAGE'}</h2>
+          <blockquote className="about-ceo-quote">
+            <p>
+              {isArabic
+                ? 'هدفنا دائمًا أن نبدأ عصرًا جديدًا تمامًا، ونحن على ثقة بأنه سيكون من أهم الاستثمارات حتى الآن.'
+                : 'Our aim has always been to begin an entirely new era, and we are confident it will be among the most important investments to date.'}
+            </p>
+          </blockquote>
+          <p>
+            {isArabic
+              ? 'لكي تُحدث بروة للتطوير العقاري أثرًا حقيقيًا في صناعة التطوير العقاري، كان لزامًا علينا منذ البداية أن نجمع فريقًا من المحترفين أصحاب الخبرة العالية في هذه المجالات؛ بنهج استباقي، ورغبة دائمة في أن نكون روادًا في كل ما نختار تحقيقه، وأن نسبق بخطوة.'
+              : 'For Barwa Developments to make a real impact on the real-estate industry, we had to bring together, from the outset, a team of highly experienced professionals in these fields — with a proactive approach, a constant desire to lead in everything we choose to achieve, and to stay one step ahead.'}
+          </p>
+          <p>
+            {isArabic
+              ? 'كانت نقطة انطلاقنا في القاهرة، وتحديدًا في مدينة الشروق، بناءً على خبرتنا ومعرفتنا الكاملة بحالة السوق الحالية وما ستكون عليه ظروفه مستقبلًا. ورسالتنا أن نحافظ على النجاح بالمبادرة، وأن نعمل مع عملائنا على الاهتمام بأدق التفاصيل لنحقق لهم أعظم سُبل الاستثمار.'
+              : 'Our starting point was Cairo, and El Shorouk City in particular, based on our experience and our full knowledge of the market today and of the conditions it will face ahead. Our mission is to sustain success through initiative, and to work with our clients on the finest details so we can offer them the strongest avenues for investment.'}
+          </p>
+          <p className="about-ceo-sign">
+            <strong>{isArabic ? 'م. عبد الفتاح محمد' : 'Eng. Abdelfattah Mohamed'}</strong>
+            <span>{isArabic ? 'الرئيس التنفيذي' : 'CEO'}</span>
+          </p>
+        </div>
+      </section>
+
       <section className="about-statistics" aria-label={isArabic ? 'أرقام بروة' : 'Barwa in numbers'}>
         <div className="about-statistics-heading about-reveal">
           <span className="about-eyebrow">{isArabic ? '03 / بروة بالأرقام' : '03 / BARWA IN NUMBERS'}</span>

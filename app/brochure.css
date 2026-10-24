@@ -2317,6 +2317,117 @@ footer.site-footer {
     gap: .8rem .7rem;
   }
 }
+.about-ceo {
+  display: grid;
+  grid-template-columns: minmax(240px, .78fr) minmax(0, 1.22fr);
+  align-items: center;
+  gap: clamp(1.8rem, 4vw, 4.2rem);
+  padding: 2.6rem clamp(1.5rem, 6vw, 5.5rem) 2.8rem;
+  background: #f7f6f4;
+}
+.about-ceo-photo {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  padding-inline-end: 16px;
+  padding-block-end: 16px;
+}
+.about-ceo-photo::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset-inline-end: 0;
+  inset-block-end: 0;
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  border: 1.5px solid #c9a24a;
+  pointer-events: none;
+}
+.about-ceo-frame {
+  position: relative;
+  z-index: 1;
+  display: block;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(22, 22, 22, .12);
+}
+.about-ceo-frame::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: 0;
+  top: 0;
+  width: 3px;
+  height: 28%;
+  background: var(--c-magenta);
+}
+.about-ceo-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 829 / 1200;
+  object-fit: cover;
+  object-position: center top;
+}
+.about-ceo-copy { max-width: 40rem; }
+.about-ceo-copy .about-eyebrow { margin-bottom: .35rem; }
+.about-ceo-quote {
+  margin: .2rem 0 1.15rem;
+  padding: 0;
+  border: 0;
+}
+.about-ceo-quote p {
+  position: relative;
+  margin: 0;
+  color: var(--c-ink);
+  font-family: var(--font-brochure);
+  font-size: clamp(1.35rem, 2.15vw, 1.95rem);
+  font-weight: 500;
+  line-height: 1.7;
+  letter-spacing: -.01em;
+}
+.about-ceo-quote p::before {
+  content: "“";
+  display: block;
+  margin-bottom: .15rem;
+  color: var(--c-magenta);
+  font-size: clamp(3.4rem, 6vw, 5.2rem);
+  font-weight: 500;
+  line-height: .72;
+}
+[dir='rtl'] .about-ceo-quote p::before { content: "«"; }
+.about-ceo-copy > p:not(.about-ceo-sign) {
+  margin: 0 0 .9rem;
+  color: var(--c-gray-dark);
+  font-size: .98rem;
+  line-height: 1.95;
+}
+.about-ceo-sign {
+  display: grid;
+  gap: .15rem;
+  margin-top: 1.15rem;
+  padding-top: .85rem;
+  border-top: 1px solid rgba(201, 162, 74, .7);
+}
+.about-ceo-sign strong {
+  color: var(--c-ink);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.about-ceo-sign span {
+  color: var(--c-magenta);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+}
+.about-ceo-copy.about-reveal.is-visible { animation-delay: .12s; }
+@media (max-width: 860px) {
+  .about-ceo { grid-template-columns: 1fr; gap: 1.4rem; }
+  .about-ceo-photo {
+    box-sizing: border-box;
+    width: min(340px, 100%);
+    margin-inline: auto;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .past-work-frame,
   .past-work-frame img { transition: none; }
