@@ -37,6 +37,10 @@ const pageCopy = {
       title: 'التوظيف | بروة للتطوير العقاري',
       description: 'انضم إلى فريق بروة للتطوير العقاري وأرسل طلب التوظيف.',
     },
+    pastWork: {
+      title: 'سابقة أعمالنا | بروة للتطوير العقاري',
+      description: 'أكثر من 150 مشروعًا تم تسليمها لعملائنا في مدينة الشروق.',
+    },
   },
   en: {
     home: {
@@ -67,6 +71,10 @@ const pageCopy = {
       title: 'Careers | Barwa Developments',
       description: 'Join the Barwa Developments team and send your application.',
     },
+    pastWork: {
+      title: 'Previous Work | Barwa Developments',
+      description: 'More than 150 projects delivered in El Shorouk City.',
+    },
   },
 } as const
 
@@ -94,6 +102,7 @@ function documentCopy(pathname: string, language: Language) {
   if (pathname.startsWith('/news')) return pack.news
   if (pathname.startsWith('/contact-us')) return pack.contact
   if (pathname.startsWith('/careers')) return pack.careers
+  if (pathname.startsWith('/past-work')) return pack.pastWork
   return pack.home
 }
 

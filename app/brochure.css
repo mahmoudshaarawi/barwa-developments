@@ -2218,3 +2218,40 @@ footer.site-footer {
   .installment-success-actions a,
   .installment-success-actions button { width: 100%; }
 }
+
+.past-work-page { background: #fff; }
+.past-work-page .projects-page-intro { padding-top: 6.6rem; }
+.past-work-lead {
+  margin: 0;
+  max-width: 36rem;
+  color: var(--c-gray-dark);
+  font-size: clamp(1.02rem, 1.6vw, 1.2rem);
+  line-height: 1.75;
+}
+.past-work-gallery { padding-top: .2rem; }
+.past-work-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2.2vw, 1.8rem);
+  margin: 0;
+  padding: 0 0 1.5rem;
+}
+.past-work-grid li { min-width: 0; }
+.past-work-grid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 14px 32px rgba(22, 22, 22, .08);
+}
+@media (max-width: 900px) {
+  .past-work-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .past-work-page .projects-page-intro { padding-top: 5.4rem; }
+  .past-work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
+}

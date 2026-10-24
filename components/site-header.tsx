@@ -47,7 +47,7 @@ export function SiteHeader({ scrolled: controlledScrolled, variant = 'overlay' }
     { label: isArabic ? 'من نحن' : 'About', href: '/about-us' },
     { label: isArabic ? 'مشاريعنا' : 'Projects', href: '/projects' },
     { label: isArabic ? 'احسب القسط' : 'Installments', href: '/installments' },
-    { label: isArabic ? 'سابقة أعمالنا' : 'Portfolio', href: '/#contact' },
+    { label: isArabic ? 'سابقة أعمالنا' : 'Portfolio', href: '/past-work' },
     { label: isArabic ? 'الأخبار' : 'News', href: '/news' },
     { label: isArabic ? 'تواصل معنا' : 'Contact', href: '/contact-us' },
   ]
