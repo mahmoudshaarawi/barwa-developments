@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { LanguageProvider } from '@/components/language-provider'
+import { WhatsAppFloat } from '@/components/whatsapp-float'
 import './globals.css'
 import './brochure.css'
 
@@ -42,6 +43,7 @@ export default function RootLayout({
       <body className="antialiased">
         <LanguageProvider>
           {children}
+          <WhatsAppFloat />
           {process.env.NODE_ENV === 'production' && <Analytics />}
         </LanguageProvider>
       </body>
