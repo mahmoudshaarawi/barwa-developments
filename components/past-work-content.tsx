@@ -9,6 +9,15 @@ const photos = Array.from({ length: 12 }, (_, index) => {
   return { src: `/past-work/pw${number}.jpg`, number: index + 1 }
 })
 
+function lightFrame(frame: HTMLElement) {
+  frame.classList.remove('is-lit')
+  void frame.offsetWidth
+  frame.classList.add('is-lit')
+  window.setTimeout(() => {
+    if (!frame.matches(':hover')) frame.classList.remove('is-lit')
+  }, 700)
+}
+
 export function PastWorkContent() {
   const { language } = useLanguage()
   const isArabic = language === 'ar'
@@ -39,12 +48,25 @@ export function PastWorkContent() {
         <ul className="past-work-grid">
           {photos.map((photo) => (
             <li key={photo.src}>
-              <img
-                src={photo.src}
-                width={600}
-                height={600}
-                alt={isArabic ? `مشروع من سابقة أعمال بروة ${photo.number}` : `Barwa past project ${photo.number}`}
-              />
+              <span
+                className="past-work-frame"
+                onPointerEnter={(event) => {
+                  if (event.pointerType === 'mouse') lightFrame(event.currentTarget)
+                }}
+                onPointerDown={(event) => {
+                  if (event.pointerType !== 'mouse') lightFrame(event.currentTarget)
+                }}
+                onPointerLeave={(event) => {
+                  if (event.pointerType === 'mouse') event.currentTarget.classList.remove('is-lit')
+                }}
+              >
+                <img
+                  src={photo.src}
+                  width={600}
+                  height={600}
+                  alt={isArabic ? `مشروع من سابقة أعمال بروة ${photo.number}` : `Barwa past project ${photo.number}`}
+                />
+              </span>
             </li>
           ))}
         </ul>
