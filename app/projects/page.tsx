@@ -41,10 +41,15 @@ export default function ProjectsPage() {
           const name = isArabic ? project.arabic : project.displayName
           return (
             <article className="destination-card" key={project.slug}>
-              <Link href={`/projects/${project.slug}`} className="destination-media" aria-label={isArabic ? `تفاصيل ${project.arabic}` : `${project.displayName} details`}>
+              <Link
+                href={`/projects/${project.slug}`}
+                className="destination-card-link"
+                aria-label={isArabic ? `تفاصيل ${project.arabic}` : `${project.displayName} details`}
+              />
+              <div className="destination-media">
                 <img src={project.listingImage} alt={isArabic ? `واجهة ${name}` : `${name} facade`} style={{ objectPosition: project.imagePosition }} />
                 <span className="stage-badge stage-badge-on-photo">{constructionStageLabel(project, isArabic)}</span>
-              </Link>
+              </div>
               <div className="destination-copy">
                 <h2>{name}</h2>
                 <p className="destination-location"><MapPin aria-hidden="true" />{isArabic ? project.location : project.englishLocation}</p>
@@ -65,10 +70,10 @@ export default function ProjectsPage() {
                   ))}
                 </dl>
                 <div className="destination-actions">
-                  <Link className="button-link" href={`/projects/${project.slug}`}>
+                  <span className="button-link">
                     {isArabic ? 'تفاصيل المشروع' : 'Project details'}
                     {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
-                  </Link>
+                  </span>
                   <a className="project-brochure-link" href={project.brochure} download>
                     <Download aria-hidden="true" />
                     {isArabic ? 'تحميل البروشور' : 'Download brochure'}

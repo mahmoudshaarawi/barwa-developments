@@ -131,7 +131,13 @@ export default function Page() {
     if (event.button !== 0 || (event.target instanceof Element && event.target.closest('button'))) return
     dragStartX.current = event.clientX
     fanDragged.current = false
-    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStartX.current === null) return
+    const distance = event.clientX - dragStartX.current
+    if (Math.abs(distance) > 16 && !event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.setPointerCapture(event.pointerId)
+    }
   }
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     if (dragStartX.current === null) return
@@ -167,6 +173,7 @@ export default function Page() {
           tabIndex={0}
           onKeyDown={handleCarouselKeyDown}
           onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={() => { dragStartX.current = null }}
           onClick={handleFanClick}
@@ -185,13 +192,16 @@ export default function Page() {
               const mark = projectWordmark(item.displayName)
               const photo = `${item.assetDirectory}/hero.jpg`
               return (
-                <a
+                <Link
                   key={item.slug}
                   className={`project-fan-card is-${slot}`}
                   href={`/projects/${item.slug}`}
                   aria-current={slot === 'center' ? 'true' : undefined}
                   aria-hidden={slot === 'center' ? undefined : true}
                   tabIndex={slot === 'center' ? 0 : -1}
+                  onClick={(event) => {
+                    if (fanDragged.current) event.preventDefault()
+                  }}
                 >
                   <span className="project-fan-photo">
                     <img className="project-fan-picture" src={photo} alt="" />
@@ -214,7 +224,7 @@ export default function Page() {
                       <span>{isArabic ? item.type : item.englishType}</span>
                     </span>
                   </span>
-                </a>
+                </Link>
               )
             })}
           </div>
