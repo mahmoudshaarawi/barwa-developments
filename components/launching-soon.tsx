@@ -38,15 +38,14 @@ export function LaunchingSoon() {
             </span>
           </span>
         </a>
-        <a className="launching-card is-mega" href={whatsApp(megaMessage)} target="_blank" rel="noopener noreferrer">
-          <img className="launching-photo" src="/launching/shorouk-mega.jpg" alt="" />
-          <span className="launching-shade" aria-hidden="true" />
-          <span className="launching-copy is-center">
-            <img className="launching-star" src="/brand/barwa-star.svg" alt="" />
-            <span className="launching-badge">{isArabic ? 'قريبًا · COMING SOON' : 'COMING SOON'}</span>
-            <strong>{isArabic ? 'الشروق ميجا بروجيكت' : 'El Shorouk Mega Project'}</strong>
-            <em lang="en">EL SHOROUK MEGA PROJECT</em>
-          </span>
+        <a
+          className="launching-card is-mega"
+          href={whatsApp(megaMessage)}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={isArabic ? 'الشروق ميجا بروجيكت — قريبًا' : 'El Shorouk Mega Project — coming soon'}
+        >
+          <img className="launching-poster" src="/launching/shorouk-mega.jpg" alt={isArabic ? 'الشروق ميجا بروجيكت، قريبًا' : 'El Shorouk Mega Project, coming soon'} />
         </a>
       </div>
     </section>
