@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, Volume2, VolumeX } from 'lucide-react'
 import { BrochureFigures } from '@/components/brochure-figures'
-import { LaunchingSoon } from '@/components/launching-soon'
 import { PartnerCarousel } from '@/components/partner-carousel'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
@@ -246,8 +245,6 @@ export default function Page() {
             : 'We create spaces where life, work and investment meet, shaped by considered detail and a distinctive presence.'}
         </p>
       </section>
-
-      <LaunchingSoon />
 
       <section id="top" className="home-promo" aria-label={isArabic ? 'عرض بروة' : 'Barwa film'}>
         <video

@@ -2700,47 +2700,6 @@ footer.site-footer {
   .whatsapp-float-pulse { animation: none; opacity: 0; }
 }
 
-.launching-heading { max-width: 36rem; margin-bottom: 1.2rem; }
-.launching-heading h2 { margin: 0 0 .35rem; font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 500; }
-.launching-heading p { margin: 0; color: var(--c-gray-dark); }
-.launching-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 1rem; }
-.launching-card {
-  position: relative;
-  display: block;
-  min-height: 420px;
-  overflow: hidden;
-  color: #fff;
-  text-decoration: none;
-  background: #161616;
-}
-.launching-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.launching-card.is-mega { min-height: 0; background: #141414; }
-.launching-poster { display: block; width: 100%; height: auto; object-fit: contain; }
-.launching-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10, 10, 12, .15), rgba(10, 10, 12, .72)); }
-.launching-copy {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  align-content: end;
-  gap: .45rem;
-  min-height: 420px;
-  padding: 1.4rem;
-}
-.launching-copy.is-center { justify-items: center; align-content: center; text-align: center; }
-.launching-badge {
-  justify-self: start;
-  padding: .28rem .7rem;
-  border: 1px solid rgba(255, 255, 255, .7);
-  letter-spacing: .14em;
-  font-size: .72rem;
-}
-.launching-copy.is-center .launching-badge { justify-self: center; }
-.launching-logo { width: min(280px, 70%); height: auto; margin: .4rem 0; }
-.launching-star { width: 36px; height: auto; }
-.launching-copy strong { font-size: clamp(1.6rem, 2.4vw, 2.2rem); font-weight: 500; }
-.launching-copy span,
-.launching-copy em { max-width: 28rem; font-style: normal; line-height: 1.6; }
-.launching-card:focus-visible { outline: 2px solid var(--c-magenta); outline-offset: 3px; }
 .project-lightbox-stage { max-width: min(100%, 1200px); max-height: 86vh; overflow: auto; }
 .project-lightbox-stage img { display: block; max-width: 100%; max-height: 86vh; object-fit: contain; }
 .project-lightbox.is-plan .project-lightbox-stage { width: min(96vw, 1100px); }
@@ -2766,10 +2725,7 @@ footer.site-footer {
 }
 .project-lightbox-zoom button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 @media (max-width: 900px) {
-  .numbers-joint ol,
-  .launching-grid { grid-template-columns: 1fr; }
+  .numbers-joint ol { grid-template-columns: 1fr; }
   .numbers-joint li { border-inline-start: 0; border-top: 1px solid rgba(22, 22, 22, .12); padding: .9rem .2rem; }
   .numbers-joint li:first-child { border-top: 0; }
-  .launching-card,
-  .launching-copy { min-height: 320px; }
 }
