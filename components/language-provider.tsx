@@ -27,7 +27,7 @@ const pageCopy = {
     },
     news: {
       title: 'الأخبار | بروة للتطوير العقاري',
-      description: 'تغطية صحفية منشورة عن تعاقدات بروة وشراكاتها وتعييناتها.',
+      description: 'فيديو وأخبار منشورة عن بروة: التعاقدات والشراكات والتعيينات.',
     },
     contact: {
       title: 'تواصل معنا | بروة للتطوير العقاري',
@@ -61,7 +61,7 @@ const pageCopy = {
     },
     news: {
       title: 'News | Barwa Developments',
-      description: 'Published coverage of Barwa contracts, partnerships and appointments.',
+      description: 'Barwa video and published news: contracts, partnerships and appointments.',
     },
     contact: {
       title: 'Contact | Barwa Developments',

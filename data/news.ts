@@ -1,4 +1,4 @@
-export type NewsCategory = 'partnerships' | 'contracts' | 'appointments'
+export type NewsCategory = 'video' | 'partnerships' | 'contracts' | 'appointments'
 
 export type NewsSource = {
   name: string
@@ -19,9 +19,34 @@ export type NewsStory = {
   imageAltAr: string
   imageAltEn: string
   sources: NewsSource[]
+  facebookVideo?: {
+    url: string
+    shareUrl: string
+  }
 }
 
 export const newsStories: NewsStory[] = [
+  {
+    slug: 'dr-haitham-el-gedaan',
+    date: '2026-10-15',
+    category: 'video',
+    categoryAr: 'فيديو',
+    categoryEn: 'Video',
+    titleAr: 'د. هيثم مع برنامج الجدعان',
+    titleEn: 'Dr. Haitham with El Geda\'an',
+    summaryAr: 'د. هيثم، الرئيس التنفيذي لشركة بروة للتطوير العقاري، في برنامج الجدعان. بروة تطوّر مولات تجمع النشاط التجاري والإداري والطبي.',
+    summaryEn: 'Dr. Haitham, chief executive of Barwa Developments, appears on El Geda\'an. Barwa develops malls that bring together commercial, administrative and medical uses.',
+    image: '/news/el-gedaan.jpg',
+    imageAltAr: 'لقطة من فيديو د. هيثم في برنامج الجدعان',
+    imageAltEn: 'Still from Dr. Haitham on El Geda\'an',
+    facebookVideo: {
+      url: 'https://www.facebook.com/reel/1645118367277291/',
+      shareUrl: 'https://www.facebook.com/share/v/195ruGZ7c6/',
+    },
+    sources: [
+      { name: 'Facebook', href: 'https://www.facebook.com/share/v/195ruGZ7c6/' },
+    ],
+  },
   {
     slug: 'telecom-egypt-we-mou',
     date: '2025-08-19',

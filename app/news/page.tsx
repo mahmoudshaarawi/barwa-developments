@@ -3,7 +3,7 @@ import { NewsListing } from '@/components/news-listing'
 
 export const metadata: Metadata = {
   title: 'الأخبار | بروة للتطوير العقاري',
-  description: 'تغطية صحفية منشورة عن تعاقدات بروة وشراكاتها وتعييناتها.',
+  description: 'فيديو وأخبار منشورة عن بروة: التعاقدات والشراكات والتعيينات.',
 }
 
 export default function NewsPage() {

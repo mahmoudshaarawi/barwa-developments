@@ -9,10 +9,23 @@ import { newsStories, type NewsCategory, type NewsStory } from '@/data/news'
 
 const filters: { id: 'all' | NewsCategory; ar: string; en: string }[] = [
   { id: 'all', ar: 'الكل', en: 'All' },
+  { id: 'video', ar: 'فيديو', en: 'Video' },
   { id: 'partnerships', ar: 'شراكات', en: 'Partnerships' },
   { id: 'contracts', ar: 'تعاقدات', en: 'Contracts' },
   { id: 'appointments', ar: 'تعيينات', en: 'Appointments' },
 ]
+
+function PlayMark() {
+  return (
+    <span className="news-play" aria-hidden="true">
+      <span>
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path fill="currentColor" d="M8.2 5.4v13.2L19 12 8.2 5.4z" />
+        </svg>
+      </span>
+    </span>
+  )
+}
 
 function formatDate(date: string, language: string) {
   return new Intl.DateTimeFormat(language === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', {
@@ -45,8 +58,8 @@ export function NewsListing() {
           <h1>{isArabic ? 'الأخبار' : 'News'}</h1>
           <p>
             {isArabic
-              ? 'ما نشرته الصحف عن بروة: التعاقدات، الشراكات، والتعيينات، مع روابط التغطية الأصلية.'
-              : 'Published coverage of Barwa: contracts, partnerships and appointments, with links to the original outlets.'}
+              ? 'ما نُشر عن بروة: فيديو، تعاقدات، شراكات، وتعيينات، مع روابط المصدر.'
+              : 'Barwa news: video, contracts, partnerships and appointments, with links to the source.'}
           </p>
         </div>
         <div className="news-filters" role="tablist" aria-label={isArabic ? 'تصنيف الأخبار' : 'News categories'}>
@@ -73,6 +86,7 @@ export function NewsListing() {
           <article className="news-feature">
             <Link href={`/news/${featured.slug}`} className="news-feature-media">
               <img src={featured.image} alt={isArabic ? featured.imageAltAr : featured.imageAltEn} />
+              {featured.facebookVideo && <PlayMark />}
             </Link>
             <div className="news-feature-copy">
               <p className="news-meta">
@@ -83,7 +97,9 @@ export function NewsListing() {
               <h2><Link href={`/news/${featured.slug}`}>{isArabic ? featured.titleAr : featured.titleEn}</Link></h2>
               <p>{isArabic ? featured.summaryAr : featured.summaryEn}</p>
               <Link className="text-link" href={`/news/${featured.slug}`}>
-                {isArabic ? `اقرأ الخبر · ${sourceCount(featured, true)}` : `Read the story · ${sourceCount(featured, false)}`}
+                {featured.facebookVideo
+                  ? (isArabic ? 'شاهد الفيديو' : 'Watch the video')
+                  : (isArabic ? `اقرأ الخبر · ${sourceCount(featured, true)}` : `Read the story · ${sourceCount(featured, false)}`)}
               </Link>
             </div>
           </article>
@@ -94,6 +110,7 @@ export function NewsListing() {
               <article className="news-card" key={story.slug}>
                 <Link href={`/news/${story.slug}`} className="news-card-media">
                   <img src={story.image} alt={isArabic ? story.imageAltAr : story.imageAltEn} />
+                  {story.facebookVideo && <PlayMark />}
                 </Link>
                 <div className="news-card-copy">
                   <p className="news-meta">
@@ -103,7 +120,7 @@ export function NewsListing() {
                   </p>
                   <h2><Link href={`/news/${story.slug}`}>{isArabic ? story.titleAr : story.titleEn}</Link></h2>
                   <p>{isArabic ? story.summaryAr : story.summaryEn}</p>
-                  <span className="news-count">{sourceCount(story, isArabic)}</span>
+                  <span className="news-count">{story.facebookVideo ? (isArabic ? 'شاهد الفيديو' : 'Watch the video') : sourceCount(story, isArabic)}</span>
                 </div>
               </article>
             ))}

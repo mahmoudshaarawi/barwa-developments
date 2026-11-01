@@ -35,6 +35,23 @@ export function NewsDetail({ story }: { story: NewsStory }) {
           </p>
           <h1>{isArabic ? story.titleAr : story.titleEn}</h1>
           <p className="news-detail-summary">{isArabic ? story.summaryAr : story.summaryEn}</p>
+          {story.facebookVideo && (
+            <div className="news-video-block">
+              <div className="news-video">
+                <iframe
+                  src={`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(story.facebookVideo.url)}&show_text=false`}
+                  title={isArabic ? story.titleAr : story.titleEn}
+                  loading="lazy"
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+              <a className="news-video-fallback" href={story.facebookVideo.shareUrl} target="_blank" rel="noopener noreferrer">
+                {isArabic ? 'شاهد الفيديو على فيسبوك' : 'Watch the video on Facebook'}
+                {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
+              </a>
+            </div>
+          )}
           <section className="news-sources" aria-labelledby="news-sources-title">
             <h2 id="news-sources-title">{isArabic ? 'نُشر في' : 'Published in'}</h2>
             <ul>
