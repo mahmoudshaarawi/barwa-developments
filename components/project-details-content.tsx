@@ -71,6 +71,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
   const isArabic = language === 'ar'
   const [selectedFloor, setSelectedFloor] = useState(project.floors[0]?.key ?? '')
   const [lightbox, setLightbox] = useState<LightboxImage | null>(null)
+  const [planZoom, setPlanZoom] = useState(1)
   const [selectedUnit, setSelectedUnit] = useState<ProjectUnit | null>(null)
   const [showReservationForm, setShowReservationForm] = useState(false)
   const [reservationStatus, setReservationStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -490,18 +491,39 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           aria-modal="true"
           aria-label={lightbox.alt}
           onClick={(event) => {
-            if (event.target === event.currentTarget) setLightbox(null)
+            if (event.target === event.currentTarget) {
+              setLightbox(null)
+              setPlanZoom(1)
+            }
           }}
         >
           <button
             className="project-lightbox-close"
             type="button"
-            onClick={() => setLightbox(null)}
+            onClick={() => {
+              setLightbox(null)
+              setPlanZoom(1)
+            }}
             aria-label={isArabic ? 'إغلاق' : 'Close'}
           >
             <X aria-hidden="true" />
           </button>
-          <img src={lightbox.src} alt={lightbox.alt} />
+          {lightbox.kind === 'plan' && (
+            <div className="project-lightbox-zoom">
+              <button type="button" onClick={() => setPlanZoom((value) => Math.max(1, Math.round((value - 0.25) * 100) / 100))} aria-label={isArabic ? 'تصغير' : 'Zoom out'}>−</button>
+              <button type="button" onClick={() => setPlanZoom((value) => Math.min(3, Math.round((value + 0.25) * 100) / 100))} aria-label={isArabic ? 'تكبير' : 'Zoom in'}>+</button>
+            </div>
+          )}
+          <div
+            className="project-lightbox-stage"
+            onWheel={(event) => {
+              if (lightbox.kind !== 'plan') return
+              event.preventDefault()
+              setPlanZoom((value) => Math.min(3, Math.max(1, Math.round((value + (event.deltaY < 0 ? 0.15 : -0.15)) * 100) / 100)))
+            }}
+          >
+            <img src={lightbox.src} alt={lightbox.alt} style={lightbox.kind === 'plan' ? { width: `${planZoom * 100}%` } : undefined} />
+          </div>
         </div>
       )}
 

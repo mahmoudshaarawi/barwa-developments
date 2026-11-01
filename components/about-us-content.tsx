@@ -85,20 +85,21 @@ export function AboutUsContent() {
         <div className="about-company-copy about-reveal">
           <span className="about-eyebrow">{isArabic ? '02 / عن بروة' : '02 / ABOUT BARWA'}</span>
           <h2>{isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'}</h2>
+          <h3>{isArabic ? 'متجذّرة في إرث من التميّز الإنشائي' : 'Rooted in a record of building excellence'}</h3>
           <p>
             {isArabic
-              ? 'تأسست بروة للتطوير العقاري على يد ثلاثة مستثمرين في القطاع العقاري، ونمت لتصبح من الأسماء البارزة في سوق العقارات المصري.'
-              : 'Founded by three real-estate investors, Barwa Developments has grown into a prominent player in Egypt’s real-estate sector.'}
+              ? 'بروة للتطوير العقاري مطوّر عقاري مصري تأسّس في عام 2008 على يد ثلاثة من رواد الاستثمار العقاري أصحاب الرؤية، بهدف تقديم أفضل موقع وأعلى جودة وأفضل استثمار.'
+              : 'Barwa Developments is an Egyptian developer founded in 2008 by three visionary real-estate investors, to offer the best location, the highest quality and the strongest investment.'}
           </p>
           <p>
             {isArabic
-              ? 'سلّمت الشركة أكثر من 150 مشروعًا، بحجم استثمارات يبلغ 3.2 مليار جنيه، وتواصل العمل على 5 مشروعات تجارية جديدة. ويرتكز نهجها على اختيار المواقع المتميزة، وجودة التطوير، وتهيئة فرص استثمارية مدروسة.'
-              : 'The company has delivered 150+ projects, with EGP 3.2 billion in investments, and is developing 5 new commercial projects. Its approach brings together distinguished locations, development quality and considered investment opportunities.'}
+              ? 'انطلقت بروة من القاهرة وتحديدًا من شروق العاصمة، وتحوّلت عبر سنوات من العمل والتسليم إلى منارة للرقيّ والفخامة في المشهد العقاري المصري.'
+              : 'Barwa started in Cairo, and in Shorouk Capital in particular, and through years of work and delivery became a mark of refinement in the Egyptian real-estate landscape.'}
           </p>
           <p>
             {isArabic
-              ? 'وتواصل بروة التوسع وتطوير مشروعاتها، مع التركيز على التصميم المعاصر والجودة في مختلف مراحل التطوير.'
-              : 'Barwa continues to expand and develop its projects, with a focus on contemporary design and quality throughout the development process.'}
+              ? 'وبالشراكة مع الراجحي للمشروعات العمرانية تمتد سابقة أعمالنا إلى أكثر من 150 مشروعًا تم تسليمها وحجم استثمارات يبلغ 3.2 مليار جنيه. واليوم تطلق بروة 5 مشروعات تجارية وإدارية وطبية في أميز مواقع شروق العاصمة والعاصمة الإدارية.'
+              : 'In partnership with Al Rajhi for Urban Projects, the track record extends to more than 150 delivered projects and EGP 3.2 billion in investments. Today Barwa is launching 5 commercial, administrative and medical projects in prime locations in Shorouk Capital and the New Administrative Capital.'}
           </p>
         </div>
       </section>
@@ -120,20 +121,26 @@ export function AboutUsContent() {
           <blockquote className="about-ceo-quote">
             <p>
               {isArabic
-                ? 'هدفنا دائمًا أن نبدأ عصرًا جديدًا تمامًا، ونحن على ثقة بأنه سيكون من أهم الاستثمارات حتى الآن.'
-                : 'Our aim has always been to begin an entirely new era, and we are confident it will be among the most important investments to date.'}
+                ? 'لا نبني جدرانًا تُضاف إلى المدينة، بل نصنع عناوين تُضيف إليها قيمة.'
+                : 'We do not build walls to add to the city. We create addresses that add value to it.'}
             </p>
           </blockquote>
           <p>
             {isArabic
-              ? 'لكي تُحدث بروة للتطوير العقاري أثرًا حقيقيًا في صناعة التطوير العقاري، كان لزامًا علينا منذ البداية أن نجمع فريقًا من المحترفين أصحاب الخبرة العالية في هذه المجالات؛ بنهج استباقي، ورغبة دائمة في أن نكون روادًا في كل ما نختار تحقيقه، وأن نسبق بخطوة.'
-              : 'For Barwa Developments to make a real impact on the real-estate industry, we had to bring together, from the outset, a team of highly experienced professionals in these fields — with a proactive approach, a constant desire to lead in everything we choose to achieve, and to stay one step ahead.'}
+              ? 'منذ عام 2008، آمنّا في بروة بأن العقار التجاري ليس مساحاتٍ تُباع، بل منظومة متكاملة تصنع الفرص وتمنح الأعمال مكانتها. ومن شروق العاصمة — حيث تلتقي الكثافة السكانية بامتداد العاصمة الإدارية الجديدة — اخترنا أن نؤسّس لجيل جديد من الوجهات التجارية والإدارية والطبية التي تليق بطموح عملائنا وتواكب نمو المدينة.'
+              : 'Since 2008 we have believed that commercial property is not space to be sold, but a complete system that creates opportunity and gives businesses their place. From Shorouk Capital — where population density meets the reach of the New Administrative Capital — we chose to establish a new generation of commercial, administrative and medical destinations worthy of our clients’ ambition and the city’s growth.'}
           </p>
           <p>
             {isArabic
-              ? 'كانت نقطة انطلاقنا في القاهرة، وتحديدًا في مدينة الشروق، بناءً على خبرتنا ومعرفتنا الكاملة بحالة السوق الحالية وما ستكون عليه ظروفه مستقبلًا. ورسالتنا أن نحافظ على النجاح بالمبادرة، وأن نعمل مع عملائنا على الاهتمام بأدق التفاصيل لنحقق لهم أعظم سُبل الاستثمار.'
-              : 'Our starting point was Cairo, and El Shorouk City in particular, based on our experience and our full knowledge of the market today and of the conditions it will face ahead. Our mission is to sustain success through initiative, and to work with our clients on the finest details so we can offer them the strongest avenues for investment.'}
+              ? 'رؤيتنا أن يكون اسم بروة مرادفًا للثقة؛ ثقةٌ تبدأ من اختيار الموقع بدقة، وتمتد إلى تصميم معماري يعظّم العائد، وتنفيذ لا يقبل التنازل عن الجودة، والتزام بالتسليم يحوّل الوعد إلى واقع. لذلك نتابع كل تفصيلة بأنفسنا، فثقة المستثمر هي رأس مالنا الحقيقي.'
+              : 'Our vision is that the name Barwa stands for trust: trust that begins with choosing the location precisely, extends to architecture that maximises return, execution that does not compromise on quality, and a commitment to delivery that turns a promise into reality. That is why we follow every detail ourselves. An investor’s trust is our real capital.'}
           </p>
+          <p>
+            {isArabic
+              ? 'وما كنّا لنبلغ ما بلغناه دون شركاء نعتز بهم؛ من العلامات التجارية والمؤسسات الرائدة التي اختارت مشروعاتنا، إلى شركائنا في مسيرة البناء. معًا نمضي نحو مرحلة جديدة عنوانها التميّز، ووجهتها مستقبلٌ أكثر ازدهارًا لمدينتنا ولكل من وضع ثقته فينا.'
+              : 'We would not have reached this point without partners we are proud of — from the brands and leading institutions that chose our projects, to our partners in building. Together we move toward a new stage whose title is distinction, and whose destination is a more prosperous future for our city and for everyone who placed their trust in us.'}
+          </p>
+          <p>{isArabic ? 'هذا عهدنا… وهذه بروة.' : 'This is our pledge. And this is Barwa.'}</p>
           <p className="about-ceo-sign">
             <strong>{isArabic ? 'م. عبد الفتاح محمد' : 'Eng. Abdelfattah Mohamed'}</strong>
             <span>{isArabic ? 'الرئيس التنفيذي' : 'CEO'}</span>
@@ -151,13 +158,16 @@ export function AboutUsContent() {
 
       <section className="about-approach section-pad">
         <div className="about-section-heading about-reveal">
-          <span className="about-eyebrow">{isArabic ? '04 / نهجنا' : '04 / OUR APPROACH'}</span>
-          <h2>{isArabic ? 'ثلاث ركائز توجه عملنا' : 'Three Pillars That Guide Our Work'}</h2>
+          <span className="about-eyebrow">{isArabic ? '04 / لماذا بروة' : '04 / WHY BARWA'}</span>
+          <h2>{isArabic ? 'لماذا بروة؟' : 'Why Barwa?'}</h2>
         </div>
         <div className="about-pillars">
-          <Pillar number="01" Icon={MapPin} title={isArabic ? 'اختيار المواقع' : 'Strategic Locations'} text={isArabic ? 'نبدأ من الموقع، ونبحث عن الأماكن التي تمنح المشروع حضوراً وفرصة.' : 'We begin with place, seeking locations that give each development presence and opportunity.'} />
-          <Pillar number="02" Icon={Building2} title={isArabic ? 'جودة التطوير' : 'Development Quality'} text={isArabic ? 'نهتم بجودة التطوير والتصميم المعاصر في تشكيل كل وجهة.' : 'We focus on development quality and contemporary design in shaping every destination.'} />
-          <Pillar number="03" Icon={Layers3} title={isArabic ? 'قيمة مستدامة' : 'Lasting Value'} text={isArabic ? 'نطوّر فرصاً تستند إلى قيمة مدروسة وتطلّع طويل الأمد.' : 'We develop opportunities grounded in considered value and a long-term outlook.'} />
+          <Pillar number="01" Icon={MapPin} title={isArabic ? 'مواقع استراتيجية' : 'Strategic locations'} text={isArabic ? 'مشروعاتنا في أميز مواقع شروق العاصمة والعاصمة الإدارية الجديدة.' : 'Our projects sit in prime locations in Shorouk Capital and the New Administrative Capital.'} />
+          <Pillar number="02" Icon={Building2} title={isArabic ? '5 مشروعات تجارية لبروة' : '5 commercial projects of our own'} text={isArabic ? 'محفظة بروة الخاصة: مشروعات تجارية وإدارية وطبية تمنح الأعمال عنوانًا يواكب المستقبل.' : 'Barwa’s own portfolio: commercial, administrative and medical projects that give businesses an address in step with the future.'} />
+          <Pillar number="03" Icon={Layers3} title={isArabic ? 'جودة بلا تنازل' : 'Quality without compromise'} text={isArabic ? 'مشروعات عالية الجودة تلبي الاحتياجات المتنوعة لعملائنا.' : 'High-quality projects that meet the varied needs of our clients.'} />
+          <Pillar number="04" Icon={MapPin} title={isArabic ? 'سجل تسليم موثوق' : 'A reliable delivery record'} text={isArabic ? 'أكثر من 150 مشروعًا سكنيًا تم تسليمها بالشراكة مع الراجحي للمشروعات العمرانية.' : 'More than 150 residential projects delivered in partnership with Al Rajhi for Urban Projects.'} />
+          <Pillar number="05" Icon={Building2} title={isArabic ? 'ملاءة استثمارية' : 'Investment substance'} text={isArabic ? 'حجم استثمارات 3.2 مليار جنيه وأكثر من 1500 عميل — بالشراكة مع الراجحي.' : 'EGP 3.2 billion in investments and more than 1,500 clients — in partnership with Al Rajhi.'} />
+          <Pillar number="06" Icon={Layers3} title={isArabic ? 'خبرة منذ 2008' : 'Experience since 2008'} text={isArabic ? 'فريق من المحترفين أصحاب الخبرة العالية في التطوير العقاري.' : 'A team of highly experienced professionals in real-estate development.'} />
         </div>
       </section>
 
@@ -210,15 +220,15 @@ export function AboutUsContent() {
         <div className="about-journey-track about-reveal">
           <div className="about-journey-origin">
             <span className="about-journey-year" dir="ltr"><span className="figure-plus">+</span>150</span>
-            <span>{isArabic ? 'مشروعًا تم تسليمها' : 'Projects delivered'}</span>
+            <span>{isArabic ? 'مشروعًا سكنيًا بالشراكة مع الراجحي' : 'Residential projects with Al Rajhi'}</span>
           </div>
           <div className="about-journey-line"><i /></div>
           <div className="about-journey-story">
             <span className="about-eyebrow">{isArabic ? 'مسار مستمر' : 'A CONTINUING STORY'}</span>
             <p>
               {isArabic
-                ? 'منذ تأسيسها على يد ثلاثة مستثمرين عقاريين، واصلت بروة تطوير حضورها في السوق المصري. واليوم، تعكس محفظتها أكثر من 150 مشروعًا تم تسليمها، واستثمارات بحجم 3.2 مليار جنيه، إلى جانب 5 مشروعات تجارية جديدة.'
-                : 'Founded by three real-estate investors, Barwa has continued to build its presence in Egypt. Its portfolio now reflects 150+ delivered projects, EGP 3.2 billion in investments, and 5 new commercial projects.'}
+                ? 'منذ 2008 واصلت بروة بناء حضورها. سابقة الأعمال السكنية — أكثر من 150 مشروعًا و3.2 مليار جنيه وأكثر من 1500 عميل — تمت بالشراكة مع الراجحي للمشروعات العمرانية. ومحفظة بروة الخاصة اليوم 5 مشروعات تجارية وإدارية وطبية.'
+                : 'Since 2008 Barwa has kept building its presence. The residential record — more than 150 projects, EGP 3.2 billion and more than 1,500 clients — was delivered with Al Rajhi for Urban Projects. Barwa’s own portfolio today is 5 commercial, administrative and medical projects.'}
             </p>
           </div>
         </div>

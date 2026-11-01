@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, Volume2, VolumeX } from 'lucide-react'
 import { BrochureFigures } from '@/components/brochure-figures'
+import { LaunchingSoon } from '@/components/launching-soon'
 import { PartnerCarousel } from '@/components/partner-carousel'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
@@ -246,6 +247,7 @@ export default function Page() {
         </p>
       </section>
 
+      <LaunchingSoon />
 
       <section id="top" className="home-promo" aria-label={isArabic ? 'عرض بروة' : 'Barwa film'}>
         <video
@@ -284,8 +286,8 @@ export default function Page() {
           <h2>{isArabic ? <>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></> : <>We develop destinations<br /><em>that create real value</em></>}</h2>
           <p>
             {isArabic
-              ? 'منذ تأسيسها، تواصل بروة للتطوير العقاري بناء إرث من التميز والإنجازات البارزة. نخلق مشاريع استثنائية تجمع بين المواقع المتميزة، الجودة، وفرص الاستثمار المدروسة.'
-              : 'Since its founding, Barwa Developments has built a record of distinction and delivery. We create exceptional projects that bring together distinguished locations, quality and considered investment opportunities.'}
+              ? 'إرث من التميّز والإنجازات البارزة. منذ 2008 نبني في شروق العاصمة مشروعات تجمع بين أفضل موقع وأعلى جودة وأذكى استثمار.'
+              : 'A record of distinction and delivery. Since 2008 we have been building in Shorouk Capital, bringing together the strongest location, the highest quality and the sharpest investment.'}
           </p>
           <a className="text-link" href="#contact">{isArabic ? 'تعرف على بروة' : 'Discover Barwa'} <ArrowUpRight /></a>
         </div>
@@ -293,7 +295,7 @@ export default function Page() {
           <img src="/projects/hub5-mall/hero.jpg" alt="" />
           <figcaption>
             <strong>3.2</strong>
-            <span>{isArabic ? 'مليار جنيه' : 'EGP billion'}<small>{isArabic ? 'حجم الاستثمارات' : 'Investment volume'}</small></span>
+            <span>{isArabic ? 'مليار جنيه' : 'EGP billion'}<small>{isArabic ? 'حجم الاستثمارات · بالشراكة مع الراجحي' : 'Investments · with Al Rajhi'}</small></span>
           </figcaption>
         </figure>
       </section>

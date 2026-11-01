@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowUpLeft, ArrowUpRight, Download, MapPin, MoveUpRight } from 'lucide-react'
+import { LaunchingSoon } from '@/components/launching-soon'
 import { LiveConstruction } from '@/components/live-construction'
 import { ProjectInquiryForm } from '@/components/project-inquiry-form'
 import { UsePills } from '@/components/use-pills'
@@ -85,6 +86,7 @@ export default function ProjectsPage() {
         })}
       </section>
 
+      <LaunchingSoon />
       <LiveConstruction items={orderedProjects} isArabic={isArabic} />
 
       <section className="projects-inquiry section-pad">

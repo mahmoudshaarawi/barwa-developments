@@ -12,6 +12,9 @@ const partners: Partner[] = [
   { src: '/partners/central-care.jpg', name: 'Central Care Clinics' },
   { src: '/partners/we.jpg', name: 'WE' },
   { src: '/partners/engineering-consultant.png', name: 'الاستشاري الهندسي', englishName: 'Engineering Consultant' },
+  { src: '/partners/alrajhi.png', name: 'الراجحي للمشروعات العمرانية', englishName: 'Al Rajhi for Urban Projects' },
+  { src: '/partners/next-step.png', name: 'Next Step حماية مدنية', englishName: 'Next Step Civil Protection' },
+  { src: '/partners/patriot.png', name: 'Patriot حماية مدنية', englishName: 'Patriot Civil Protection' },
 ]
 
 const copies = 4

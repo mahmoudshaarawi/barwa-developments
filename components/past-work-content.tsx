@@ -1,5 +1,6 @@
 'use client'
 
+import { BrandLockup } from './brand-lockup'
 import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
 import { useLanguage } from './language-provider'
@@ -36,11 +37,18 @@ export function PastWorkContent() {
             <span className="eyebrow">{isArabic ? 'بروة للتطوير العقاري' : 'BARWA DEVELOPMENTS'}</span>
             <h1 id="past-work-title">{isArabic ? 'سابقة أعمالنا' : 'Previous Work'}</h1>
           </div>
-          <p className="past-work-lead">
-            {isArabic
-              ? 'أكثر من 150 مشروعًا تم تسليمها لعملائنا في مدينة الشروق'
-              : 'More than 150 projects delivered in El Shorouk City'}
-          </p>
+          <div className="past-work-intro">
+            <BrandLockup />
+            <p className="past-work-lead">
+              {isArabic
+                ? 'أعمال سكنية تمتد عبر مختلف أحياء مدينة الشروق؛ من الحي الثالث شرق وحي النادي إلى الحي الأول والمنطقة الخامسة وغيرها، نُفّذت بالشراكة مع الراجحي للمشروعات العمرانية.'
+                : 'Residential work across the districts of El Shorouk — from the Third District East and the Club District to the First District, the Fifth District and beyond — delivered in partnership with Al Rajhi for Urban Projects.'}
+            </p>
+            <ul className="past-work-stats">
+              <li><b dir="ltr"><span className="figure-plus">+</span>150</b><span>{isArabic ? 'مشروعًا سكنيًا تم تسليمه' : 'Residential projects delivered'}</span></li>
+              <li><b dir="ltr"><span className="figure-plus">+</span>1500</b><span>{isArabic ? 'عميل يثقون بنا' : 'Clients who trust us'}</span></li>
+            </ul>
+          </div>
         </div>
       </section>
 

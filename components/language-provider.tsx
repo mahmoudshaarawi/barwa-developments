@@ -39,7 +39,7 @@ const pageCopy = {
     },
     pastWork: {
       title: 'سابقة أعمالنا | بروة للتطوير العقاري',
-      description: 'أكثر من 150 مشروعًا تم تسليمها لعملائنا في مدينة الشروق.',
+      description: 'أعمال سكنية في أحياء مدينة الشروق بالشراكة مع الراجحي: أكثر من 150 مشروعًا وأكثر من 1500 عميل.',
     },
   },
   en: {
@@ -73,7 +73,7 @@ const pageCopy = {
     },
     pastWork: {
       title: 'Previous Work | Barwa Developments',
-      description: 'More than 150 projects delivered in El Shorouk City.',
+      description: 'Residential work across El Shorouk, with Al Rajhi: more than 150 projects and more than 1,500 clients.',
     },
   },
 } as const
