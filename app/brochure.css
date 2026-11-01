@@ -1150,19 +1150,8 @@ footer {
   overflow: hidden;
   padding: clamp(1.35rem, 2.6vw, 2rem) clamp(1rem, 2vw, 1.4rem) clamp(1.2rem, 2vw, 1.6rem);
   color: #161616;
-  background:
-    radial-gradient(90% 70% at 0% 0%, rgba(229, 28, 110, .07), transparent 52%),
-    linear-gradient(180deg, #fbf8f3 0%, #f3eee6 100%);
+  background: #fbf8f3;
   border: 1px solid rgba(201, 162, 74, .45);
-}
-.record-band::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url('/brand/barwa-star.svg');
-  background-size: 120px 120px;
-  opacity: .055;
-  pointer-events: none;
 }
 .record-lockup,
 .record-stats { position: relative; z-index: 1; }
@@ -1236,14 +1225,8 @@ footer {
   font-weight: 500;
 }
 .record-own-mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: .4rem;
-  margin-top: .7rem;
-}
-.record-own-mark img { width: 72px; height: auto; }
-.record-own-mark small {
+  display: block;
+  margin-top: .65rem;
   color: #5c5c58;
   font-size: .75rem;
   font-weight: 500;

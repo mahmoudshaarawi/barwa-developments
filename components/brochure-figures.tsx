@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { BrandLockup } from './brand-lockup'
 import { useLanguage } from './language-provider'
 
 const stats = [
@@ -70,8 +69,7 @@ export function BrochureFigures() {
   return (
     <div className="record-band" ref={rootRef}>
       <div className="record-lockup">
-        <BrandLockup pill />
-        <p>{isArabic ? 'سابقة أعمال مشتركة — بالشراكة مع الراجحي' : 'Joint track record — with Al Rajhi'}</p>
+        <p>{isArabic ? 'بالشراكة مع الراجحي' : 'In partnership with Al Rajhi'}</p>
       </div>
       <ol className="record-stats">
         {stats.map((stat, index) => (
@@ -82,10 +80,7 @@ export function BrochureFigures() {
             </b>
             <span>{isArabic ? stat.arabic : stat.english}</span>
             {stat.own && (
-              <span className="record-own-mark">
-                <img src="/brand/barwa%20logo-01.svg" alt="" />
-                <small>{isArabic ? 'محفظة بروة الخاصة' : 'Barwa’s own portfolio'}</small>
-              </span>
+              <small className="record-own-mark">{isArabic ? 'محفظة بروة الخاصة' : 'Barwa’s own portfolio'}</small>
             )}
           </li>
         ))}
