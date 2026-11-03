@@ -283,8 +283,8 @@ export default function Page() {
           <h2>{isArabic ? <>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></> : <>We develop destinations<br /><em>that create real value</em></>}</h2>
           <p>
             {isArabic
-              ? 'إرث من التميّز والإنجازات البارزة. منذ 2008 نبني في شروق العاصمة مشروعات تجمع بين أفضل موقع وأعلى جودة وأذكى استثمار.'
-              : 'A record of distinction and delivery. Since 2008 we have been building in Shorouk Capital, bringing together the strongest location, the highest quality and the sharpest investment.'}
+              ? 'إرث من التميّز والإنجازات البارزة. منذ 2008 نبني في شرق القاهرة مشروعات تجمع بين أفضل موقع وأعلى جودة وأذكى استثمار.'
+              : 'A record of distinction and delivery. Since 2008 we have been building in East Cairo, bringing together the strongest location, the highest quality and the sharpest investment.'}
           </p>
           <a className="text-link" href="#contact">{isArabic ? 'تعرف على بروة' : 'Discover Barwa'} <ArrowUpRight /></a>
         </div>

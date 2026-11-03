@@ -33,8 +33,8 @@ export function LaunchingSoon() {
             <strong>{isArabic ? 'زهرة العاصمة' : 'Zahra Capital Mall'}</strong>
             <span>
               {isArabic
-                ? 'وجهة تجارية ذكية متكاملة في قلب العاصمة الإدارية الجديدة'
-                : 'An integrated smart commercial destination in the heart of the New Administrative Capital'}
+                ? 'وجهة تجارية ذكية متكاملة بمعايير عصرية'
+                : 'An integrated smart commercial destination, built to contemporary standards.'}
             </span>
           </span>
         </a>

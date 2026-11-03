@@ -93,13 +93,13 @@ export function AboutUsContent() {
           </p>
           <p>
             {isArabic
-              ? 'انطلقت بروة من القاهرة وتحديدًا من شروق العاصمة، وتحوّلت عبر سنوات من العمل والتسليم إلى منارة للرقيّ والفخامة في المشهد العقاري المصري.'
-              : 'Barwa started in Cairo, and in Shorouk Capital in particular, and through years of work and delivery became a mark of refinement in the Egyptian real-estate landscape.'}
+              ? 'انطلقت بروة من القاهرة وتحديدًا من شرق القاهرة، وتحوّلت عبر سنوات من العمل والتسليم إلى منارة للرقيّ والفخامة في المشهد العقاري المصري.'
+              : 'Barwa started in Cairo, and in East Cairo in particular, and through years of work and delivery became a mark of refinement in the Egyptian real-estate landscape.'}
           </p>
           <p>
             {isArabic
-              ? 'وبالشراكة مع الراجحي للمشروعات العمرانية تمتد سابقة أعمالنا إلى أكثر من 150 مشروعًا تم تسليمها وحجم استثمارات يبلغ 3.2 مليار جنيه. واليوم تطلق بروة 5 مشروعات تجارية وإدارية وطبية في أميز مواقع شروق العاصمة والعاصمة الإدارية.'
-              : 'In partnership with Al Rajhi for Urban Projects, the track record extends to more than 150 delivered projects and EGP 3.2 billion in investments. Today Barwa is launching 5 commercial, administrative and medical projects in prime locations in Shorouk Capital and the New Administrative Capital.'}
+              ? 'وبالشراكة مع الراجحي للمشروعات العمرانية تمتد سابقة أعمالنا إلى أكثر من 150 مشروعًا تم تسليمها وحجم استثمارات يبلغ 3.2 مليار جنيه. واليوم تطلق بروة 5 مشروعات تجارية وإدارية وطبية في أميز مواقع مدينة الشروق بشرق القاهرة.'
+              : 'In partnership with Al Rajhi for Urban Projects, the track record extends to more than 150 delivered projects and EGP 3.2 billion in investments. Today Barwa is launching 5 commercial, administrative and medical projects in prime locations in El Shorouk, East Cairo.'}
           </p>
         </div>
       </section>
@@ -127,8 +127,8 @@ export function AboutUsContent() {
           </blockquote>
           <p>
             {isArabic
-              ? 'منذ عام 2008، آمنّا في بروة بأن العقار التجاري ليس مساحاتٍ تُباع، بل منظومة متكاملة تصنع الفرص وتمنح الأعمال مكانتها. ومن شروق العاصمة — حيث تلتقي الكثافة السكانية بامتداد العاصمة الإدارية الجديدة — اخترنا أن نؤسّس لجيل جديد من الوجهات التجارية والإدارية والطبية التي تليق بطموح عملائنا وتواكب نمو المدينة.'
-              : 'Since 2008 we have believed that commercial property is not space to be sold, but a complete system that creates opportunity and gives businesses their place. From Shorouk Capital — where population density meets the reach of the New Administrative Capital — we chose to establish a new generation of commercial, administrative and medical destinations worthy of our clients’ ambition and the city’s growth.'}
+              ? 'منذ عام 2008، آمنّا في بروة بأن العقار التجاري ليس مساحاتٍ تُباع، بل منظومة متكاملة تصنع الفرص وتمنح الأعمال مكانتها. ومن شرق القاهرة — حيث الكثافة السكانية والنمو العمراني المتسارع — اخترنا أن نؤسّس لجيل جديد من الوجهات التجارية والإدارية والطبية التي تليق بطموح عملائنا وتواكب نمو المدينة.'
+              : 'Since 2008 we have believed that commercial property is not space to be sold, but a complete system that creates opportunity and gives businesses their place. From East Cairo — where population density and rapid urban growth come together — we chose to establish a new generation of commercial, administrative and medical destinations worthy of our clients’ ambition and the city’s growth.'}
           </p>
           <p>
             {isArabic
@@ -162,12 +162,11 @@ export function AboutUsContent() {
           <h2>{isArabic ? 'لماذا بروة؟' : 'Why Barwa?'}</h2>
         </div>
         <div className="about-pillars">
-          <Pillar number="01" Icon={MapPin} title={isArabic ? 'مواقع استراتيجية' : 'Strategic locations'} text={isArabic ? 'مشروعاتنا في أميز مواقع شروق العاصمة والعاصمة الإدارية الجديدة.' : 'Our projects sit in prime locations in Shorouk Capital and the New Administrative Capital.'} />
-          <Pillar number="02" Icon={Building2} title={isArabic ? '5 مشروعات تجارية لبروة' : '5 commercial projects of our own'} text={isArabic ? 'محفظة بروة الخاصة: مشروعات تجارية وإدارية وطبية تمنح الأعمال عنوانًا يواكب المستقبل.' : 'Barwa’s own portfolio: commercial, administrative and medical projects that give businesses an address in step with the future.'} />
-          <Pillar number="03" Icon={Layers3} title={isArabic ? 'جودة بلا تنازل' : 'Quality without compromise'} text={isArabic ? 'مشروعات عالية الجودة تلبي الاحتياجات المتنوعة لعملائنا.' : 'High-quality projects that meet the varied needs of our clients.'} />
-          <Pillar number="04" Icon={MapPin} title={isArabic ? 'سجل تسليم موثوق' : 'A reliable delivery record'} text={isArabic ? 'أكثر من 150 مشروعًا سكنيًا تم تسليمها بالشراكة مع الراجحي للمشروعات العمرانية.' : 'More than 150 residential projects delivered in partnership with Al Rajhi for Urban Projects.'} />
-          <Pillar number="05" Icon={Building2} title={isArabic ? 'ملاءة استثمارية' : 'Investment substance'} text={isArabic ? 'حجم استثمارات 3.2 مليار جنيه وأكثر من 1500 عميل — بالشراكة مع الراجحي.' : 'EGP 3.2 billion in investments and more than 1,500 clients — in partnership with Al Rajhi.'} />
-          <Pillar number="06" Icon={Layers3} title={isArabic ? 'خبرة منذ 2008' : 'Experience since 2008'} text={isArabic ? 'فريق من المحترفين أصحاب الخبرة العالية في التطوير العقاري.' : 'A team of highly experienced professionals in real-estate development.'} />
+          <Pillar number="01" Icon={Building2} title={isArabic ? 'تخصص واضح' : 'A clear specialisation'} text={isArabic ? 'نتخصص في المباني التجارية والإدارية والطبية في شرق القاهرة.' : 'We specialise in commercial, administrative and medical buildings in East Cairo.'} />
+          <Pillar number="02" Icon={MapPin} title={isArabic ? 'وسط كثافة سكنية' : 'Inside dense residential areas'} text={isArabic ? 'مشروعاتنا داخل مناطق سكنية كثيفة في مدينة الشروق بشرق القاهرة.' : 'Our projects sit inside dense residential districts in El Shorouk, East Cairo.'} />
+          <Pillar number="03" Icon={Layers3} title={isArabic ? 'مساحات مرنة' : 'Flexible unit sizes'} text={isArabic ? 'وحدات بمساحات متنوعة تلائم النشاط التجاري والإداري والطبي.' : 'Units in a range of sizes for commercial, administrative and medical use.'} />
+          <Pillar number="04" Icon={MapPin} title={isArabic ? 'على الطرق الرئيسية' : 'On the main roads'} text={isArabic ? 'مواقع على الطرق الرئيسية داخل مدينة الشروق بشرق القاهرة.' : 'Locations on the main roads of El Shorouk, East Cairo.'} />
+          <Pillar number="05" Icon={Building2} title={isArabic ? 'استخدامات في مبنى واحد' : 'Mixed uses in one building'} text={isArabic ? 'نشاط تجاري وإداري وطبي يجتمع في المبنى نفسه.' : 'Commercial, administrative and medical uses together in the same building.'} />
         </div>
       </section>
 
