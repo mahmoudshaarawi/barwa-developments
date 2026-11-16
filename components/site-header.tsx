@@ -55,9 +55,9 @@ export function SiteHeader({ scrolled: controlledScrolled, variant = 'overlay' }
   return (
     <>
       <header className={`site-header ${isScrolled ? 'is-scrolled' : ''} ${variant === 'solid' ? 'site-header-solid' : ''} ${menuOpen ? 'is-menu-open' : ''}`}>
-        <Link href="/" className="brand-lockup" aria-label="Barwa Developments">
-          <img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt="" aria-hidden="true" />
-          <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt="" aria-hidden="true" />
+        <Link href="/" className="brand-lockup" aria-label={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'}>
+          <img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'} />
+          <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'} aria-hidden="true" />
         </Link>
         <nav className="desktop-nav" aria-label={isArabic ? 'التنقل الرئيسي' : 'Main navigation'}>
           {navItems.map((item) => <Link key={item.label} href={item.href}>{item.label}</Link>)}

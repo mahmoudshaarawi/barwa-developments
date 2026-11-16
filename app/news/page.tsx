@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import { NewsListing } from '@/components/news-listing'
+import { pageMetadata, staticPage } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'الأخبار | بروة للتطوير العقاري',
-  description: 'فيديو وأخبار منشورة عن بروة: التعاقدات والشراكات والتعيينات.',
-}
+export const metadata: Metadata = pageMetadata(staticPage('ar', 'news'))
 
 export default function NewsPage() {
   return <NewsListing />

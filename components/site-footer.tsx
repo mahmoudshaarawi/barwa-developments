@@ -26,8 +26,8 @@ export function SiteFooter() {
     <footer className="site-footer" dir={isArabic ? 'rtl' : 'ltr'}>
       <div className="site-footer-main">
         <div className="site-footer-brand">
-          <Link href="/" className="brand-lockup footer-brand" aria-label="Barwa Developments">
-            <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt="" aria-hidden="true" />
+          <Link href="/" className="brand-lockup footer-brand" aria-label={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'}>
+            <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'} />
           </Link>
           <p>{isArabic ? 'نبني التميز، نصنع القيمة.' : 'Building excellence, creating value.'}</p>
           <nav className="footer-social-links" aria-label={isArabic ? 'تابعونا على منصات التواصل الاجتماعي' : 'Follow Barwa on social media'}>

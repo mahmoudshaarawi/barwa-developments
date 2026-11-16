@@ -29,7 +29,7 @@ export function LaunchingSoon() {
           <span className="launching-shade" aria-hidden="true" />
           <span className="launching-copy">
             <span className="launching-badge">{isArabic ? 'قريبًا · COMING SOON' : 'COMING SOON'}</span>
-            <img className="launching-logo" src="/launching/zahra-capital-mall-logo.png" alt="Zahra Capital Mall" />
+            <img className="launching-logo" src="/launching/zahra-capital-mall-logo.png" alt={isArabic ? 'زهرة العاصمة' : 'Zahra Capital Mall'} decoding="async" />
             <strong>{isArabic ? 'زهرة العاصمة' : 'Zahra Capital Mall'}</strong>
             <span>
               {isArabic

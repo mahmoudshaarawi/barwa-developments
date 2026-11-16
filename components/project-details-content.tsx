@@ -122,7 +122,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
       <SiteHeader variant="overlay" />
 
       <section className="project-detail-hero" aria-label={projectName}>
-        <img className="project-detail-hero-image" src={asset('hero.jpg')} alt="" fetchPriority="high" />
+        <img className="project-detail-hero-image" src={asset('hero.jpg')} alt={isArabic ? `واجهة ${project.arabic} في ${project.location}` : `${project.displayName} facade, ${project.englishLocation}`} fetchPriority="high" decoding="async" />
         <div className="project-detail-hero-overlay" />
         <div className="project-detail-hero-copy">
           <Link href="/projects" className="project-detail-back">
@@ -190,7 +190,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
             })}
             aria-label={isArabic ? 'تكبير صورة المشروع' : 'Enlarge project image'}
           >
-            <img src={asset('gallery-01.jpg')} alt="" loading="lazy" />
+            <img src={asset('gallery-01.jpg')} alt={isArabic ? `صورة معمارية لمشروع ${projectName}` : `Architecture image for ${projectName}`} loading="lazy" decoding="async" />
             <span><ZoomIn aria-hidden="true" />{isArabic ? 'عرض الصورة' : 'View image'}</span>
           </button>
         </div>
@@ -220,7 +220,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
               })}
               aria-label={isArabic ? 'تكبير خريطة الموقع' : 'Enlarge location map'}
             >
-              <img src={asset(locationMap)} alt="" loading="lazy" />
+              <img src={asset(locationMap)} alt={isArabic ? `خريطة موقع مشروع ${projectName} في ${project.location}` : `Location map for ${projectName}, ${project.englishLocation}`} loading="lazy" decoding="async" />
               <span><ZoomIn aria-hidden="true" />{isArabic ? 'تكبير الخريطة' : 'Enlarge map'}</span>
             </button>
           )}
@@ -233,7 +233,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           <h2>{isArabic ? 'معرض المشروع' : 'Project Gallery'}</h2>
         </div>
         <div className="project-gallery-grid">
-          {project.galleryImages.map((image) => (
+          {project.galleryImages.map((image, index) => (
             <button
               type="button"
               className="project-gallery-item"
@@ -245,7 +245,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
               })}
               aria-label={isArabic ? 'تكبير صورة المشروع' : 'Enlarge project image'}
             >
-              <img src={asset(image)} alt="" loading="lazy" />
+              <img src={asset(image)} alt={isArabic ? `صورة ${index + 1} من معرض ${projectName}` : `Gallery image ${index + 1} of ${projectName}`} loading="lazy" decoding="async" />
               <span><ZoomIn aria-hidden="true" /></span>
             </button>
           ))}
@@ -290,7 +290,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
               })}
               aria-label={isArabic ? 'تكبير المخطط' : 'Enlarge plan'}
             >
-              <img src={asset(floorPlanFile(floor.key))} alt={`${projectName} — ${isArabic ? floor.arabic : floor.english}`} loading="lazy" />
+              <img src={asset(floorPlanFile(floor.key))} alt={isArabic ? `مخطط ${floor.arabic} لمشروع ${project.arabic}` : `${floor.english} plan, ${project.displayName}`} loading="lazy" decoding="async" />
             </button>
             {(isArabic ? floor.activityAr : floor.activityEn) && (
               <p className="project-floor-activity">{isArabic ? floor.activityAr : floor.activityEn}</p>
@@ -352,7 +352,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
               })}
               aria-label={isArabic ? `تكبير مخطط ${floor.arabic}` : `Enlarge ${floor.english} plan`}
             >
-              <img src={asset(floorPlanFile(floor.key))} alt={`${projectName} — ${isArabic ? floor.arabic : floor.english}`} loading="lazy" />
+              <img src={asset(floorPlanFile(floor.key))} alt={isArabic ? `مخطط ${floor.arabic} لمشروع ${project.arabic}` : `${floor.english} plan, ${project.displayName}`} loading="lazy" decoding="async" />
               <span><ZoomIn aria-hidden="true" />{isArabic ? 'تكبير المخطط' : 'Enlarge floor plan'}</span>
             </button>
             <div className="project-units-list">
@@ -469,7 +469,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
             {otherProjects.map((otherProject) => (
               <Link href={`/projects/${otherProject.slug}`} className="project-other-card" key={otherProject.slug}>
                 <span className="project-other-image">
-                  <img src={assetFor(otherProject.assetDirectory, 'hero.jpg')} alt="" loading="lazy" />
+                  <img src={assetFor(otherProject.assetDirectory, 'hero.jpg')} alt={isArabic ? `واجهة ${otherProject.arabic} في ${otherProject.location}` : `${otherProject.displayName} facade, ${otherProject.englishLocation}`} loading="lazy" decoding="async" />
                 </span>
                 <span className="project-other-info">
                   <span>{isArabic ? otherProject.location : otherProject.englishLocation}</span>

@@ -1,13 +1,15 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { JsonLd } from '@/components/json-ld'
 import { LanguageProvider } from '@/components/language-provider'
 import { WhatsAppFloat } from '@/components/whatsapp-float'
+import { organizationJsonLd, pageMetadata, siteUrl, staticPage } from '@/lib/seo'
 import './globals.css'
 import './brochure.css'
 
 export const metadata: Metadata = {
-  title: 'بروة للتطوير العقاري | نبني التميز، نصنع القيمة',
-  description: 'بروة للتطوير العقاري — وجهات استثنائية تصنع قيمة حقيقية لأجيال اليوم والغد.',
+  metadataBase: new URL(siteUrl),
+  ...pageMetadata(staticPage('ar', 'home')),
   icons: {
     icon: [
       {
@@ -49,6 +51,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className="antialiased">
+        <JsonLd data={organizationJsonLd} />
         <LanguageProvider>
           {children}
           <WhatsAppFloat />

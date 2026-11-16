@@ -72,7 +72,9 @@ export function PastWorkContent() {
                   src={photo.src}
                   width={600}
                   height={600}
-                  alt={isArabic ? `مشروع من سابقة أعمال بروة ${photo.number}` : `Barwa past project ${photo.number}`}
+                  alt={isArabic ? `مشروع سكني ${photo.number} من أعمال بروة في مدينة الشروق` : `Residential project ${photo.number} from Barwa’s work in El Shorouk`}
+                  loading="lazy"
+                  decoding="async"
                 />
               </span>
             </li>

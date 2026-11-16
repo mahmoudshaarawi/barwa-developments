@@ -157,6 +157,11 @@ export default function Page() {
 
   return (
     <main dir={isArabic ? 'rtl' : 'ltr'} className="site-shell" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
+      <h1 className="sr-only">
+        {isArabic
+          ? 'بروة للتطوير العقاري — مولات تجارية ومكاتب إدارية وعيادات طبية في شرق القاهرة'
+          : 'Barwa Developments — commercial malls, offices and clinics in East Cairo'}
+      </h1>
       <div className="scroll-progress" aria-hidden="true" />
       <SiteHeader scrolled={scrolled} />
 
@@ -204,7 +209,12 @@ export default function Page() {
                   }}
                 >
                   <span className="project-fan-photo">
-                    <img className="project-fan-picture" src={photo} alt="" />
+                    <img
+                      className="project-fan-picture"
+                      src={photo}
+                      alt={isArabic ? `واجهة ${item.arabic} في ${item.location}` : `${item.displayName} facade, ${item.englishLocation}`}
+                      decoding="async"
+                    />
                     <span className="project-fan-mark" lang="en" dir="ltr">
                       <b>{mark.title}</b>
                       <i aria-hidden="true" />
@@ -289,7 +299,7 @@ export default function Page() {
           <a className="text-link" href="#contact">{isArabic ? 'تعرف على بروة' : 'Discover Barwa'} <ArrowUpRight /></a>
         </div>
         <figure className="approach-figure">
-          <img src="/projects/hub5-mall/hero.jpg" alt="" />
+          <img src="/projects/hub5-mall/hero.jpg" alt={isArabic ? 'واجهة هاب ٥ مول في المنطقة الخامسة بمدينة الشروق' : 'HUB 5 Mall facade in District 5, El Shorouk'} loading="lazy" decoding="async" />
           <figcaption>
             <strong>3.2</strong>
             <span>{isArabic ? 'مليار جنيه' : 'EGP billion'}<small>{isArabic ? 'حجم الاستثمارات · بالشراكة مع الراجحي' : 'Investments · with Al Rajhi'}</small></span>
@@ -299,9 +309,9 @@ export default function Page() {
 
       <section className="philosophy reveal">
         <div className="philosophy-collage" aria-hidden="true">
-          <img className="philosophy-main" src="/projects/barwa-mall/hero.jpg" alt="" />
-          <img className="philosophy-float philosophy-float-top" src="/projects/central-mall/hero.jpg" alt="" />
-          <img className="philosophy-float philosophy-float-bottom" src="/projects/hub5-mall/hero.jpg" alt="" />
+          <img className="philosophy-main" src="/projects/barwa-mall/hero.jpg" alt={isArabic ? 'واجهة بروة مول في مدينة الشروق' : 'Barwa Mall facade in El Shorouk'} loading="lazy" decoding="async" />
+          <img className="philosophy-float philosophy-float-top" src="/projects/central-mall/hero.jpg" alt={isArabic ? 'واجهة سنترال مول في المنطقة المركزية بمدينة الشروق' : 'Central Mall facade in El Shorouk'} loading="lazy" decoding="async" />
+          <img className="philosophy-float philosophy-float-bottom" src="/projects/hub5-mall/hero.jpg" alt={isArabic ? 'واجهة هاب ٥ مول في المنطقة الخامسة بمدينة الشروق' : 'HUB 5 Mall facade in District 5, El Shorouk'} loading="lazy" decoding="async" />
         </div>
         <div className="philosophy-content">
           <div className="section-kicker light-kicker"><span>04</span><i /><span>{isArabic ? 'فلسفة بروة' : 'BARWA PHILOSOPHY'}</span></div>

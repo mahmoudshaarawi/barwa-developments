@@ -96,6 +96,8 @@ export function PartnerCarousel() {
             <img
               src={partner.src}
               alt={index < visible.length ? (isArabic ? partner.name : partner.englishName ?? partner.name) : ''}
+              loading="lazy"
+              decoding="async"
               draggable={false}
               onError={() => hidePartner(partner.src)}
             />

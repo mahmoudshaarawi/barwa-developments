@@ -97,7 +97,7 @@ export function InstallmentCalculator({ initialProject = '' }: { initialProject?
   if (status === 'sent') {
     return (
       <div className="installment-success" role="status">
-        <img className="installment-success-star" src="/brand/barwa-star.svg" alt="" />
+        <img className="installment-success-star" src="/brand/barwa-star.svg" alt={isArabic ? 'نجمة شعار بروة' : 'Barwa star'} />
         <h2>{isArabic ? 'تم استلام طلب حساب القسط بنجاح!' : 'Your installment request has been received!'}</h2>
         <p>{isArabic ? 'شكرًا لاهتمامك بمشاريع بروة.' : 'Thank you for your interest in Barwa’s projects.'}</p>
         <p>

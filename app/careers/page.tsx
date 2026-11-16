@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import { CareersContent } from '@/components/careers-content'
+import { pageMetadata, staticPage } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'التوظيف | بروة للتطوير العقاري',
-  description: 'انضم إلى فريق بروة للتطوير العقاري وأرسل طلب التوظيف.',
-}
+export const metadata: Metadata = pageMetadata(staticPage('ar', 'careers'))
 
 export default function CareersPage() {
   return <CareersContent />

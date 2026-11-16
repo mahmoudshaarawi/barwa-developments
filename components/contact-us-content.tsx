@@ -17,7 +17,7 @@ export function ContactUsContent() {
       <SiteHeader variant="overlay" />
 
       <section className="contact-page-hero">
-        <img src="/projects/central-mall/hero.jpg" alt="" fetchPriority="high" />
+        <img src="/projects/central-mall/hero.jpg" alt={isArabic ? 'واجهة سنترال مول في المنطقة المركزية بمدينة الشروق' : 'Central Mall facade in the Second Central Area, El Shorouk'} fetchPriority="high" decoding="async" />
         <div className="contact-page-hero-shade" />
         <div className="contact-page-hero-copy">
           <span className="contact-page-eyebrow">BARWA DEVELOPMENTS</span>

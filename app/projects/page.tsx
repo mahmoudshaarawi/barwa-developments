@@ -48,7 +48,7 @@ export default function ProjectsPage() {
                 aria-label={isArabic ? `تفاصيل ${project.arabic}` : `${project.displayName} details`}
               />
               <div className="destination-media">
-                <img src={project.listingImage} alt={isArabic ? `واجهة ${name}` : `${name} facade`} style={{ objectPosition: project.imagePosition }} />
+                <img src={project.listingImage} alt={isArabic ? `واجهة ${name} في ${project.location}` : `${name} facade, ${project.englishLocation}`} style={{ objectPosition: project.imagePosition }} decoding="async" />
                 <span className="stage-badge stage-badge-on-photo">{constructionStageLabel(project, isArabic)}</span>
               </div>
               <div className="destination-copy">

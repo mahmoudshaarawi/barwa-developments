@@ -109,7 +109,7 @@ export function NewsListing() {
             {rest.map((story) => (
               <article className="news-card" key={story.slug}>
                 <Link href={`/news/${story.slug}`} className="news-card-media">
-                  <img src={story.image} alt={isArabic ? story.imageAltAr : story.imageAltEn} />
+                  <img src={story.image} alt={isArabic ? story.imageAltAr : story.imageAltEn} loading="lazy" decoding="async" />
                   {story.facebookVideo && <PlayMark />}
                 </Link>
                 <div className="news-card-copy">

@@ -67,7 +67,7 @@ export function AboutUsContent() {
       <SiteHeader variant="overlay" />
 
       <section className="about-hero" aria-labelledby="about-hero-title">
-        <img className="about-hero-image" src="/projects/barwa-mall/hero.jpg" alt="" fetchPriority="high" />
+        <img className="about-hero-image" src="/projects/barwa-mall/hero.jpg" alt={isArabic ? 'واجهة بروة مول في مدينة الشروق بشرق القاهرة' : 'Barwa Mall facade in El Shorouk, East Cairo'} fetchPriority="high" decoding="async" />
         <div className="about-hero-shade" />
         <div className="about-hero-copy about-reveal">
           <span className="about-eyebrow">{isArabic ? 'بروة للتطوير العقاري' : 'BARWA DEVELOPMENTS'}</span>
@@ -79,7 +79,7 @@ export function AboutUsContent() {
 
       <section className="about-company section-pad">
         <div className="about-company-image about-reveal">
-          <img src={companyImage} alt={isArabic ? 'مشهد معماري من مشروعات بروة' : 'An architectural view from a Barwa development'} loading="lazy" />
+          <img src={companyImage} alt={isArabic ? 'لقطة من معرض بروة مول في مدينة الشروق' : 'A view from the Barwa Mall gallery in El Shorouk'} loading="lazy" decoding="async" />
           <span className="about-image-caption">{isArabic ? 'بروة للتطوير العقاري' : 'BARWA DEVELOPMENTS'}</span>
         </div>
         <div className="about-company-copy about-reveal">
@@ -242,7 +242,7 @@ export function AboutUsContent() {
           {projectOrder.map((project, index) => (
             <Link className="about-development about-reveal" href={`/projects/${project.slug}`} key={project.slug}>
               <span className="about-development-image">
-                <img src={`${project.assetDirectory}/hero.jpg`} alt="" loading="lazy" />
+                <img src={`${project.assetDirectory}/hero.jpg`} alt={isArabic ? `واجهة ${project.arabic} في ${project.location}` : `${project.displayName} facade, ${project.englishLocation}`} loading="lazy" decoding="async" />
                 <span className="about-development-index" dir="ltr">0{index + 1}</span>
                 <span className="about-development-arrow"><MoveUpRight aria-hidden="true" /></span>
               </span>
@@ -255,7 +255,7 @@ export function AboutUsContent() {
       </section>
 
       <section className="about-cta">
-        <img src="/projects/central-mall/gallery-01.jpg" alt="" loading="lazy" />
+        <img src="/projects/central-mall/gallery-01.jpg" alt={isArabic ? 'لقطة معمارية من معرض سنترال مول' : 'An architectural view from the Central Mall gallery'} loading="lazy" decoding="async" />
         <div className="about-cta-shade" />
         <div className="about-cta-content about-reveal">
           <span className="about-eyebrow">{isArabic ? '09 / الخطوة القادمة' : '09 / THE NEXT STEP'}</span>
