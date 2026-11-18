@@ -1,7 +1,6 @@
 import crypto from 'crypto'
 import fs from 'fs'
 import path from 'path'
-import Database from 'better-sqlite3'
 import { auctionConfig } from './config'
 import { maskBidderName } from './mask'
 import { parseAuctionInstant, phaseAt, type AuctionPhase } from './time'
@@ -20,6 +19,25 @@ export type BidderRow = {
   status: BidderStatus
   token: string
   created_at: string
+}
+
+type BidRow = {
+  id: string
+  bidder_id: string
+  amount: number
+  created_at: string
+}
+
+type AdminSession = {
+  token: string
+  expires_at: string
+}
+
+type StoreData = {
+  bidders: BidderRow[]
+  bids: BidRow[]
+  endsAt: string | null
+  adminSessions: AdminSession[]
 }
 
 export type PublicBid = {
@@ -55,92 +73,114 @@ type BidJoin = {
   email: string
 }
 
-const globalStore = globalThis as { barwaAuctionDb?: Database.Database }
+const emptyStore = (): StoreData => ({ bidders: [], bids: [], endsAt: null, adminSessions: [] })
 
 export function auctionDataDir() {
   return process.env.AUCTION_DATA_DIR || path.join(process.cwd(), 'data', 'auction')
 }
 
-function database() {
-  if (!globalStore.barwaAuctionDb) {
-    const dir = auctionDataDir()
-    fs.mkdirSync(path.join(dir, 'receipts'), { recursive: true })
-    const db = new Database(path.join(dir, 'auction.db'))
-    db.pragma('journal_mode = WAL')
-    db.exec(`
-      CREATE TABLE IF NOT EXISTS bidders (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        phone TEXT NOT NULL UNIQUE,
-        email TEXT NOT NULL,
-        national_id TEXT,
-        payment_method TEXT NOT NULL,
-        receipt_file TEXT NOT NULL,
-        status TEXT NOT NULL,
-        token TEXT NOT NULL UNIQUE,
-        created_at TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS bids (
-        id TEXT PRIMARY KEY,
-        bidder_id TEXT NOT NULL,
-        amount INTEGER NOT NULL,
-        created_at TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS auction_state (
-        id INTEGER PRIMARY KEY CHECK (id = 1),
-        ends_at TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS admin_sessions (
-        token TEXT PRIMARY KEY,
-        expires_at TEXT NOT NULL
-      );
-    `)
-    globalStore.barwaAuctionDb = db
-  }
-  return globalStore.barwaAuctionDb
+function storePath() {
+  return path.join(auctionDataDir(), 'store.json')
 }
 
-function ensureEndsAt(db: Database.Database) {
-  const row = db.prepare('SELECT ends_at FROM auction_state WHERE id = 1').get() as { ends_at: string } | undefined
-  const bidCount = (db.prepare('SELECT COUNT(*) AS count FROM bids').get() as { count: number }).count
-  if (!row) {
-    db.prepare('INSERT INTO auction_state (id, ends_at) VALUES (1, ?)').run(auctionConfig.endsAt)
+function lockPath() {
+  return path.join(auctionDataDir(), 'store.lock')
+}
+
+function sleep(ms: number) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms)
+}
+
+function readStore(): StoreData {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(storePath(), 'utf8')) as Partial<StoreData>
+    return {
+      bidders: Array.isArray(parsed.bidders) ? parsed.bidders : [],
+      bids: Array.isArray(parsed.bids) ? parsed.bids : [],
+      endsAt: typeof parsed.endsAt === 'string' ? parsed.endsAt : null,
+      adminSessions: Array.isArray(parsed.adminSessions) ? parsed.adminSessions : [],
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return emptyStore()
+    throw error
+  }
+}
+
+function writeStore(store: StoreData) {
+  const file = storePath()
+  const temporary = `${file}.${process.pid}.tmp`
+  fs.writeFileSync(temporary, JSON.stringify(store))
+  fs.renameSync(temporary, file)
+}
+
+function withStore<T>(fn: (store: StoreData) => T): T {
+  const dir = auctionDataDir()
+  fs.mkdirSync(path.join(dir, 'receipts'), { recursive: true })
+  const lock = lockPath()
+  const started = Date.now()
+  let handle: number | null = null
+  while (handle == null) {
+    try {
+      handle = fs.openSync(lock, 'wx')
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error
+      try {
+        if (Date.now() - fs.statSync(lock).mtimeMs > 10_000) fs.unlinkSync(lock)
+      } catch {
+        // another process removed the lock
+      }
+      if (Date.now() - started > 8_000) throw new Error('Auction store is busy.')
+      sleep(20)
+    }
+  }
+  try {
+    const store = readStore()
+    const before = JSON.stringify(store)
+    const result = fn(store)
+    if (JSON.stringify(store) !== before) writeStore(store)
+    return result
+  } finally {
+    fs.closeSync(handle)
+    try { fs.unlinkSync(lock) } catch { /* already removed */ }
+  }
+}
+
+function bidderName(store: StoreData, bidderId: string) {
+  return store.bidders.find((bidder) => bidder.id === bidderId)?.name ?? ''
+}
+
+function highestAmount(store: StoreData) {
+  return store.bids.reduce<number | null>((highest, bid) => (
+    highest == null || bid.amount > highest ? bid.amount : highest
+  ), null)
+}
+
+function ensureEndsAt(store: StoreData) {
+  if (store.bids.length === 0) {
+    store.endsAt = auctionConfig.endsAt
     return auctionConfig.endsAt
   }
-  if (bidCount === 0 && row.ends_at !== auctionConfig.endsAt) {
-    db.prepare('UPDATE auction_state SET ends_at = ? WHERE id = 1').run(auctionConfig.endsAt)
-    return auctionConfig.endsAt
-  }
-  return row.ends_at
+  if (!store.endsAt) store.endsAt = auctionConfig.endsAt
+  return store.endsAt
 }
 
-function history(db: Database.Database): PublicBid[] {
-  const rows = db.prepare(`
-    SELECT bids.amount, bids.created_at, bidders.name
-    FROM bids JOIN bidders ON bidders.id = bids.bidder_id
-    ORDER BY bids.created_at DESC, bids.rowid DESC
-    LIMIT 40
-  `).all() as Array<{ amount: number; created_at: string; name: string }>
-  return rows.map((row) => ({
-    amountEgp: row.amount,
-    maskedName: maskBidderName(row.name),
-    createdAt: row.created_at,
-  }))
+function publicHistory(store: StoreData): PublicBid[] {
+  return [...store.bids]
+    .sort((left, right) => right.created_at.localeCompare(left.created_at) || right.id.localeCompare(left.id))
+    .slice(0, 40)
+    .map((bid) => ({
+      amountEgp: bid.amount,
+      maskedName: maskBidderName(bidderName(store, bid.bidder_id)),
+      createdAt: bid.created_at,
+    }))
 }
 
-export function getPublicSnapshot(now = new Date()): PublicSnapshot {
-  const db = database()
-  const endsAt = ensureEndsAt(db)
-  const endsMs = parseAuctionInstant(endsAt)
-  const phase = phaseAt(now, endsMs)
-  const highest = db.prepare('SELECT amount FROM bids ORDER BY amount DESC LIMIT 1').get() as { amount: number } | undefined
-  const bidCount = (db.prepare('SELECT COUNT(*) AS count FROM bids').get() as { count: number }).count
-  const bids = history(db)
-  const highestBidEgp = highest?.amount ?? null
-  const nextBidEgp = phase === 'ended' ? null : (highestBidEgp ?? auctionConfig.openingPriceEgp) + auctionConfig.incrementEgp
-  const winner = phase === 'ended' && bids[0]
-    ? { maskedName: bids[0].maskedName, amountEgp: bids[0].amountEgp }
-    : null
+function snapshotFrom(store: StoreData, now: Date): PublicSnapshot {
+  const endsAt = ensureEndsAt(store)
+  const phase = phaseAt(now, parseAuctionInstant(endsAt))
+  const history = publicHistory(store)
+  const highestBidEgp = highestAmount(store)
+  const winningBid = [...store.bids].sort((left, right) => right.amount - left.amount || right.created_at.localeCompare(left.created_at))[0]
   return {
     phase,
     serverNow: now.toISOString(),
@@ -151,21 +191,30 @@ export function getPublicSnapshot(now = new Date()): PublicSnapshot {
     entryFeeEgp: auctionConfig.entryFeeEgp,
     entryFeeNoteAr: auctionConfig.entryFeeNoteAr,
     highestBidEgp,
-    nextBidEgp,
-    bidCount,
-    history: bids,
-    winner,
+    nextBidEgp: phase === 'ended' ? null : (highestBidEgp ?? auctionConfig.openingPriceEgp) + auctionConfig.incrementEgp,
+    bidCount: store.bids.length,
+    history,
+    winner: phase === 'ended' && winningBid
+      ? { maskedName: maskBidderName(bidderName(store, winningBid.bidder_id)), amountEgp: winningBid.amount }
+      : null,
     antiSnipe: auctionConfig.antiSnipe,
   }
 }
 
+export function getPublicSnapshot(now = new Date()) {
+  return withStore((store) => snapshotFrom(store, now))
+}
+
 export function findBidderByToken(token: string) {
   if (!token) return null
-  return database().prepare('SELECT * FROM bidders WHERE token = ?').get(token) as BidderRow | undefined ?? null
+  return withStore((store) => store.bidders.find((bidder) => bidder.token === token) ?? null)
 }
 
 export function findBidderByPhone(phone: string) {
-  return database().prepare('SELECT id FROM bidders WHERE phone = ?').get(phone) as { id: string } | undefined
+  return withStore((store) => {
+    const bidder = store.bidders.find((item) => item.phone === phone)
+    return bidder ? { id: bidder.id } : undefined
+  })
 }
 
 export function insertBidder(input: {
@@ -179,10 +228,23 @@ export function insertBidder(input: {
   token: string
   createdAt: string
 }) {
-  database().prepare(`
-    INSERT INTO bidders (id, name, phone, email, national_id, payment_method, receipt_file, status, token, created_at)
-    VALUES (@id, @name, @phone, @email, @nationalId, @paymentMethod, @receiptFile, 'pending', @token, @createdAt)
-  `).run(input)
+  withStore((store) => {
+    if (store.bidders.some((bidder) => bidder.phone === input.phone)) {
+      throw new Error('PHONE_TAKEN')
+    }
+    store.bidders.push({
+      id: input.id,
+      name: input.name,
+      phone: input.phone,
+      email: input.email,
+      national_id: input.nationalId,
+      payment_method: input.paymentMethod,
+      receipt_file: input.receiptFile,
+      status: 'pending',
+      token: input.token,
+      created_at: input.createdAt,
+    })
+  })
 }
 
 export type BidResult =
@@ -190,88 +252,87 @@ export type BidResult =
   | { ok: false; status: number; error: string; snapshot: PublicSnapshot }
 
 export function placeBid(token: string, amount: number, now = new Date()): BidResult {
-  const db = database()
-  db.exec('BEGIN IMMEDIATE')
-  try {
-    const result = placeBidLocked(db, token, amount, now)
-    db.exec('COMMIT')
-    return result
-  } catch (error) {
-    db.exec('ROLLBACK')
-    throw error
-  }
-}
-
-function placeBidLocked(db: Database.Database, token: string, amount: number, now: Date): BidResult {
-    const bidder = db.prepare('SELECT * FROM bidders WHERE token = ?').get(token) as BidderRow | undefined
-    const endsAt = ensureEndsAt(db)
+  return withStore((store) => {
+    const bidder = store.bidders.find((item) => item.token === token)
+    const endsAt = ensureEndsAt(store)
     const endsMs = parseAuctionInstant(endsAt)
     const phase = phaseAt(now, endsMs)
-    const snapshot = () => getPublicSnapshot(now)
-    if (!bidder) return { ok: false as const, status: 401, error: 'سجّل دخولك من نفس المتصفح الذي أتمّ التسجيل.', snapshot: snapshot() }
-    if (bidder.status !== 'approved') return { ok: false as const, status: 403, error: 'المزايدة متاحة بعد اعتماد تأمين الدخول.', snapshot: snapshot() }
-    if (phase !== 'live') return { ok: false as const, status: 403, error: phase === 'upcoming' ? 'لم يبدأ المزاد بعد.' : 'انتهى المزاد.', snapshot: snapshot() }
-    const highest = db.prepare('SELECT amount FROM bids ORDER BY amount DESC LIMIT 1').get() as { amount: number } | undefined
-    const expected = (highest?.amount ?? auctionConfig.openingPriceEgp) + auctionConfig.incrementEgp
-    if (amount !== expected) {
-      return { ok: false as const, status: 409, error: 'تغيّر أعلى عطاء. حدّث السعر ثم أكّد المزايدة.', snapshot: snapshot() }
+    const fail = (status: number, error: string): BidResult => ({ ok: false, status, error, snapshot: snapshotFrom(store, now) })
+    if (!bidder) return fail(401, 'سجّل دخولك من نفس المتصفح الذي أتمّ التسجيل.')
+    if (bidder.status !== 'approved') return fail(403, 'المزايدة متاحة بعد اعتماد تأمين الدخول.')
+    if (phase !== 'live') return fail(403, phase === 'upcoming' ? 'لم يبدأ المزاد بعد.' : 'انتهى المزاد.')
+    const expected = (highestAmount(store) ?? auctionConfig.openingPriceEgp) + auctionConfig.incrementEgp
+    if (amount !== expected) return fail(409, 'تغيّر أعلى عطاء. حدّث السعر ثم أكّد المزايدة.')
+    if (auctionConfig.antiSnipe.enabled && endsMs - now.getTime() <= auctionConfig.antiSnipe.windowMinutes * 60_000) {
+      store.endsAt = new Date(endsMs + auctionConfig.antiSnipe.extendMinutes * 60_000).toISOString()
     }
-    let nextEnds = endsAt
-    if (auctionConfig.antiSnipe.enabled) {
-      const windowMs = auctionConfig.antiSnipe.windowMinutes * 60_000
-      const extendMs = auctionConfig.antiSnipe.extendMinutes * 60_000
-      if (endsMs - now.getTime() <= windowMs) {
-        nextEnds = new Date(endsMs + extendMs).toISOString()
-        db.prepare('UPDATE auction_state SET ends_at = ? WHERE id = 1').run(nextEnds)
-      }
-    }
-    db.prepare('INSERT INTO bids (id, bidder_id, amount, created_at) VALUES (?, ?, ?, ?)').run(
-      crypto.randomUUID(),
-      bidder.id,
+    store.bids.push({
+      id: crypto.randomUUID(),
+      bidder_id: bidder.id,
       amount,
-      now.toISOString(),
-    )
-    return { ok: true as const, snapshot: getPublicSnapshot(now) }
+      created_at: now.toISOString(),
+    })
+    return { ok: true, snapshot: snapshotFrom(store, now) }
+  })
 }
 
 export function createAdminSession() {
   const token = crypto.randomBytes(32).toString('hex')
   const expires = new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString()
-  database().prepare('INSERT INTO admin_sessions (token, expires_at) VALUES (?, ?)').run(token, expires)
+  withStore((store) => {
+    store.adminSessions.push({ token, expires_at: expires })
+  })
   return token
 }
 
 export function adminSessionValid(token: string | undefined) {
   if (!token) return false
-  const row = database().prepare('SELECT expires_at FROM admin_sessions WHERE token = ?').get(token) as { expires_at: string } | undefined
-  return Boolean(row && Date.parse(row.expires_at) > Date.now())
+  return withStore((store) => {
+    const session = store.adminSessions.find((item) => item.token === token)
+    return Boolean(session && Date.parse(session.expires_at) > Date.now())
+  })
 }
 
 export function deleteAdminSession(token: string) {
-  database().prepare('DELETE FROM admin_sessions WHERE token = ?').run(token)
+  withStore((store) => {
+    store.adminSessions = store.adminSessions.filter((session) => session.token !== token)
+  })
 }
 
 export function listBidders() {
-  return database().prepare('SELECT * FROM bidders ORDER BY created_at DESC').all() as BidderRow[]
+  return withStore((store) => [...store.bidders].sort((left, right) => right.created_at.localeCompare(left.created_at)))
 }
 
 export function listBidsDetailed() {
-  return database().prepare(`
-    SELECT bids.id, bids.amount, bids.created_at, bids.bidder_id, bidders.name, bidders.phone, bidders.email
-    FROM bids JOIN bidders ON bidders.id = bids.bidder_id
-    ORDER BY bids.created_at DESC
-  `).all() as BidJoin[]
+  return withStore((store) => [...store.bids]
+    .sort((left, right) => right.created_at.localeCompare(left.created_at))
+    .map((bid) => {
+      const bidder = store.bidders.find((item) => item.id === bid.bidder_id)
+      return {
+        id: bid.id,
+        amount: bid.amount,
+        created_at: bid.created_at,
+        bidder_id: bid.bidder_id,
+        name: bidder?.name ?? '',
+        phone: bidder?.phone ?? '',
+        email: bidder?.email ?? '',
+      } satisfies BidJoin
+    }))
 }
 
 export function setBidderStatus(id: string, status: BidderStatus) {
-  const result = database().prepare('UPDATE bidders SET status = ? WHERE id = ?').run(status, id)
-  return result.changes > 0
+  return withStore((store) => {
+    const bidder = store.bidders.find((item) => item.id === id)
+    if (!bidder) return false
+    bidder.status = status
+    return true
+  })
 }
 
 export function bidderReceiptPath(id: string) {
-  const row = database().prepare('SELECT receipt_file FROM bidders WHERE id = ?').get(id) as { receipt_file: string } | undefined
-  if (!row?.receipt_file) return null
-  const file = path.basename(row.receipt_file)
+  const fileName = withStore((store) => store.bidders.find((bidder) => bidder.id === id)?.receipt_file)
+  if (!fileName) return null
+  const file = path.basename(fileName)
   const receiptsDir = path.resolve(auctionDataDir(), 'receipts')
   const full = path.resolve(receiptsDir, file)
   if (!full.startsWith(receiptsDir + path.sep)) return null
@@ -280,7 +341,8 @@ export function bidderReceiptPath(id: string) {
 
 export function saveReceipt(id: string, extension: string, bytes: Buffer) {
   const file = `${id}${extension}`
-  const full = path.join(auctionDataDir(), 'receipts', file)
-  fs.writeFileSync(full, bytes)
+  const receiptsDir = path.join(auctionDataDir(), 'receipts')
+  fs.mkdirSync(receiptsDir, { recursive: true })
+  fs.writeFileSync(path.join(receiptsDir, file), bytes)
   return file
 }
