@@ -69,6 +69,13 @@ const pages: Record<Language, Record<string, SeoEntry>> = {
       image: '/careers/team.png',
       imageAlt: 'فريق بروة في مقر العمل',
     },
+    auction: {
+      title: 'مزاد وحدة G-21 في سنترال مول | بروة للتطوير العقاري',
+      description: 'مزاد علني على محل تجاري G-21 بمساحة 16 م² في الطابق الأرضي من سنترال مول بمدينة الشروق، شرق القاهرة. سعر الافتتاح 900,000 جنيه، من 1 إلى 3 ديسمبر 2026.',
+      path: '/auction',
+      image: '/projects/central-mall/hero.jpg',
+      imageAlt: 'واجهة سنترال مول في المنطقة المركزية بمدينة الشروق',
+    },
     pastWork: {
       title: 'سابقة أعمالنا | مشروعات بروة في مدينة الشروق',
       description: 'أكثر من 150 مشروعًا سكنيًا تم تسليمها في أحياء مدينة الشروق بشرق القاهرة بالشراكة مع الراجحي للمشروعات العمرانية، وأكثر من 1500 عميل.',
@@ -126,6 +133,13 @@ const pages: Record<Language, Record<string, SeoEntry>> = {
       path: '/careers',
       image: '/careers/team.png',
       imageAlt: 'The Barwa team at the office',
+    },
+    auction: {
+      title: 'مزاد وحدة G-21 في سنترال مول | بروة للتطوير العقاري',
+      description: 'مزاد علني على محل تجاري G-21 بمساحة 16 م² في الطابق الأرضي من سنترال مول بمدينة الشروق، شرق القاهرة. سعر الافتتاح 900,000 جنيه، من 1 إلى 3 ديسمبر 2026.',
+      path: '/auction',
+      image: '/projects/central-mall/hero.jpg',
+      imageAlt: 'واجهة سنترال مول في المنطقة المركزية بمدينة الشروق',
     },
     pastWork: {
       title: 'Previous work | Barwa projects in El Shorouk',
@@ -288,6 +302,10 @@ export function documentCopy(pathname: string, language: Language): Pick<SeoEntr
     if (project && projectCopy[project.slug]) return projectEntry(project, language)
   }
   const pack = pages[language]
+  if (pathname.startsWith('/auction/admin')) {
+    return { title: 'إدارة المزاد | بروة للتطوير العقاري', description: 'مراجعة طلبات دخول مزاد سنترال مول.' }
+  }
+  if (pathname.startsWith('/auction')) return pages.ar.auction
   if (pathname.startsWith('/about-us')) return pack.about
   if (pathname.startsWith('/projects')) return pack.projects
   if (pathname.startsWith('/installments')) return pack.installments

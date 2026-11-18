@@ -148,6 +148,19 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
         <span className="project-detail-hero-number">{project.number} / 03</span>
       </section>
 
+      {project.slug === 'central-mall' && (
+        <aside className="central-auction-banner">
+          <div>
+            <span className="eyebrow">{isArabic ? 'مزاد علني' : 'Online auction'}</span>
+            <strong>{isArabic ? 'وحدة G-21 في سنترال مول' : 'Unit G-21 at Central Mall'}</strong>
+            <p>{isArabic
+              ? 'محل ١٦ م² في الطابق الأرضي. المزاد من ١ إلى ٣ ديسمبر ٢٠٢٦، وسعر الافتتاح ٩٠٠٬٠٠٠ جنيه.'
+              : 'A 16 m² ground-floor shop. The auction runs 1–3 December 2026, opening at EGP 900,000.'}</p>
+          </div>
+          <Link href="/auction">{isArabic ? 'صفحة المزاد' : 'Auction page'}</Link>
+        </aside>
+      )}
+
       <section className="project-facts" aria-label={isArabic ? 'معلومات المشروع' : 'Project information'}>
         {project.facts.map((fact) => (
           <div className="project-fact" key={fact.englishLabel}>

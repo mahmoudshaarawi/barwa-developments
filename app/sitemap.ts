@@ -6,7 +6,7 @@ import { siteUrl, staticPage } from '@/lib/seo'
 const updated = new Date('2026-11-16')
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticKeys = ['home', 'about', 'projects', 'installments', 'pastWork', 'news', 'contact', 'careers'] as const
+  const staticKeys = ['home', 'about', 'projects', 'installments', 'pastWork', 'news', 'contact', 'careers', 'auction'] as const
   return [
     ...staticKeys.map((key) => {
       const path = staticPage('ar', key).path

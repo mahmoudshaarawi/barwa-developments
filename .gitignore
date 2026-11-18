@@ -9,6 +9,9 @@ __v0_jsx-dev-runtime.ts
 # Environment variables
 .env*.local
 
+# Auction registrations, bids, and receipt images stay on the server.
+/data/auction/
+
 # Common ignores
 node_modules
 .next/
