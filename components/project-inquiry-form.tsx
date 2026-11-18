@@ -3,25 +3,34 @@
 import { useState, type FormEvent } from 'react'
 import { ArrowUpLeft, ArrowUpRight } from 'lucide-react'
 import { useLanguage } from './language-provider'
-import { CONTACT } from '@/lib/contact'
+import { submitBarwaForm } from '@/lib/forms'
 
 export function ProjectInquiryForm() {
   const { language } = useLanguage()
   const isArabic = language === 'ar'
-  const [submitted, setSubmitted] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
-    const subject = encodeURIComponent(isArabic ? 'استفسار عن مشاريع بروة' : 'Barwa projects inquiry')
-    const message = encodeURIComponent([
-      `${isArabic ? 'الاسم' : 'Name'}: ${formData.get('name')}`,
-      `${isArabic ? 'رقم الهاتف' : 'Phone'}: ${formData.get('phone')}`,
-      `${isArabic ? 'البريد الإلكتروني' : 'Email'}: ${formData.get('email')}`,
-    ].join('\n'))
+    setStatus('sending')
+    const accepted = await submitBarwaForm({
+      _subject: 'استفسار عن مشاريع بروة',
+      name: String(formData.get('name') ?? '').trim(),
+      phone: String(formData.get('phone') ?? '').trim(),
+      email: String(formData.get('email') ?? '').trim(),
+      project: 'Barwa projects — مشاريع بروة',
+      message: '—',
+    }).catch(() => false)
+    setStatus(accepted ? 'sent' : 'error')
+  }
 
-    window.location.href = `${CONTACT.emailHref}?subject=${subject}&body=${message}`
-    setSubmitted(true)
+  if (status === 'sent') {
+    return (
+      <p className="project-inquiry-status is-success" role="status">
+        {isArabic ? 'تم إرسال استفسارك. سنتواصل معك قريباً.' : 'Your enquiry has been sent. We will be in touch shortly.'}
+      </p>
+    )
   }
 
   return (
@@ -38,13 +47,13 @@ export function ProjectInquiryForm() {
         <span>{isArabic ? 'البريد الإلكتروني' : 'Email'}</span>
         <input name="email" type="email" autoComplete="email" required />
       </label>
-      <button type="submit" className="button-link">
-        {isArabic ? 'إرسال' : 'Send inquiry'}
+      <button type="submit" className="button-link" disabled={status === 'sending'}>
+        {status === 'sending' ? (isArabic ? 'جارٍ الإرسال' : 'Sending') : (isArabic ? 'إرسال' : 'Send inquiry')}
         {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
       </button>
-      {submitted && (
-        <p className="project-inquiry-status" role="status">
-          {isArabic ? 'يرجى إكمال إرسال رسالتك عبر تطبيق البريد الإلكتروني.' : 'Please complete sending your message in your email application.'}
+      {status === 'error' && (
+        <p className="project-inquiry-status is-error" role="alert">
+          {isArabic ? 'تعذر إرسال الطلب الآن. يرجى الاتصال على ١٧٥٨٢.' : 'The request could not be sent. Please call 17582.'}
         </p>
       )}
     </form>

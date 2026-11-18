@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { BrochureFigures } from './brochure-figures'
 import Link from 'next/link'
 import {
   ArrowUpLeft,
@@ -66,7 +67,7 @@ export function AboutUsContent() {
       <SiteHeader variant="overlay" />
 
       <section className="about-hero" aria-labelledby="about-hero-title">
-        <img className="about-hero-image" src="/projects/barwa-mall/hero.jpg" alt="" fetchPriority="high" />
+        <img className="about-hero-image" src="/projects/barwa-mall/hero.jpg" alt={isArabic ? 'واجهة بروة مول في مدينة الشروق بشرق القاهرة' : 'Barwa Mall facade in El Shorouk, East Cairo'} fetchPriority="high" decoding="async" />
         <div className="about-hero-shade" />
         <div className="about-hero-copy about-reveal">
           <span className="about-eyebrow">{isArabic ? 'بروة للتطوير العقاري' : 'BARWA DEVELOPMENTS'}</span>
@@ -78,26 +79,71 @@ export function AboutUsContent() {
 
       <section className="about-company section-pad">
         <div className="about-company-image about-reveal">
-          <img src={companyImage} alt={isArabic ? 'مشهد معماري من مشروعات بروة' : 'An architectural view from a Barwa development'} loading="lazy" />
+          <img src={companyImage} alt={isArabic ? 'لقطة من معرض بروة مول في مدينة الشروق' : 'A view from the Barwa Mall gallery in El Shorouk'} loading="lazy" decoding="async" />
           <span className="about-image-caption">{isArabic ? 'بروة للتطوير العقاري' : 'BARWA DEVELOPMENTS'}</span>
         </div>
         <div className="about-company-copy about-reveal">
           <span className="about-eyebrow">{isArabic ? '02 / عن بروة' : '02 / ABOUT BARWA'}</span>
           <h2>{isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'}</h2>
+          <h3>{isArabic ? 'متجذّرة في إرث من التميّز الإنشائي' : 'Rooted in a record of building excellence'}</h3>
           <p>
             {isArabic
-              ? 'تأسست بروة للتطوير العقاري عام 2008 على يد ثلاثة مستثمرين في القطاع العقاري، ونمت لتصبح من الأسماء البارزة في سوق العقارات المصري.'
-              : 'Founded in 2008 by three real-estate investors, Barwa Developments has grown into a prominent player in Egypt’s real-estate sector.'}
+              ? 'بروة للتطوير العقاري مطوّر عقاري مصري تأسّس في عام 2008 على يد ثلاثة من رواد الاستثمار العقاري أصحاب الرؤية، بهدف تقديم أفضل موقع وأعلى جودة وأفضل استثمار.'
+              : 'Barwa Developments is an Egyptian developer founded in 2008 by three visionary real-estate investors, to offer the best location, the highest quality and the strongest investment.'}
           </p>
           <p>
             {isArabic
-              ? 'وعلى مدى نحو 15 عاماً، أنجزت الشركة أكثر من 55 مشروعاً. ويرتكز نهجها على اختيار المواقع المتميزة، وجودة التطوير، وتهيئة فرص استثمارية مدروسة.'
-              : 'Over approximately 15 years, the company completed more than 55 projects. Its approach brings together distinguished locations, development quality and considered investment opportunities.'}
+              ? 'انطلقت بروة من القاهرة وتحديدًا من شرق القاهرة، وتحوّلت عبر سنوات من العمل والتسليم إلى منارة للرقيّ والفخامة في المشهد العقاري المصري.'
+              : 'Barwa started in Cairo, and in East Cairo in particular, and through years of work and delivery became a mark of refinement in the Egyptian real-estate landscape.'}
           </p>
           <p>
             {isArabic
-              ? 'وتواصل بروة التوسع وتطوير مشروعاتها، مع التركيز على التصميم المعاصر والجودة في مختلف مراحل التطوير.'
-              : 'Barwa continues to expand and develop its projects, with a focus on contemporary design and quality throughout the development process.'}
+              ? 'وبالشراكة مع الراجحي للمشروعات العمرانية تمتد سابقة أعمالنا إلى أكثر من 150 مشروعًا تم تسليمها وحجم استثمارات يبلغ 3.2 مليار جنيه. واليوم تطلق بروة 5 مشروعات تجارية وإدارية وطبية في أميز مواقع مدينة الشروق بشرق القاهرة.'
+              : 'In partnership with Al Rajhi for Urban Projects, the track record extends to more than 150 delivered projects and EGP 3.2 billion in investments. Today Barwa is launching 5 commercial, administrative and medical projects in prime locations in El Shorouk, East Cairo.'}
+          </p>
+        </div>
+      </section>
+
+      <section className="about-ceo" aria-labelledby="ceo-message-title">
+        <figure className="about-ceo-photo about-reveal">
+          <span className="about-ceo-frame">
+            <img
+              src="/about/ceo.jpg"
+              width={829}
+              height={1200}
+              alt={isArabic ? 'م. عبد الفتاح محمد، الرئيس التنفيذي لبروة للتطوير العقاري' : 'Eng. Abdelfattah Mohamed, CEO of Barwa Developments'}
+              loading="lazy"
+            />
+          </span>
+        </figure>
+        <div className="about-ceo-copy about-reveal">
+          <h2 id="ceo-message-title" className="about-eyebrow">{isArabic ? 'كلمة الرئيس التنفيذي' : 'CEO MESSAGE'}</h2>
+          <blockquote className="about-ceo-quote">
+            <p>
+              {isArabic
+                ? 'لا نبني جدرانًا تُضاف إلى المدينة، بل نصنع عناوين تُضيف إليها قيمة.'
+                : 'We do not build walls to add to the city. We create addresses that add value to it.'}
+            </p>
+          </blockquote>
+          <p>
+            {isArabic
+              ? 'منذ عام 2008، آمنّا في بروة بأن العقار التجاري ليس مساحاتٍ تُباع، بل منظومة متكاملة تصنع الفرص وتمنح الأعمال مكانتها. ومن شرق القاهرة — حيث الكثافة السكانية والنمو العمراني المتسارع — اخترنا أن نؤسّس لجيل جديد من الوجهات التجارية والإدارية والطبية التي تليق بطموح عملائنا وتواكب نمو المدينة.'
+              : 'Since 2008 we have believed that commercial property is not space to be sold, but a complete system that creates opportunity and gives businesses their place. From East Cairo — where population density and rapid urban growth come together — we chose to establish a new generation of commercial, administrative and medical destinations worthy of our clients’ ambition and the city’s growth.'}
+          </p>
+          <p>
+            {isArabic
+              ? 'رؤيتنا أن يكون اسم بروة مرادفًا للثقة؛ ثقةٌ تبدأ من اختيار الموقع بدقة، وتمتد إلى تصميم معماري يعظّم العائد، وتنفيذ لا يقبل التنازل عن الجودة، والتزام بالتسليم يحوّل الوعد إلى واقع. لذلك نتابع كل تفصيلة بأنفسنا، فثقة المستثمر هي رأس مالنا الحقيقي.'
+              : 'Our vision is that the name Barwa stands for trust: trust that begins with choosing the location precisely, extends to architecture that maximises return, execution that does not compromise on quality, and a commitment to delivery that turns a promise into reality. That is why we follow every detail ourselves. An investor’s trust is our real capital.'}
+          </p>
+          <p>
+            {isArabic
+              ? 'وما كنّا لنبلغ ما بلغناه دون شركاء نعتز بهم؛ من العلامات التجارية والمؤسسات الرائدة التي اختارت مشروعاتنا، إلى شركائنا في مسيرة البناء. معًا نمضي نحو مرحلة جديدة عنوانها التميّز، ووجهتها مستقبلٌ أكثر ازدهارًا لمدينتنا ولكل من وضع ثقته فينا.'
+              : 'We would not have reached this point without partners we are proud of — from the brands and leading institutions that chose our projects, to our partners in building. Together we move toward a new stage whose title is distinction, and whose destination is a more prosperous future for our city and for everyone who placed their trust in us.'}
+          </p>
+          <p>{isArabic ? 'هذا عهدنا… وهذه بروة.' : 'This is our pledge. And this is Barwa.'}</p>
+          <p className="about-ceo-sign">
+            <strong>{isArabic ? 'م. عبد الفتاح محمد' : 'Eng. Abdelfattah Mohamed'}</strong>
+            <span>{isArabic ? 'الرئيس التنفيذي' : 'CEO'}</span>
           </p>
         </div>
       </section>
@@ -107,22 +153,20 @@ export function AboutUsContent() {
           <span className="about-eyebrow">{isArabic ? '03 / بروة بالأرقام' : '03 / BARWA IN NUMBERS'}</span>
           <h2>{isArabic ? 'خبرة تُبنى مع الزمن' : 'Experience Built Over Time'}</h2>
         </div>
-        <div className="about-statistics-grid">
-          <Stat value={2008} label={isArabic ? 'عام التأسيس' : 'Year Established'} />
-          <Stat value={55} suffix={isArabic ? '' : '+'} prefix={isArabic ? '+' : ''} label={isArabic ? 'مشروعًا منجزًا' : 'Completed Projects'} />
-          <Stat value={15} suffix={isArabic ? '' : '+'} prefix={isArabic ? '+' : ''} label={isArabic ? 'عامًا من الخبرة' : 'Years of Experience'} />
-        </div>
+        <BrochureFigures />
       </section>
 
       <section className="about-approach section-pad">
         <div className="about-section-heading about-reveal">
-          <span className="about-eyebrow">{isArabic ? '04 / نهجنا' : '04 / OUR APPROACH'}</span>
-          <h2>{isArabic ? 'ثلاث ركائز توجه عملنا' : 'Three Pillars That Guide Our Work'}</h2>
+          <span className="about-eyebrow">{isArabic ? '04 / لماذا بروة' : '04 / WHY BARWA'}</span>
+          <h2>{isArabic ? 'لماذا بروة؟' : 'Why Barwa?'}</h2>
         </div>
         <div className="about-pillars">
-          <Pillar number="01" Icon={MapPin} title={isArabic ? 'اختيار المواقع' : 'Strategic Locations'} text={isArabic ? 'نبدأ من الموقع، ونبحث عن الأماكن التي تمنح المشروع حضوراً وفرصة.' : 'We begin with place, seeking locations that give each development presence and opportunity.'} />
-          <Pillar number="02" Icon={Building2} title={isArabic ? 'جودة التطوير' : 'Development Quality'} text={isArabic ? 'نهتم بجودة التطوير والتصميم المعاصر في تشكيل كل وجهة.' : 'We focus on development quality and contemporary design in shaping every destination.'} />
-          <Pillar number="03" Icon={Layers3} title={isArabic ? 'قيمة مستدامة' : 'Lasting Value'} text={isArabic ? 'نطوّر فرصاً تستند إلى قيمة مدروسة وتطلّع طويل الأمد.' : 'We develop opportunities grounded in considered value and a long-term outlook.'} />
+          <Pillar number="01" Icon={Building2} title={isArabic ? 'تخصص واضح' : 'A clear specialisation'} text={isArabic ? 'نتخصص في المباني التجارية والإدارية والطبية في شرق القاهرة.' : 'We specialise in commercial, administrative and medical buildings in East Cairo.'} />
+          <Pillar number="02" Icon={MapPin} title={isArabic ? 'وسط كثافة سكنية' : 'Inside dense residential areas'} text={isArabic ? 'مشروعاتنا داخل مناطق سكنية كثيفة في مدينة الشروق بشرق القاهرة.' : 'Our projects sit inside dense residential districts in El Shorouk, East Cairo.'} />
+          <Pillar number="03" Icon={Layers3} title={isArabic ? 'مساحات مرنة' : 'Flexible unit sizes'} text={isArabic ? 'وحدات بمساحات متنوعة تلائم النشاط التجاري والإداري والطبي.' : 'Units in a range of sizes for commercial, administrative and medical use.'} />
+          <Pillar number="04" Icon={MapPin} title={isArabic ? 'على الطرق الرئيسية' : 'On the main roads'} text={isArabic ? 'مواقع على الطرق الرئيسية داخل مدينة الشروق بشرق القاهرة.' : 'Locations on the main roads of El Shorouk, East Cairo.'} />
+          <Pillar number="05" Icon={Building2} title={isArabic ? 'استخدامات في مبنى واحد' : 'Mixed uses in one building'} text={isArabic ? 'نشاط تجاري وإداري وطبي يجتمع في المبنى نفسه.' : 'Commercial, administrative and medical uses together in the same building.'} />
         </div>
       </section>
 
@@ -174,16 +218,16 @@ export function AboutUsContent() {
         </div>
         <div className="about-journey-track about-reveal">
           <div className="about-journey-origin">
-            <span className="about-journey-year" dir="ltr">2008</span>
-            <span>{isArabic ? 'عام التأسيس' : 'Year Established'}</span>
+            <span className="about-journey-year" dir="ltr"><span className="figure-plus">+</span>150</span>
+            <span>{isArabic ? 'مشروعًا سكنيًا بالشراكة مع الراجحي' : 'Residential projects with Al Rajhi'}</span>
           </div>
           <div className="about-journey-line"><i /></div>
           <div className="about-journey-story">
             <span className="about-eyebrow">{isArabic ? 'مسار مستمر' : 'A CONTINUING STORY'}</span>
             <p>
               {isArabic
-                ? 'منذ تأسيسها على يد ثلاثة مستثمرين عقاريين، واصلت بروة تطوير حضورها في السوق المصري. واليوم، تعكس محفظتها أكثر من 55 مشروعاً منجزاً، فيما تستمر الشركة في التوسع وتطوير وجهات جديدة.'
-                : 'Founded by three real-estate investors, Barwa has continued to build its presence in Egypt. Its portfolio now reflects more than 55 completed projects, as the company continues to expand and develop new destinations.'}
+                ? 'منذ 2008 واصلت بروة بناء حضورها. سابقة الأعمال السكنية — أكثر من 150 مشروعًا و3.2 مليار جنيه وأكثر من 1500 عميل — تمت بالشراكة مع الراجحي للمشروعات العمرانية. ومحفظة بروة الخاصة اليوم 5 مشروعات تجارية وإدارية وطبية.'
+                : 'Since 2008 Barwa has kept building its presence. The residential record — more than 150 projects, EGP 3.2 billion and more than 1,500 clients — was delivered with Al Rajhi for Urban Projects. Barwa’s own portfolio today is 5 commercial, administrative and medical projects.'}
             </p>
           </div>
         </div>
@@ -198,7 +242,7 @@ export function AboutUsContent() {
           {projectOrder.map((project, index) => (
             <Link className="about-development about-reveal" href={`/projects/${project.slug}`} key={project.slug}>
               <span className="about-development-image">
-                <img src={`${project.assetDirectory}/hero.jpg`} alt="" loading="lazy" />
+                <img src={`${project.assetDirectory}/hero.jpg`} alt={isArabic ? `واجهة ${project.arabic} في ${project.location}` : `${project.displayName} facade, ${project.englishLocation}`} loading="lazy" decoding="async" />
                 <span className="about-development-index" dir="ltr">0{index + 1}</span>
                 <span className="about-development-arrow"><MoveUpRight aria-hidden="true" /></span>
               </span>
@@ -211,7 +255,7 @@ export function AboutUsContent() {
       </section>
 
       <section className="about-cta">
-        <img src="/projects/central-mall/gallery-01.jpg" alt="" loading="lazy" />
+        <img src="/projects/central-mall/gallery-01.jpg" alt={isArabic ? 'لقطة معمارية من معرض سنترال مول' : 'An architectural view from the Central Mall gallery'} loading="lazy" decoding="async" />
         <div className="about-cta-shade" />
         <div className="about-cta-content about-reveal">
           <span className="about-eyebrow">{isArabic ? '09 / الخطوة القادمة' : '09 / THE NEXT STEP'}</span>
@@ -230,60 +274,6 @@ export function AboutUsContent() {
       <SiteFooter />
     </main>
   )
-}
-
-function Stat({ value, prefix = '', suffix = '', label }: { value: number; prefix?: string; suffix?: string; label: string }) {
-  return (
-    <div className="about-stat about-reveal">
-      <strong dir="ltr">{prefix}<NumberTicker value={value} />{suffix}</strong>
-      <span>{label}</span>
-    </div>
-  )
-}
-
-function NumberTicker({ value }: { value: number }) {
-  const [count, setCount] = useState(value)
-  const ref = useRef<HTMLSpanElement>(null)
-
-  useEffect(() => {
-    const element = ref.current
-    if (!element) return
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduceMotion) {
-      setCount(value)
-      return
-    }
-
-    let timer = 0
-    let started = false
-    const startCount = () => {
-      const bounds = element.getBoundingClientRect()
-      if (started || bounds.top >= window.innerHeight * 0.9 || bounds.bottom <= 0) return
-      started = true
-      const start = performance.now()
-      const duration = 950
-      setCount(0)
-      const tick = (now: number) => {
-        const progress = Math.min((now - start) / duration, 1)
-        setCount(Math.round(value * (1 - (1 - progress) ** 3)))
-        if (progress >= 1) window.clearInterval(timer)
-      }
-      timer = window.setInterval(() => tick(performance.now()), 40)
-      tick(start)
-    }
-
-    startCount()
-    window.addEventListener('scroll', startCount, { passive: true })
-    window.addEventListener('resize', startCount)
-
-    return () => {
-      window.removeEventListener('scroll', startCount)
-      window.removeEventListener('resize', startCount)
-      window.clearInterval(timer)
-    }
-  }, [value])
-
-  return <span ref={ref}>{count}</span>
 }
 
 function Pillar({ number, Icon, title, text }: { number: string; Icon: LucideIcon; title: string; text: string }) {

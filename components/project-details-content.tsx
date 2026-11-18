@@ -8,9 +8,8 @@ import {
   ArrowUpRight,
   Building2,
   Car,
-  Check,
-  Circle,
   DoorOpen,
+  Download,
   Flame,
   Layers,
   Mail,
@@ -31,10 +30,11 @@ import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
 import { UsePills } from './use-pills'
 import { useLanguage } from './language-provider'
+import { LiveConstruction } from './live-construction'
 import { CONTACT } from '@/lib/contact'
+import { submitBarwaForm } from '@/lib/forms'
 import {
   projects,
-  type ConstructionStageStatus,
   type Project,
   type ProjectFeature,
   type ProjectUnit,
@@ -71,9 +71,10 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
   const isArabic = language === 'ar'
   const [selectedFloor, setSelectedFloor] = useState(project.floors[0]?.key ?? '')
   const [lightbox, setLightbox] = useState<LightboxImage | null>(null)
+  const [planZoom, setPlanZoom] = useState(1)
   const [selectedUnit, setSelectedUnit] = useState<ProjectUnit | null>(null)
   const [showReservationForm, setShowReservationForm] = useState(false)
-  const [reservationStatus, setReservationStatus] = useState<'idle' | 'email-opened'>('idle')
+  const [reservationStatus, setReservationStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const floor = project.floors.find((item) => item.key === selectedFloor) ?? project.floors[0]
   const asset = (file: string) => `${project.assetDirectory}/${file}`
   const locationMap = project.locationMap
@@ -112,14 +113,16 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
   }, [lightbox, selectedUnit])
 
   const visibleUnits = project.operations.units.filter((unit) => unit.floorKey === selectedFloor)
-  const constructionProgress = project.operations.constructionProgress
+  const currentStageTitle = currentConstructionStage
+    ? (isArabic ? `مرحلة ${currentConstructionStage.titleAr}` : currentConstructionStage.titleEn)
+    : ''
 
   return (
     <main className="site-shell project-detail-page" dir={isArabic ? 'rtl' : 'ltr'}>
       <SiteHeader variant="overlay" />
 
       <section className="project-detail-hero" aria-label={projectName}>
-        <img className="project-detail-hero-image" src={asset('hero.jpg')} alt="" fetchPriority="high" />
+        <img className="project-detail-hero-image" src={asset('hero.jpg')} alt={isArabic ? `واجهة ${project.arabic} في ${project.location}` : `${project.displayName} facade, ${project.englishLocation}`} fetchPriority="high" decoding="async" />
         <div className="project-detail-hero-overlay" />
         <div className="project-detail-hero-copy">
           <Link href="/projects" className="project-detail-back">
@@ -131,13 +134,32 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           <UsePills arabic={project.type} english={project.englishType} isArabic={isArabic} />
           <h2>{isArabic ? project.tagline : project.englishTagline}</h2>
           <p>{isArabic ? project.description : project.englishDescription}</p>
-          <Link href={`/contact-us?project=${project.slug}`} className="button-link">
-            {isArabic ? 'استفسر عن المشروع' : 'Enquire about this project'}
-            {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
-          </Link>
+          <div className="project-hero-actions">
+            <Link href={`/contact-us?project=${project.slug}`} className="project-call-link hero-secondary-link">
+              {isArabic ? 'استفسر عن المشروع' : 'Enquire about this project'}
+              {isArabic ? <ArrowUpLeft aria-hidden="true" /> : <ArrowUpRight aria-hidden="true" />}
+            </Link>
+            <a className="project-brochure-link" href={project.brochure} download>
+              <Download aria-hidden="true" />
+              {isArabic ? 'تحميل البروشور' : 'Download brochure'}
+            </a>
+          </div>
         </div>
         <span className="project-detail-hero-number">{project.number} / 03</span>
       </section>
+
+      {project.slug === 'central-mall' && (
+        <aside className="central-auction-banner">
+          <div>
+            <span className="eyebrow">{isArabic ? 'مزاد علني' : 'Online auction'}</span>
+            <strong>{isArabic ? 'وحدة G-21 في سنترال مول' : 'Unit G-21 at Central Mall'}</strong>
+            <p>{isArabic
+              ? 'محل ١٦ م² في الطابق الأرضي. المزاد من ١ إلى ٣ ديسمبر ٢٠٢٦، وسعر الافتتاح ٩٠٠٬٠٠٠ جنيه.'
+              : 'A 16 m² ground-floor shop. The auction runs 1–3 December 2026, opening at EGP 900,000.'}</p>
+          </div>
+          <Link href="/auction">{isArabic ? 'صفحة المزاد' : 'Auction page'}</Link>
+        </aside>
+      )}
 
       <section className="project-facts" aria-label={isArabic ? 'معلومات المشروع' : 'Project information'}>
         {project.facts.map((fact) => (
@@ -181,7 +203,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
             })}
             aria-label={isArabic ? 'تكبير صورة المشروع' : 'Enlarge project image'}
           >
-            <img src={asset('gallery-01.jpg')} alt="" loading="lazy" />
+            <img src={asset('gallery-01.jpg')} alt={isArabic ? `صورة معمارية لمشروع ${projectName}` : `Architecture image for ${projectName}`} loading="lazy" decoding="async" />
             <span><ZoomIn aria-hidden="true" />{isArabic ? 'عرض الصورة' : 'View image'}</span>
           </button>
         </div>
@@ -211,7 +233,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
               })}
               aria-label={isArabic ? 'تكبير خريطة الموقع' : 'Enlarge location map'}
             >
-              <img src={asset(locationMap)} alt="" loading="lazy" />
+              <img src={asset(locationMap)} alt={isArabic ? `خريطة موقع مشروع ${projectName} في ${project.location}` : `Location map for ${projectName}, ${project.englishLocation}`} loading="lazy" decoding="async" />
               <span><ZoomIn aria-hidden="true" />{isArabic ? 'تكبير الخريطة' : 'Enlarge map'}</span>
             </button>
           )}
@@ -224,7 +246,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           <h2>{isArabic ? 'معرض المشروع' : 'Project Gallery'}</h2>
         </div>
         <div className="project-gallery-grid">
-          {project.galleryImages.map((image) => (
+          {project.galleryImages.map((image, index) => (
             <button
               type="button"
               className="project-gallery-item"
@@ -236,7 +258,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
               })}
               aria-label={isArabic ? 'تكبير صورة المشروع' : 'Enlarge project image'}
             >
-              <img src={asset(image)} alt="" loading="lazy" />
+              <img src={asset(image)} alt={isArabic ? `صورة ${index + 1} من معرض ${projectName}` : `Gallery image ${index + 1} of ${projectName}`} loading="lazy" decoding="async" />
               <span><ZoomIn aria-hidden="true" /></span>
             </button>
           ))}
@@ -281,7 +303,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
               })}
               aria-label={isArabic ? 'تكبير المخطط' : 'Enlarge plan'}
             >
-              <img src={asset(floorPlanFile(floor.key))} alt={`${projectName} — ${isArabic ? floor.arabic : floor.english}`} loading="lazy" />
+              <img src={asset(floorPlanFile(floor.key))} alt={isArabic ? `مخطط ${floor.arabic} لمشروع ${project.arabic}` : `${floor.english} plan, ${project.displayName}`} loading="lazy" decoding="async" />
             </button>
             {(isArabic ? floor.activityAr : floor.activityEn) && (
               <p className="project-floor-activity">{isArabic ? floor.activityAr : floor.activityEn}</p>
@@ -343,7 +365,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
               })}
               aria-label={isArabic ? `تكبير مخطط ${floor.arabic}` : `Enlarge ${floor.english} plan`}
             >
-              <img src={asset(floorPlanFile(floor.key))} alt={`${projectName} — ${isArabic ? floor.arabic : floor.english}`} loading="lazy" />
+              <img src={asset(floorPlanFile(floor.key))} alt={isArabic ? `مخطط ${floor.arabic} لمشروع ${project.arabic}` : `${floor.english} plan, ${project.displayName}`} loading="lazy" decoding="async" />
               <span><ZoomIn aria-hidden="true" />{isArabic ? 'تكبير المخطط' : 'Enlarge floor plan'}</span>
             </button>
             <div className="project-units-list">
@@ -407,96 +429,26 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
         </section>
       )}
 
-      <section className="project-construction section-pad">
+      <section className="project-construction section-pad" aria-labelledby="construction-title">
         <div className="project-section-heading">
-          <span className="eyebrow">{isArabic ? '07 / مراحل التطوير' : '07 / DEVELOPMENT JOURNEY'}</span>
-          <h2>{isArabic ? 'مراحل الإنشاء' : 'Construction Progress'}</h2>
-          <p>{isArabic
-            ? 'تُحدّث حالة المراحل عند توفر معلومات موثقة.'
-            : 'Stage status is updated when verified information is available.'}</p>
+          <span className="eyebrow">{isArabic ? '07 / مرحلة المشروع' : '07 / PROJECT STAGE'}</span>
+          <h2 id="construction-title">{isArabic ? 'مراحل التنفيذ' : 'Construction stages'}</h2>
         </div>
-        {currentConstructionStage && (
-          <div className="project-current-stage">
-            <span>{isArabic ? 'المرحلة الحالية' : 'Current Stage'}</span>
-            <strong>{isArabic ? currentConstructionStage.titleAr : currentConstructionStage.titleEn}</strong>
-          </div>
-        )}
-        {constructionProgress != null && constructionProgress >= 0 && constructionProgress <= 100 && (
-          <div className="project-progress">
-            <span>{isArabic ? 'نسبة الإنجاز' : 'Construction Progress'}</span>
-            <strong>{constructionProgress}%</strong>
-          </div>
-        )}
-        {project.operations.constructionStages.length > 0 ? (
-          <>
-            {!project.operations.constructionStages.some((stage) =>
-              stage.status !== null || stage.id === project.operations.currentConstructionStage
-            ) && (
-              <p className="project-construction-unreported">
-                {isArabic ? 'لم تُنشر بعد حالة موثقة لمراحل الإنشاء.' : 'Verified construction stage updates have not been published yet.'}
-              </p>
-            )}
-            <ol className="project-construction-timeline">
-              {project.operations.constructionStages.map((stage, index) => {
-                const stageStatus = project.operations.currentConstructionStage === stage.id
-                  ? 'current'
-                  : stage.status
-                return (
-                  <li className={`project-construction-stage ${stageStatus ? `is-${stageStatus}` : 'is-unreported'}`} key={stage.id}>
-                    <span className="project-stage-marker" aria-hidden="true">
-                      {stageStatus === 'completed' ? <Check /> : stageStatus === 'current' ? <i /> : <Circle />}
-                    </span>
-                    <span className="project-stage-number" dir="ltr">0{index + 1}</span>
-                    <div className="project-stage-copy">
-                      <h3>{isArabic ? stage.titleAr : stage.titleEn}</h3>
-                      {stage.date && <span>{stage.date}</span>}
-                      {(isArabic ? stage.descriptionAr ?? stage.descriptionEn : stage.descriptionEn ?? stage.descriptionAr) && (
-                        <p>{isArabic ? stage.descriptionAr ?? stage.descriptionEn : stage.descriptionEn ?? stage.descriptionAr}</p>
-                      )}
-                      {stageStatus && (
-                        <span className="project-stage-status">
-                          {isArabic ? stageStatusArabic[stageStatus] : stageStatusEnglish[stageStatus]}
-                        </span>
-                      )}
-                    </div>
-                    {stage.image && (
-                      <img className="project-stage-image" src={asset(stage.image)} alt="" loading="lazy" />
-                    )}
-                  </li>
-                )
-              })}
-            </ol>
-          </>
-        ) : (
-          <p className="project-construction-unreported">
-            {isArabic ? 'سيتم نشر مراحل الإنشاء عند توفر تحديثات موثقة.' : 'Construction stages will be published when verified updates are available.'}
-          </p>
-        )}
+        {currentStageTitle && <p className="stage-badge stage-badge-current">{currentStageTitle}</p>}
+        <ol className="stage-timeline">
+          {project.operations.constructionStages.map((stage) => {
+            const stageStatus = stage.status ?? 'upcoming'
+            return (
+              <li className={`is-${stageStatus}`} key={stage.id} aria-current={stageStatus === 'current' ? 'step' : undefined}>
+                <span className="stage-dot" aria-hidden="true" />
+                <span className="stage-name">{isArabic ? stage.titleAr : stage.titleEn}</span>
+              </li>
+            )
+          })}
+        </ol>
       </section>
 
-      <section className="project-construction-updates section-pad">
-        <div className="project-section-heading">
-          <span className="eyebrow">{isArabic ? '08 / تحديثات الموقع' : '08 / SITE UPDATES'}</span>
-          <h2>{isArabic ? 'آخر تحديثات المشروع' : 'Latest Construction Updates'}</h2>
-        </div>
-        {project.operations.constructionUpdates.length > 0 ? (
-          <div className="project-updates-grid">
-            {project.operations.constructionUpdates.map((update) => (
-              <figure className="project-update" key={update.id}>
-                <img src={asset(update.image)} alt={isArabic ? update.captionAr ?? '' : update.captionEn ?? ''} loading="lazy" />
-                <figcaption>
-                  <time>{update.date}</time>
-                  {(isArabic ? update.captionAr : update.captionEn) && <span>{isArabic ? update.captionAr : update.captionEn}</span>}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        ) : (
-          <p className="project-construction-unreported">
-            {isArabic ? 'لا توجد تحديثات مصوّرة منشورة حاليًا.' : 'No construction photo updates have been published yet.'}
-          </p>
-        )}
-      </section>
+      <LiveConstruction items={[project]} isArabic={isArabic} />
 
       <section className="project-contact brochure-close-band section-pad">
         <span className="eyebrow light">{isArabic ? 'HOTLINE · الخط الساخن' : 'HOTLINE'}</span>
@@ -530,7 +482,7 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
             {otherProjects.map((otherProject) => (
               <Link href={`/projects/${otherProject.slug}`} className="project-other-card" key={otherProject.slug}>
                 <span className="project-other-image">
-                  <img src={assetFor(otherProject.assetDirectory, 'hero.jpg')} alt="" loading="lazy" />
+                  <img src={assetFor(otherProject.assetDirectory, 'hero.jpg')} alt={isArabic ? `واجهة ${otherProject.arabic} في ${otherProject.location}` : `${otherProject.displayName} facade, ${otherProject.englishLocation}`} loading="lazy" decoding="async" />
                 </span>
                 <span className="project-other-info">
                   <span>{isArabic ? otherProject.location : otherProject.englishLocation}</span>
@@ -552,18 +504,39 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
           aria-modal="true"
           aria-label={lightbox.alt}
           onClick={(event) => {
-            if (event.target === event.currentTarget) setLightbox(null)
+            if (event.target === event.currentTarget) {
+              setLightbox(null)
+              setPlanZoom(1)
+            }
           }}
         >
           <button
             className="project-lightbox-close"
             type="button"
-            onClick={() => setLightbox(null)}
+            onClick={() => {
+              setLightbox(null)
+              setPlanZoom(1)
+            }}
             aria-label={isArabic ? 'إغلاق' : 'Close'}
           >
             <X aria-hidden="true" />
           </button>
-          <img src={lightbox.src} alt={lightbox.alt} />
+          {lightbox.kind === 'plan' && (
+            <div className="project-lightbox-zoom">
+              <button type="button" onClick={() => setPlanZoom((value) => Math.max(1, Math.round((value - 0.25) * 100) / 100))} aria-label={isArabic ? 'تصغير' : 'Zoom out'}>−</button>
+              <button type="button" onClick={() => setPlanZoom((value) => Math.min(3, Math.round((value + 0.25) * 100) / 100))} aria-label={isArabic ? 'تكبير' : 'Zoom in'}>+</button>
+            </div>
+          )}
+          <div
+            className="project-lightbox-stage"
+            onWheel={(event) => {
+              if (lightbox.kind !== 'plan') return
+              event.preventDefault()
+              setPlanZoom((value) => Math.min(3, Math.max(1, Math.round((value + (event.deltaY < 0 ? 0.15 : -0.15)) * 100) / 100)))
+            }}
+          >
+            <img src={lightbox.src} alt={lightbox.alt} style={lightbox.kind === 'plan' ? { width: `${planZoom * 100}%` } : undefined} />
+          </div>
         </div>
       )}
 
@@ -603,24 +576,22 @@ export function ProjectDetailsContent({ project }: { project: Project }) {
                 floorLabel={isArabic ? floorForUnit(project, selectedUnit)?.arabic ?? '' : floorForUnit(project, selectedUnit)?.english ?? ''}
                 isArabic={isArabic}
                 status={reservationStatus}
-                onSubmit={(event) => {
+                onSubmit={async (event) => {
                   event.preventDefault()
                   const formData = new FormData(event.currentTarget)
-                  const subject = encodeURIComponent(isArabic ? `طلب حجز وحدة ${selectedUnit.unitNumber ?? ''} — ${project.displayName}` : `Reservation request: ${selectedUnit.unitNumber ?? selectedUnit.id} — ${project.displayName}`)
-                  const body = encodeURIComponent([
-                    `${isArabic ? 'الاسم' : 'Name'}: ${formData.get('name')}`,
-                    `${isArabic ? 'رقم الهاتف' : 'Phone'}: ${formData.get('phone')}`,
-                    `${isArabic ? 'البريد الإلكتروني' : 'Email'}: ${formData.get('email')}`,
-                    `${isArabic ? 'المشروع' : 'Project'}: ${project.displayName}`,
-                    `${isArabic ? 'الطابق' : 'Floor'}: ${floorForUnit(project, selectedUnit)?.english ?? ''}`,
-                    `${isArabic ? 'الوحدة' : 'Unit'}: ${selectedUnit.unitNumber ?? selectedUnit.id}`,
-                    `${isArabic ? 'ملاحظات' : 'Message / Notes'}: ${formData.get('message')}`,
-                    isArabic
-                      ? 'هذا طلب استفسار عن الحجز، ولا يُعد تأكيدًا أو حجزًا رسميًا للوحدة.'
-                      : 'This is a reservation request only and does not confirm or reserve the unit.',
-                  ].join('\n'))
-                  setReservationStatus('email-opened')
-                  window.location.href = `${CONTACT.emailHref}?subject=${subject}&body=${body}`
+                  const unitLabel = selectedUnit.unitNumber ?? selectedUnit.id
+                  setReservationStatus('sending')
+                  const accepted = await submitBarwaForm({
+                    _subject: `طلب حجز وحدة ${unitLabel} — ${project.displayName}`,
+                    name: String(formData.get('name') ?? '').trim(),
+                    phone: String(formData.get('phone') ?? '').trim(),
+                    email: String(formData.get('email') ?? '').trim(),
+                    project: `${project.displayName} — ${project.arabic}`,
+                    floor: floorForUnit(project, selectedUnit)?.english ?? '',
+                    unit: unitLabel,
+                    message: String(formData.get('message') ?? '').trim() || '—',
+                  }).catch(() => false)
+                  setReservationStatus(accepted ? 'sent' : 'error')
                 }}
               />
             ) : (
@@ -652,18 +623,6 @@ const unitStatusEnglish = {
   reserved: 'Reserved',
   sold: 'Sold',
 } as const
-
-const stageStatusArabic: Record<ConstructionStageStatus, string> = {
-  completed: 'مكتملة',
-  current: 'المرحلة الحالية',
-  upcoming: 'قادمة',
-}
-
-const stageStatusEnglish: Record<ConstructionStageStatus, string> = {
-  completed: 'Completed',
-  current: 'Current Stage',
-  upcoming: 'Upcoming',
-}
 
 function floorForUnit(project: Project, unit: ProjectUnit) {
   return project.floors.find((floor) => floor.key === unit.floorKey)
@@ -727,7 +686,7 @@ function ReservationRequestForm({ project, unit, floorLabel, isArabic, status, o
   unit: ProjectUnit
   floorLabel: string
   isArabic: boolean
-  status: 'idle' | 'email-opened'
+  status: 'idle' | 'sending' | 'sent' | 'error'
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }) {
   return (
@@ -768,14 +727,20 @@ function ReservationRequestForm({ project, unit, floorLabel, isArabic, status, o
           <span>{isArabic ? 'رسالة / ملاحظات' : 'Message / Notes'}</span>
           <textarea name="message" rows={3} />
         </label>
-        <button type="submit" className="project-unit-reserve">
-          {isArabic ? 'إرسال طلب الحجز' : 'Submit Reservation Request'}
-        </button>
-        {status === 'email-opened' && (
+        {status === 'sent' ? (
           <p className="project-reservation-status" role="status">
             {isArabic
-              ? 'تم فتح تطبيق البريد لإرسال طلبك. لا يُعد ذلك تأكيدًا للحجز؛ سيتواصل معك فريق بروة لتأكيد التفاصيل.'
-              : 'Your email application was opened to send this request. This does not confirm a reservation; Barwa’s team will contact you to confirm the details.'}
+              ? 'تم إرسال طلب الحجز. سيتواصل معك فريق بروة لتأكيد التفاصيل. لا يُعد ذلك تأكيدًا للحجز.'
+              : 'Your reservation request has been sent. Barwa’s team will contact you to confirm the details. This does not confirm a reservation.'}
+          </p>
+        ) : (
+          <button type="submit" className="project-unit-reserve" disabled={status === 'sending'}>
+            {status === 'sending' ? (isArabic ? 'جارٍ الإرسال' : 'Sending') : (isArabic ? 'إرسال طلب الحجز' : 'Submit Reservation Request')}
+          </button>
+        )}
+        {status === 'error' && (
+          <p className="project-reservation-status is-error" role="alert">
+            {isArabic ? 'تعذر إرسال الطلب الآن. يرجى الاتصال على ١٧٥٨٢.' : 'The request could not be sent. Please call 17582.'}
           </p>
         )}
       </form>

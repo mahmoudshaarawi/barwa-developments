@@ -17,8 +17,8 @@ export function UsePills({ arabic, english, isArabic = true }: UsePillsProps) {
         return (
           <span className="use-pill" key={`${label}-${englishLabel ?? index}`}>
             <b>{primary}</b>
-            {secondary && (
-              <small lang={isArabic ? 'en' : 'ar'} dir={isArabic ? 'ltr' : 'rtl'}>{secondary}</small>
+            {isArabic && secondary && (
+              <small lang="en" dir="ltr">{secondary}</small>
             )}
           </span>
         )

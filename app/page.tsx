@@ -2,73 +2,43 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowUpLeft, ArrowUpRight, ChevronLeft, ChevronRight, MoveUpRight } from 'lucide-react'
+import { ArrowUpLeft, ArrowUpRight, Building2, ChevronLeft, ChevronRight, MapPin, Volume2, VolumeX } from 'lucide-react'
+import { BrochureFigures } from '@/components/brochure-figures'
+import { PartnerCarousel } from '@/components/partner-carousel'
 import { SiteFooter } from '@/components/site-footer'
 import { SiteHeader } from '@/components/site-header'
-import { UsePills } from '@/components/use-pills'
+import { useLanguage } from '@/components/language-provider'
 import { CONTACT } from '@/lib/contact'
 import { projects } from '@/lib/projects'
 
-const brandStarUrl = '/brand/barwa-star.svg'
+const showcase = [...projects].reverse()
 
-const heroSlides = [
-  {
-    image: '/projects/barwa-mall/hero.jpg',
-    eyebrow: 'مدينة الشروق · مصر',
-    title: projects[2].arabic,
-    emphasis: projects[2].tagline,
-    englishName: projects[2].displayName,
-    description: projects[2].englishTagline,
-    href: `/projects/${projects[2].slug}`,
-    type: projects[2].type,
-    englishType: projects[2].englishType,
-    imagePosition: 'center 50%',
-    mobileImagePosition: '35% 53%',
-    mobileImageAspectRatio: '2422 / 1457',
-  },
-  {
-    image: '/projects/central-mall/hero.jpg',
-    eyebrow: projects[1].englishLocation,
-    title: projects[1].arabic,
-    emphasis: projects[1].tagline,
-    englishName: projects[1].displayName,
-    description: projects[1].englishTagline,
-    href: `/projects/${projects[1].slug}`,
-    type: projects[1].type,
-    englishType: projects[1].englishType,
-    imagePosition: 'center 50%',
-    mobileImagePosition: 'center 50%',
-    mobileImageAspectRatio: '2421 / 1457',
-  },
-  {
-    image: '/projects/hub5-mall/hero.jpg',
-    eyebrow: 'مدينة الشروق · مصر',
-    title: projects[0].arabic,
-    emphasis: projects[0].tagline,
-    englishName: projects[0].displayName,
-    description: projects[0].englishTagline,
-    href: `/projects/${projects[0].slug}`,
-    type: projects[0].type,
-    englishType: projects[0].englishType,
-    imagePosition: 'center 50%',
-    mobileImagePosition: 'center 50%',
-    mobileImageAspectRatio: '2422 / 1458',
+function projectWordmark(displayName: string) {
+  const parts = displayName.trim().split(/\s+/)
+  if (parts.length > 1 && parts[parts.length - 1].toUpperCase() === 'MALL') {
+    return { title: parts.slice(0, -1).join(' '), subtitle: 'MALL' }
   }
-]
+  return { title: displayName, subtitle: '' }
+}
+
+const promoVideo = '/banners/Barwa-Promo-1920X8686551.mp4'
+const promoPoster = '/projects/barwa-mall/hero.jpg'
 
 export default function Page() {
+  const { language } = useLanguage()
+  const isArabic = language === 'ar'
   const [active, setActive] = useState(0)
-  const [heroActive, setHeroActive] = useState(0)
-  const [heroHovered, setHeroHovered] = useState(false)
-  const [heroFocused, setHeroFocused] = useState(false)
-  const [heroInteractionPaused, setHeroInteractionPaused] = useState(false)
+  const [fanHovered, setFanHovered] = useState(false)
+  const [fanPaused, setFanPaused] = useState(false)
   const [pageVisible, setPageVisible] = useState(true)
+  const [promoMuted, setPromoMuted] = useState(true)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const dragStartX = useRef<number | null>(null)
-  const heroDragStartX = useRef<number | null>(null)
-  const heroPauseTimeout = useRef<number | null>(null)
+  const fanDragged = useRef(false)
+  const fanPauseTimeout = useRef<number | null>(null)
+  const promoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     const onScroll = () => {
@@ -107,242 +77,277 @@ export default function Page() {
   }, [])
 
   useEffect(() => {
-    if (reducedMotion || !pageVisible || heroHovered || heroFocused || heroInteractionPaused) return
-    const autoplay = window.setInterval(() => {
-      setHeroActive((current) => (current + 1) % heroSlides.length)
-    }, 6000)
-
-    return () => window.clearInterval(autoplay)
-  }, [heroFocused, heroHovered, heroInteractionPaused, pageVisible, reducedMotion])
-
-  useEffect(() => () => {
-    if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
+    const video = promoRef.current
+    if (!video) return
+    video.muted = true
+    const play = video.play()
+    if (play) play.catch(() => {})
   }, [])
 
-  const move = (direction: number) => setActive((active + direction + projects.length) % projects.length)
-  const pauseHeroAfterInteraction = () => {
-    setHeroInteractionPaused(true)
-    if (heroPauseTimeout.current) window.clearTimeout(heroPauseTimeout.current)
-    heroPauseTimeout.current = window.setTimeout(() => {
-      setHeroInteractionPaused(false)
-      heroPauseTimeout.current = null
-    }, 6000)
+  useEffect(() => {
+    if (reducedMotion || !pageVisible || fanHovered || fanPaused) return
+    const autoplay = window.setInterval(() => {
+      setActive((current) => (current + 1) % showcase.length)
+    }, 7000)
+    return () => window.clearInterval(autoplay)
+  }, [fanHovered, fanPaused, pageVisible, reducedMotion])
+
+  useEffect(() => () => {
+    if (fanPauseTimeout.current) window.clearTimeout(fanPauseTimeout.current)
+  }, [])
+
+  const pauseFan = () => {
+    setFanPaused(true)
+    if (fanPauseTimeout.current) window.clearTimeout(fanPauseTimeout.current)
+    fanPauseTimeout.current = window.setTimeout(() => {
+      setFanPaused(false)
+      fanPauseTimeout.current = null
+    }, 8000)
   }
-  const moveHero = (direction: number) => {
-    setHeroActive((current) => (current + direction + heroSlides.length) % heroSlides.length)
-    pauseHeroAfterInteraction()
+  const move = (direction: number) => {
+    setActive((current) => (current + direction + showcase.length) % showcase.length)
+    pauseFan()
   }
-  const handleHeroKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault()
-      moveHero(1)
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault()
-      moveHero(-1)
+  const togglePromoSound = () => {
+    const video = promoRef.current
+    if (!video) return
+    const nextMuted = !video.muted
+    video.muted = nextMuted
+    setPromoMuted(nextMuted)
+    if (!nextMuted) {
+      const play = video.play()
+      if (play) play.catch(() => {})
     }
   }
-  const handleHeroPointerDown = (event: React.PointerEvent<HTMLElement>) => {
-    if (event.button !== 0 || (event.target instanceof Element && event.target.closest('a, button'))) return
-    heroDragStartX.current = event.clientX
-    event.currentTarget.setPointerCapture(event.pointerId)
-  }
-  const handleHeroPointerUp = (event: React.PointerEvent<HTMLElement>) => {
-    if (heroDragStartX.current === null) return
-    const distance = event.clientX - heroDragStartX.current
-    heroDragStartX.current = null
-    if (Math.abs(distance) > 48) moveHero(distance < 0 ? 1 : -1)
-  }
   const handleCarouselKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'ArrowLeft') {
+    const forward = isArabic ? event.key === 'ArrowLeft' : event.key === 'ArrowRight'
+    const back = isArabic ? event.key === 'ArrowRight' : event.key === 'ArrowLeft'
+    if (forward || back) {
       event.preventDefault()
-      move(-1)
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault()
-      move(1)
+      move(forward ? 1 : -1)
     }
   }
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.button !== 0 || (event.target instanceof Element && event.target.closest('a, button'))) return
+    if (event.button !== 0 || (event.target instanceof Element && event.target.closest('button'))) return
     dragStartX.current = event.clientX
+    fanDragged.current = false
+  }
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStartX.current === null) return
+    const distance = event.clientX - dragStartX.current
+    if (Math.abs(distance) > 16 && !event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.setPointerCapture(event.pointerId)
+    }
   }
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     if (dragStartX.current === null) return
     const distance = event.clientX - dragStartX.current
     dragStartX.current = null
-    if (Math.abs(distance) > 48) move(distance < 0 ? 1 : -1)
+    if (Math.abs(distance) > 48) {
+      fanDragged.current = true
+      const forward = isArabic ? distance > 0 : distance < 0
+      move(forward ? 1 : -1)
+    }
+  }
+  const handleFanClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!fanDragged.current) return
+    event.preventDefault()
+    fanDragged.current = false
   }
 
   return (
-    <main dir="rtl" className="site-shell homepage-projects-first" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
+    <main dir={isArabic ? 'rtl' : 'ltr'} className="site-shell" style={{ '--scroll-progress': `${scrollProgress}%` } as React.CSSProperties}>
+      <h1 className="sr-only">
+        {isArabic
+          ? 'بروة للتطوير العقاري — مولات تجارية ومكاتب إدارية وعيادات طبية في شرق القاهرة'
+          : 'Barwa Developments — commercial malls, offices and clinics in East Cairo'}
+      </h1>
       <div className="scroll-progress" aria-hidden="true" />
       <SiteHeader scrolled={scrolled} />
 
-      <section id="projects" className="projects section-pad reveal">
+      <section id="projects" className="projects home-projects section-pad reveal">
+        <div className="section-kicker"><span>01</span><i /><span>{isArabic ? 'مشاريعنا' : 'PROJECTS'}</span></div>
+        <div className="projects-heading home-projects-heading">
+          <h2>{isArabic ? <>وجهات صُممت <em>للمستقبل</em></> : <>Destinations designed <em>for the future</em></>}</h2>
+        </div>
         <div
-          className="carousel-wrap"
-          role="group"
-          aria-label="مشاريع بروة"
+          className="project-fan"
+          role="region"
+          aria-roledescription="carousel"
+          aria-label={isArabic ? 'مشاريع بروة' : 'Barwa projects'}
           tabIndex={0}
           onKeyDown={handleCarouselKeyDown}
           onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={() => { dragStartX.current = null }}
-          onPointerLeave={() => { dragStartX.current = null }}
+          onClick={handleFanClick}
+          onMouseEnter={() => setFanHovered(true)}
+          onMouseLeave={() => setFanHovered(false)}
+          onFocus={() => setFanHovered(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFanHovered(false)
+          }}
         >
-          <div className="carousel-star" aria-hidden="true"><img src={brandStarUrl} alt="" /></div>
-          <button className="carousel-arrow prev" onClick={() => move(-1)} aria-label="المشروع السابق"><ChevronRight /></button>
-          {projects.map((item, index) => {
-            const position = index === active ? 'active' : index === (active + projects.length - 1) % projects.length ? 'previous' : 'next'
-            return (
-              <article
-                key={item.name}
-                className={`project-card project-card-${position}`}
-                style={{
-                  '--project-card-image': `url(${item.assetDirectory}/hero.jpg)`,
-                  '--project-card-mobile-image': `url(${item.assetDirectory}/hero.jpg)`,
-                } as React.CSSProperties}
-                aria-current={position === 'active' ? 'true' : undefined}
-              >
-                <img
-                  className="project-card-mobile-image"
-                  src={`${item.assetDirectory}/hero.jpg`}
-                  alt=""
-                  aria-hidden="true"
-                  loading="lazy"
-                />
-                {position !== 'active' && <button className="project-card-select" onClick={() => setActive(index)} aria-label={`استكشف ${item.arabic}`} />}
-                <div className="project-card-top"><span>{item.number} / 0{projects.length}</span><span>BARWA DEVELOPMENTS</span></div>
-                <div className="project-card-info">
-                  <span className="eyebrow light">{item.location}</span>
-                  <h3>{item.arabic}<small>{item.name}</small></h3>
-                  <p>{item.type}</p>
-                  <div className="project-card-bottom">
-                    <span>{item.description}</span>
-                    <a href={`/projects/${item.slug}`} aria-label={`View Project / استكشف المشروع: ${item.arabic}`}>
-                      <span className="project-cta-en">View Project</span>
-                      <span className="project-cta-ar">استكشف المشروع</span>
-                      <ArrowUpLeft />
-                    </a>
-                  </div>
-                </div>
-              </article>
-            )
-          })}
-          <button className="carousel-arrow next" onClick={() => move(1)} aria-label="المشروع التالي"><ChevronLeft /></button>
-        </div>
-        <div className="carousel-footer"><span>اسحب للتنقل بين المشاريع</span><div className="pagination">{projects.map((item, index) => <button key={item.name} className={active === index ? 'active' : ''} onClick={() => setActive(index)} aria-label={`مشروع ${index + 1}`}><span>0{index + 1}</span></button>)}</div></div>
-        <div className="section-kicker"><span>01</span><i /><span>مشاريعنا</span></div>
-        <div className="projects-heading"><div><span className="eyebrow">SELECTED DESTINATIONS</span><h2>وجهات صُممت<br /><em>للمستقبل</em></h2></div><p>نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.</p></div>
-      </section>
-
-      <section
-        id="top"
-        className="hero hero-mobile-composition"
-        style={{ '--mobile-image-aspect-ratio': heroSlides[heroActive].mobileImageAspectRatio } as React.CSSProperties}
-        aria-label="مشاريع بروة"
-        aria-roledescription="carousel"
-        tabIndex={0}
-        onKeyDown={handleHeroKeyDown}
-        onPointerDown={handleHeroPointerDown}
-        onPointerUp={handleHeroPointerUp}
-        onPointerCancel={() => { heroDragStartX.current = null }}
-        onPointerLeave={() => { heroDragStartX.current = null }}
-        onMouseEnter={() => setHeroHovered(true)}
-        onMouseLeave={() => setHeroHovered(false)}
-        onFocus={() => setHeroFocused(true)}
-        onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setHeroFocused(false)
-        }}
-      >
-        <div className="hero-image" aria-hidden="true">
-          {heroSlides.map((slide, index) => (
-            <img
-              key={slide.image}
-              className={`hero-slide-image ${index === heroActive ? 'is-active' : ''}`}
-              src={slide.image}
-              alt=""
-              aria-hidden="true"
-              style={{
-                '--image-position': slide.imagePosition,
-                '--mobile-image-position': slide.mobileImagePosition,
-              } as React.CSSProperties}
-              fetchPriority={index === 0 ? 'high' : 'auto'}
-            />
-          ))}
-        </div>
-        <div className="hero-copy" key={heroActive} aria-live="polite">
-          <span className="hero-kicker">{heroSlides[heroActive].eyebrow}</span>
-          <h1>
-            {heroSlides[heroActive].title}
-            {heroSlides[heroActive].emphasis && <em>{heroSlides[heroActive].emphasis}</em>}
-            <small lang="en" dir="ltr">{heroSlides[heroActive].englishName}</small>
-          </h1>
-          <p>{heroSlides[heroActive].description}</p>
-          {heroSlides[heroActive].type && (
-            <UsePills
-              arabic={heroSlides[heroActive].type}
-              english={heroSlides[heroActive].englishType}
-            />
-          )}
-          <a className="hero-project-link" href={heroSlides[heroActive].href}>استكشف المشروع <MoveUpRight /></a>
-        </div>
-        <div className="hero-meta">
-          <button type="button" className="hero-arrow" onClick={() => moveHero(-1)} aria-label="الشريحة السابقة"><ChevronRight /></button>
-          <span>{String(heroActive + 1).padStart(2, '0')}</span><i /><span>{String(heroSlides.length).padStart(2, '0')}</span>
-          <button type="button" className="hero-arrow" onClick={() => moveHero(1)} aria-label="الشريحة التالية"><ChevronLeft /></button>
-          <small>اسحب للأسفل</small>
-        </div>
-        <nav className="hero-rail" aria-label="شرائح المشاريع">
-          {heroSlides.map((slide, index) => (
-            <button
-              type="button"
-              key={slide.image}
-              className={heroActive === index ? 'is-active' : ''}
-              onClick={() => {
-                setHeroActive(index)
-                pauseHeroAfterInteraction()
-              }}
-              aria-label={`الشريحة ${String(index + 1).padStart(2, '0')}`}
-              aria-current={heroActive === index ? 'true' : undefined}
-            >
-              {String(index + 1).padStart(2, '0')}
+          <div className="project-fan-fit">
+          <div className="project-fan-stage">
+            {showcase.map((item, index) => {
+              const offset = (index - active + showcase.length) % showcase.length
+              const slot = offset === 0 ? 'center' : offset === 1 ? 'next' : 'prev'
+              const mark = projectWordmark(item.displayName)
+              const photo = `${item.assetDirectory}/hero.jpg`
+              return (
+                <Link
+                  key={item.slug}
+                  className={`project-fan-card is-${slot}`}
+                  href={`/projects/${item.slug}`}
+                  aria-current={slot === 'center' ? 'true' : undefined}
+                  aria-hidden={slot === 'center' ? undefined : true}
+                  tabIndex={slot === 'center' ? 0 : -1}
+                  onClick={(event) => {
+                    if (fanDragged.current) event.preventDefault()
+                  }}
+                >
+                  <span className="project-fan-photo">
+                    <img
+                      className="project-fan-picture"
+                      src={photo}
+                      alt={isArabic ? `واجهة ${item.arabic} في ${item.location}` : `${item.displayName} facade, ${item.englishLocation}`}
+                      decoding="async"
+                    />
+                    <span className="project-fan-mark" lang="en" dir="ltr">
+                      <b>{mark.title}</b>
+                      <i aria-hidden="true" />
+                      {mark.subtitle && <small>{mark.subtitle}</small>}
+                    </span>
+                  </span>
+                  <span className="project-fan-panel">
+                    <span className="project-fan-location">
+                      <MapPin aria-hidden="true" />
+                      <span>{isArabic ? item.location : item.englishLocation}</span>
+                    </span>
+                    <strong className="project-fan-arabic">{isArabic ? item.arabic : item.displayName}</strong>
+                    {isArabic && <span className="project-fan-english" lang="en" dir="ltr">{item.displayName}</span>}
+                    <span className="project-fan-rule" aria-hidden="true" />
+                    <span className="project-fan-use">
+                      <Building2 aria-hidden="true" />
+                      <span>{isArabic ? item.type : item.englishType}</span>
+                    </span>
+                  </span>
+                </Link>
+              )
+            })}
+          </div>
+          </div>
+          <div className="project-fan-controls">
+            <button type="button" onClick={() => move(-1)} aria-label={isArabic ? 'المشروع السابق' : 'Previous project'}>
+              {isArabic ? <ChevronRight /> : <ChevronLeft />}
             </button>
-          ))}
-        </nav>
-      </section>
-
-      <section className="intro section-pad reveal">
-        <div className="section-kicker"><span>02</span><i /><span>عن بروة</span></div>
-        <div className="intro-layout">
-          <div className="intro-heading"><span className="eyebrow">OUR APPROACH</span><h2>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></h2></div>
-          <div className="intro-copy"><p>منذ تأسيسها، تواصل بروة للتطوير العقاري بناء إرث من التميز والإنجازات البارزة. نخلق مشاريع استثنائية تجمع بين المواقع المتميزة، الجودة، وفرص الاستثمار المدروسة.</p><a className="text-link" href="#contact">تعرف على بروة <ArrowUpRight /></a></div>
+            <span aria-live="polite">{isArabic ? showcase[active].arabic : showcase[active].displayName}</span>
+            <button type="button" onClick={() => move(1)} aria-label={isArabic ? 'المشروع التالي' : 'Next project'}>
+              {isArabic ? <ChevronLeft /> : <ChevronRight />}
+            </button>
+          </div>
         </div>
-        <div className="intro-visual"><div className="visual-caption">A SIGNATURE<br />OF QUALITY</div><div className="visual-number">3.2<span>مليار جنيه<br /><small>حجم الاستثمارات</small></span></div></div>
+        <p className="home-projects-note">
+          {isArabic
+            ? 'نصنع مساحات تلتقي فيها الحياة والعمل والاستثمار، بتفاصيل مدروسة وحضور لا يُنسى.'
+            : 'We create spaces where life, work and investment meet, shaped by considered detail and a distinctive presence.'}
+        </p>
       </section>
 
-      <section className="numbers">
-        <div className="section-kicker light-kicker"><span>03</span><i /><span>إرث من الإنجاز</span></div>
-        <div className="numbers-grid"><div><strong>55<sup>+</sup></strong><span>مشروعاً تم إنجازه<br />خلال ١٥ عاماً</span></div><div><strong>12<sup>+</sup></strong><span>عمارة سكنية<br />تم تسليمها</span></div><div><strong>15</strong><span>عاماً من الخبرة<br />والتطوير العقاري</span></div></div>
+      <section id="top" className="home-promo" aria-label={isArabic ? 'عرض بروة' : 'Barwa film'}>
+        <video
+          ref={promoRef}
+          className="home-promo-video"
+          src={promoVideo}
+          poster={promoPoster}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+        />
+        <button
+          type="button"
+          className="home-promo-sound"
+          aria-pressed={!promoMuted}
+          aria-label={promoMuted ? (isArabic ? 'تشغيل الصوت' : 'Play sound') : (isArabic ? 'كتم الصوت' : 'Mute')}
+          onClick={togglePromoSound}
+        >
+          {promoMuted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}
+        </button>
+      </section>
+
+      <section className="legacy section-pad reveal" aria-labelledby="legacy-title">
+        <div className="legacy-intro">
+          <div className="section-kicker"><span>02</span><i /><span>{isArabic ? 'إرث من الإنجاز' : 'A RECORD OF DELIVERY'}</span></div>
+          <h2 id="legacy-title">{isArabic ? <>إرث من <em>الإنجاز</em></> : <>A record of <em>delivery</em></>}</h2>
+        </div>
+        <BrochureFigures />
+      </section>
+
+      <section className="approach section-pad reveal">
+        <div className="approach-copy">
+          <div className="section-kicker"><span>03</span><i /><span>{isArabic ? 'عن بروة' : 'ABOUT BARWA'}</span></div>
+          <h2>{isArabic ? <>نطور وجهات<br /><em>تصنع قيمة حقيقية</em></> : <>We develop destinations<br /><em>that create real value</em></>}</h2>
+          <p>
+            {isArabic
+              ? 'إرث من التميّز والإنجازات البارزة. منذ 2008 نبني في شرق القاهرة مشروعات تجمع بين أفضل موقع وأعلى جودة وأذكى استثمار.'
+              : 'A record of distinction and delivery. Since 2008 we have been building in East Cairo, bringing together the strongest location, the highest quality and the sharpest investment.'}
+          </p>
+          <a className="text-link" href="#contact">{isArabic ? 'تعرف على بروة' : 'Discover Barwa'} <ArrowUpRight /></a>
+        </div>
+        <figure className="approach-figure">
+          <img src="/projects/hub5-mall/hero.jpg" alt={isArabic ? 'واجهة هاب ٥ مول في المنطقة الخامسة بمدينة الشروق' : 'HUB 5 Mall facade in District 5, El Shorouk'} loading="lazy" decoding="async" />
+          <figcaption>
+            <strong>3.2</strong>
+            <span>{isArabic ? 'مليار جنيه' : 'EGP billion'}<small>{isArabic ? 'حجم الاستثمارات · بالشراكة مع الراجحي' : 'Investments · with Al Rajhi'}</small></span>
+          </figcaption>
+        </figure>
       </section>
 
       <section className="philosophy reveal">
-        <div className="philosophy-image" />
-        <div className="philosophy-content"><div className="section-kicker light-kicker"><span>04</span><i /><span>فلسفة بروة</span></div><span className="eyebrow light">OUR PHILOSOPHY</span><h2>نبني ما يبقى<br /><em>ويصنع الفرق</em></h2><div className="values"><div><strong>01</strong><span>قيمة مستدامة</span><p>وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.</p></div><div><strong>02</strong><span>تصميم مدروس</span></div><div><strong>03</strong><span>الثقة</span></div><div><strong>04</strong><span>التطور</span></div></div></div>
+        <div className="philosophy-collage" aria-hidden="true">
+          <img className="philosophy-main" src="/projects/barwa-mall/hero.jpg" alt={isArabic ? 'واجهة بروة مول في مدينة الشروق' : 'Barwa Mall facade in El Shorouk'} loading="lazy" decoding="async" />
+          <img className="philosophy-float philosophy-float-top" src="/projects/central-mall/hero.jpg" alt={isArabic ? 'واجهة سنترال مول في المنطقة المركزية بمدينة الشروق' : 'Central Mall facade in El Shorouk'} loading="lazy" decoding="async" />
+          <img className="philosophy-float philosophy-float-bottom" src="/projects/hub5-mall/hero.jpg" alt={isArabic ? 'واجهة هاب ٥ مول في المنطقة الخامسة بمدينة الشروق' : 'HUB 5 Mall facade in District 5, El Shorouk'} loading="lazy" decoding="async" />
+        </div>
+        <div className="philosophy-content">
+          <div className="section-kicker light-kicker"><span>04</span><i /><span>{isArabic ? 'فلسفة بروة' : 'BARWA PHILOSOPHY'}</span></div>
+          <h2>{isArabic ? <>نبني ما يبقى<br /><em>ويصنع الفرق</em></> : <>We build what lasts<br /><em>and makes a difference</em></>}</h2>
+          <div className="values">
+            <div>
+              <strong>01</strong>
+              <span>{isArabic ? 'قيمة مستدامة' : 'Lasting value'}</span>
+              <p>{isArabic ? 'وجهات مصممة لتبقى ذات صلة، وتخلق قيمة حقيقية للسكان والمستثمرين والمجتمعات.' : 'Destinations designed to stay relevant and create real value for residents, investors and communities.'}</p>
+            </div>
+            <div><strong>02</strong><span>{isArabic ? 'تصميم مدروس' : 'Considered design'}</span></div>
+            <div><strong>03</strong><span>{isArabic ? 'الثقة' : 'Trust'}</span></div>
+            <div><strong>04</strong><span>{isArabic ? 'التطور' : 'Progress'}</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="partners section-pad reveal" aria-labelledby="partners-title">
+        <div className="section-kicker"><span>05</span><i /><span>{isArabic ? 'شركاؤنا' : 'PARTNERS'}</span></div>
+        <h2 id="partners-title">{isArabic ? 'شركاء النجاح' : 'Success Partners'}</h2>
+        <PartnerCarousel />
       </section>
 
       <section id="contact" className="brochure-close">
-        <div className="brochure-close-photo" style={{ backgroundImage: 'url(/projects/central-mall/gallery-01.jpg)' }} aria-hidden="true" />
+        <div className="brochure-close-photo" style={{ backgroundImage: 'url(/projects/barwa-mall/hero.jpg)' }} aria-hidden="true" />
         <div className="brochure-close-copy">
-          <span className="eyebrow">HOTLINE · الخط الساخن</span>
+          <span className="eyebrow">{isArabic ? 'HOTLINE · الخط الساخن' : 'HOTLINE'}</span>
           <a className="brochure-hotline" href={CONTACT.phoneHref} dir="ltr">{CONTACT.hotline}</a>
-          <h2>اكتشف فرصتك القادمة<br /><em>مع بروة</em></h2>
-          <p>استثمارات مدروسة، لمستقبل أكثر قيمة</p>
+          <h2>{isArabic ? <>اكتشف فرصتك القادمة<br /><em>مع بروة</em></> : <>Discover your next opportunity<br /><em>with Barwa</em></>}</h2>
+          <p>{isArabic ? 'استثمارات مدروسة، لمستقبل أكثر قيمة' : 'Considered investments for a more valuable future'}</p>
           <div className="brochure-close-links">
             <a href={CONTACT.emailHref}>{CONTACT.email}</a>
             <a href={CONTACT.websiteHref}>{CONTACT.websiteLabel}</a>
-            <span>{CONTACT.officeAddress.arabic}</span>
+            <span>{isArabic ? CONTACT.officeAddress.arabic : CONTACT.officeAddress.english}</span>
           </div>
-          <Link className="button-link" href="/contact-us">تواصل معنا الآن <ArrowUpLeft /></Link>
+          <Link className="button-link" href="/contact-us">{isArabic ? 'تواصل معنا الآن' : 'Contact us now'} {isArabic ? <ArrowUpLeft /> : <ArrowUpRight />}</Link>
         </div>
       </section>
 

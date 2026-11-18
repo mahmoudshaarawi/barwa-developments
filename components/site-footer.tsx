@@ -1,9 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaYoutube } from 'react-icons/fa6'
+import { Briefcase } from 'lucide-react'
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTiktok, FaWhatsapp, FaYoutube } from 'react-icons/fa6'
 import { useLanguage } from './language-provider'
 import { CONTACT } from '@/lib/contact'
+import { projects } from '@/lib/projects'
 
 const coloredLogoUrl = '/brand/barwa logo-01.svg'
 const socialLinks = [
@@ -12,44 +14,68 @@ const socialLinks = [
   { label: 'Instagram', href: 'https://www.instagram.com/barwadevelopments/', Icon: FaInstagram },
   { label: 'YouTube', href: 'https://www.youtube.com/@BarwaDevelopments', Icon: FaYoutube },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/company/barwadevelopments', Icon: FaLinkedinIn },
+  { label: 'WhatsApp', href: 'https://wa.me/201270000101', Icon: FaWhatsapp },
 ]
 
 export function SiteFooter() {
   const { language } = useLanguage()
   const isArabic = language === 'ar'
+  const projectLinks = [...projects].reverse()
 
   return (
-    <footer dir={isArabic ? 'rtl' : 'ltr'}>
-      <div className="footer-top">
-        <Link href="/" className="brand-lockup footer-brand" aria-label="Barwa Developments">
-          <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt="" aria-hidden="true" />
-        </Link>
-        <p>{isArabic ? <>نبني التميز<br />نصنع القيمة</> : <>Building Excellence<br />Creating Value</>}</p>
-        <div className="footer-contact">
-          <span>{isArabic ? CONTACT.officeAddress.arabic : CONTACT.officeAddress.english}</span>
+    <footer className="site-footer" dir={isArabic ? 'rtl' : 'ltr'}>
+      <div className="site-footer-main">
+        <div className="site-footer-brand">
+          <Link href="/" className="brand-lockup footer-brand" aria-label={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'}>
+            <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'} />
+          </Link>
+          <p>{isArabic ? 'نبني التميز، نصنع القيمة.' : 'Building excellence, creating value.'}</p>
+          <nav className="footer-social-links" aria-label={isArabic ? 'تابعونا على منصات التواصل الاجتماعي' : 'Follow Barwa on social media'}>
+            {socialLinks.map(({ label, href, Icon }) => (
+              <a className="footer-social-link" href={href} key={label} target="_blank" rel="noopener noreferrer" aria-label={label}>
+                <Icon aria-hidden="true" />
+              </a>
+            ))}
+            <Link className="footer-social-link footer-careers-icon" href="/careers" aria-label={isArabic ? 'التوظيف' : 'Careers'}>
+              <Briefcase aria-hidden="true" />
+            </Link>
+          </nav>
+        </div>
+
+        <nav className="site-footer-col" aria-label={isArabic ? 'تصفح الموقع' : 'Explore'}>
+          <h2>{isArabic ? 'تصفح' : 'Explore'}</h2>
+          <Link href="/">{isArabic ? 'الرئيسية' : 'Home'}</Link>
+          <Link href="/about-us">{isArabic ? 'من نحن' : 'About'}</Link>
+          <Link href="/projects">{isArabic ? 'مشاريعنا' : 'Projects'}</Link>
+          <Link href="/installments">{isArabic ? 'احسب القسط' : 'Installments'}</Link>
+          <Link href="/news">{isArabic ? 'الأخبار' : 'News'}</Link>
+          <Link href="/contact-us">{isArabic ? 'تواصل معنا' : 'Contact'}</Link>
+          <Link className="footer-careers" href="/careers">
+            <Briefcase aria-hidden="true" />
+            {isArabic ? 'التوظيف' : 'Careers'}
+          </Link>
+        </nav>
+
+        <nav className="site-footer-col" aria-label={isArabic ? 'المشاريع' : 'Projects'}>
+          <h2>{isArabic ? 'المشاريع' : 'Projects'}</h2>
+          {projectLinks.map((project) => (
+            <Link key={project.slug} href={`/projects/${project.slug}`}>
+              {isArabic ? project.arabic : project.displayName}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="site-footer-col">
+          <h2>{isArabic ? 'تواصل' : 'Contact'}</h2>
           <a href={CONTACT.phoneHref} dir="ltr">{CONTACT.hotline}</a>
           <a href={CONTACT.emailHref}>{CONTACT.email}</a>
           <a href={CONTACT.websiteHref}>{CONTACT.websiteLabel}</a>
+          <span>{isArabic ? CONTACT.officeAddress.arabic : CONTACT.officeAddress.english}</span>
         </div>
       </div>
-      <nav className="footer-social-links" aria-label={isArabic ? 'تابعونا على منصات التواصل الاجتماعي' : 'Follow Barwa on social media'}>
-        {socialLinks.map(({ label, href, Icon }) => (
-          <a
-            className="footer-social-link"
-            href={href}
-            key={label}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={label}
-          >
-            <Icon aria-hidden="true" />
-          </a>
-        ))}
-      </nav>
-      <div className="footer-bottom">
+      <div className="site-footer-bottom">
         <span>© 2026 BARWA DEVELOPMENTS</span>
         <a href={CONTACT.websiteHref}>{CONTACT.websiteLabel}</a>
-        <span>AR <b>·</b> EN</span>
       </div>
     </footer>
   )

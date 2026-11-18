@@ -1,29 +1,40 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
+import { JsonLd } from '@/components/json-ld'
 import { LanguageProvider } from '@/components/language-provider'
+import { WhatsAppFloat } from '@/components/whatsapp-float'
+import { organizationJsonLd, pageMetadata, siteUrl, staticPage } from '@/lib/seo'
 import './globals.css'
 import './brochure.css'
 
 export const metadata: Metadata = {
-  title: 'بروة للتطوير العقاري | نبني التميز، نصنع القيمة',
-  description: 'بروة للتطوير العقاري — وجهات استثنائية تصنع قيمة حقيقية لأجيال اليوم والغد.',
-  generator: 'v0.app',
+  metadataBase: new URL(siteUrl),
+  ...pageMetadata(staticPage('ar', 'home')),
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
         url: '/icon.svg',
         type: 'image/svg+xml',
+        sizes: 'any',
+      },
+      {
+        url: '/icon-192.png',
+        type: 'image/png',
+        sizes: '192x192',
+      },
+      {
+        url: '/icon-512.png',
+        type: 'image/png',
+        sizes: '512x512',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: [
+      {
+        url: '/apple-touch-icon.png',
+        type: 'image/png',
+        sizes: '180x180',
+      },
+    ],
   },
 }
 
@@ -40,8 +51,10 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className="antialiased">
+        <JsonLd data={organizationJsonLd} />
         <LanguageProvider>
           {children}
+          <WhatsAppFloat />
           {process.env.NODE_ENV === 'production' && <Analytics />}
         </LanguageProvider>
       </body>

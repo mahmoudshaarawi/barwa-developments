@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -17,59 +16,52 @@ type SiteHeaderProps = {
 export function SiteHeader({ scrolled: controlledScrolled, variant = 'overlay' }: SiteHeaderProps) {
   const [internalScrolled, setInternalScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [menuClosing, setMenuClosing] = useState(false)
   const { language, toggleLanguage } = useLanguage()
-
   const isScrolled = variant === 'solid' || (controlledScrolled ?? internalScrolled)
   const isArabic = language === 'ar'
 
   useEffect(() => {
     if (controlledScrolled !== undefined) return
-
     const onScroll = () => setInternalScrolled(window.scrollY > 40)
     onScroll()
     window.addEventListener('scroll', onScroll)
-
     return () => window.removeEventListener('scroll', onScroll)
   }, [controlledScrolled])
 
-  const navItems = isArabic
-    ? ['الرئيسية', 'من نحن', 'مشاريعنا', 'سابقة أعمالنا', 'الأخبار', 'تواصل معنا']
-    : ['Home', 'About', 'Projects', 'Portfolio', 'News', 'Contact']
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false)
+    }
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [menuOpen])
 
-  const hrefFor = (index: number) => index === 0
-    ? '/'
-    : index === 1
-      ? '/about-us'
-      : index === 2
-        ? '/projects'
-        : index === 5
-          ? '/contact-us'
-          : '/#contact'
-
-  const openMenu = () => {
-    setMenuClosing(false)
-    setMenuOpen(true)
-  }
-
-  const closeMenu = () => {
-    if (!menuClosing) setMenuClosing(true)
-  }
+  const navItems = [
+    { label: isArabic ? 'الرئيسية' : 'Home', href: '/' },
+    { label: isArabic ? 'من نحن' : 'About', href: '/about-us' },
+    { label: isArabic ? 'مشاريعنا' : 'Projects', href: '/projects' },
+    { label: isArabic ? 'احسب القسط' : 'Installments', href: '/installments' },
+    { label: isArabic ? 'سابقة أعمالنا' : 'Portfolio', href: '/past-work' },
+    { label: isArabic ? 'الأخبار' : 'News', href: '/news' },
+    { label: isArabic ? 'تواصل معنا' : 'Contact', href: '/contact-us' },
+  ]
 
   return (
     <>
-      <header className={`site-header ${isScrolled ? 'is-scrolled' : ''} ${variant === 'solid' ? 'site-header-solid' : ''}`}>
-        <Link href="/" className="brand-lockup" aria-label="Barwa Developments">
-          <img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt="" aria-hidden="true" />
-          <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt="" aria-hidden="true" />
+      <header className={`site-header ${isScrolled ? 'is-scrolled' : ''} ${variant === 'solid' ? 'site-header-solid' : ''} ${menuOpen ? 'is-menu-open' : ''}`}>
+        <Link href="/" className="brand-lockup" aria-label={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'}>
+          <img className="brand-logo brand-logo-white" src={whiteLogoUrl} alt={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'} />
+          <img className="brand-logo brand-logo-colored" src={coloredLogoUrl} alt={isArabic ? 'بروة للتطوير العقاري' : 'Barwa Developments'} aria-hidden="true" />
         </Link>
-
         <nav className="desktop-nav" aria-label={isArabic ? 'التنقل الرئيسي' : 'Main navigation'}>
-          {navItems.map((item, index) => (
-            <Link key={item} href={hrefFor(index)}>{item}</Link>
-          ))}
+          {navItems.map((item) => <Link key={item.label} href={item.href}>{item.label}</Link>)}
         </nav>
-
         <div className="header-actions">
           <button
             className="language"
@@ -78,58 +70,46 @@ export function SiteHeader({ scrolled: controlledScrolled, variant = 'overlay' }
           >
             {isArabic ? 'EN' : 'عربي'}
           </button>
-
           <button
+            type="button"
             className="menu-button"
-            onClick={openMenu}
-            aria-label={isArabic ? 'فتح القائمة' : 'Open menu'}
-            aria-expanded={menuOpen && !menuClosing}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? (isArabic ? 'إغلاق القائمة' : 'Close menu') : (isArabic ? 'فتح القائمة' : 'Open menu')}
           >
-            <Menu />
+            {menuOpen ? <X /> : <Menu />}
           </button>
         </div>
       </header>
 
       {menuOpen && (
         <div
-          className={`mobile-menu ${menuClosing ? 'is-closing' : ''}`}
+          id="mobile-menu"
+          className="mobile-menu"
           dir={isArabic ? 'rtl' : 'ltr'}
-          onAnimationEnd={(event) => {
-            if (
-              menuClosing &&
-              event.target === event.currentTarget &&
-              event.animationName === 'barwaMenuOut'
-            ) {
-              setMenuOpen(false)
-              setMenuClosing(false)
-            }
-          }}
+          role="dialog"
+          aria-modal="true"
+          aria-label={isArabic ? 'القائمة' : 'Menu'}
+          onClick={() => setMenuOpen(false)}
         >
-          <button
-            className="close-menu"
-            onClick={closeMenu}
-            aria-label={isArabic ? 'إغلاق القائمة' : 'Close menu'}
-            disabled={menuClosing}
-          >
-            <X />
-          </button>
-
           <span className="eyebrow">BARWA / NAVIGATION</span>
-
           <nav aria-label={isArabic ? 'التنقل الرئيسي' : 'Main navigation'}>
             {navItems.map((item, index) => (
-              <Link
-                key={item}
-                href={hrefFor(index)}
-                onClick={closeMenu}
-              >
-                <span>0{index + 1}</span>{item}
+              <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)}>
+                <span>0{index + 1}</span>{item.label}
               </Link>
             ))}
           </nav>
-
           <div className="mobile-menu-footer">
-            <button onClick={toggleLanguage}>
+            <button
+              type="button"
+              className="mobile-language"
+              onClick={(event) => {
+                event.stopPropagation()
+                toggleLanguage()
+              }}
+            >
               {isArabic ? 'English' : 'العربية'}
             </button>
           </div>

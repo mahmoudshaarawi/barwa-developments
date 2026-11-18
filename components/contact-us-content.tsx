@@ -1,6 +1,7 @@
 'use client'
 
 import { Globe, Mail, MapPin, Phone } from 'lucide-react'
+import { FaWhatsapp } from 'react-icons/fa6'
 import { SiteFooter } from './site-footer'
 import { SiteHeader } from './site-header'
 import { useLanguage } from './language-provider'
@@ -16,7 +17,7 @@ export function ContactUsContent() {
       <SiteHeader variant="overlay" />
 
       <section className="contact-page-hero">
-        <img src="/projects/central-mall/hero.jpg" alt="" fetchPriority="high" />
+        <img src="/projects/central-mall/hero.jpg" alt={isArabic ? 'واجهة سنترال مول في المنطقة المركزية بمدينة الشروق' : 'Central Mall facade in the Second Central Area, El Shorouk'} fetchPriority="high" decoding="async" />
         <div className="contact-page-hero-shade" />
         <div className="contact-page-hero-copy">
           <span className="contact-page-eyebrow">BARWA DEVELOPMENTS</span>
@@ -54,6 +55,13 @@ export function ContactUsContent() {
               <div>
                 <span>{isArabic ? 'البريد الإلكتروني' : 'Email'}</span>
                 <p dir="ltr">{CONTACT.email}</p>
+              </div>
+            </a>
+            <a className="contact-detail-item" href="https://wa.me/201270000101" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+              <span className="contact-detail-icon"><FaWhatsapp aria-hidden="true" /></span>
+              <div>
+                <span>WhatsApp</span>
+                <p dir="ltr">01270000101</p>
               </div>
             </a>
             <a className="contact-detail-item" href={CONTACT.websiteHref}>
